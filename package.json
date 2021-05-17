@@ -33,7 +33,7 @@
   },
   "devDependencies": {},
   "files": [
-    "ads-client/",
+    "src/",
     "CHANGELOG.md",
     "README.md"
   ],
