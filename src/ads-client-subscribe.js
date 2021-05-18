@@ -80,7 +80,7 @@ module.exports = function (RED) {
           clearTimeout(this.subcribeRetryTimer)
           
           this.subscription = await this.connection.getClient().subscribe(
-            target ? target : this.variableNameVariable,
+            target ? target : this.variableName,
             onNotificationReceived,
             this.cycleTime,
             this.mode === 'onchange',
