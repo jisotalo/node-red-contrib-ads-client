@@ -4,6 +4,7 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config)
 
     //Properties
+    this.name = config.name
     this.variableName = config.variableName
     this.cycleTime = config.cycleTime
     this.mode = config.mode
@@ -47,14 +48,16 @@ module.exports = function (RED) {
      */
     const subscribe = async (target = null) => {
 
+      
       if (!this.connection) {
         this.status({ fill: 'red', shape: 'ring', text: `Error: No connection configured` })
+        this.error(`Error: No connection configured`, { error: `No connection configured` })
         return
       }
 
       if (this.variableName === '' && !target) {
-        console.log('JUUH')
-        this.status({ fill: 'red', shape: 'ring', text: `Error: Input msg.topic is missing or not valid stringASD` })
+        this.status({ fill: 'red', shape: 'ring', text: `Error: Input msg.topic not valid string` })
+        this.error(`Error: Input msg.topic is missing or it's not valid string`, { error: `Input msg.topic is missing or it's not valid string` })
         return
       }
 
@@ -65,8 +68,9 @@ module.exports = function (RED) {
 
         } catch (err) {
           //Failed to connect, we can't work..
-          this.status({ fill: 'red', shape: 'ring', text: `Error: Not connected to the target, retrying every ${this.retryInterval} ms` })
-
+          this.status({ fill: 'red', shape: 'ring', text: `Error: Not connected, retrying...` })
+          this.error(`Error: Not connected to the target`, { error: `Not connected to the target` })
+          
           //Try again soon
           this.subcribeRetryTimer = setTimeout(() => subscribe(target), this.retryInterval)
 
@@ -88,12 +92,12 @@ module.exports = function (RED) {
           )
 
           //Successful
-          this.status({ fill: "green", shape: "dot", text: "Subscribed succesfully" })
+          this.status({ fill: "green", shape: "dot", text: "Subscribed" })
 
         } catch (err) {
           const errInfo = this.connection.formatError(err)
 
-          this.status({ fill: 'red', shape: 'ring', text: `Error: ${errInfo.message} - retrying every ${this.retryInterval} ms` })
+          this.status({ fill: 'red', shape: 'ring', text: `Error: Subscribe failed, retrying...` })
           this.error(`Error: Subscribing to ${target ? target : this.variableName} failed: ${errInfo.message} - retrying every ${this.retryInterval} ms`, errInfo)
 
           //Try again soon
@@ -154,11 +158,11 @@ module.exports = function (RED) {
 
       //Check if given topic is valid (if no variableName given)
       if (this.variableName === '' && (!msg.topic || typeof (msg.topic) !== 'string')) {
-        this.status({ fill: 'red', shape: 'ring', text: `Error: Input msg.topic is missing or not valid string` })
-        this.error(`Error: Subscribing failed - Input msg.topic is missing or not valid string`, msg)
+        this.status({ fill: 'red', shape: 'ring', text: `Error: Input msg.topic not valid string` })
+        this.error(`Error: Input msg.topic is missing or it's not valid string`, msg)
 
         if (done) {
-          done()
+          done(new Error(`Error: Input msg.topic is missing or it's not valid string`))
         }
         return
       }
@@ -206,11 +210,13 @@ module.exports = function (RED) {
 
 
 
-    //Start subscribing immediately after startup (unless controlled node)
-    if (!this.controlSubscription) {
+    //Start subscribing immediately after startup (unless controlled node or no variable name)
+    if (!this.controlSubscription && this.variableName ) {
       subscribe()
-    } else {
+    } else if (this.controlSubscription) {
       this.status({ fill: 'yellow', shape: 'dot', text: 'Not subscribed (waiting for msg.subscribe)' })
+    } else {
+      this.status({ fill: 'yellow', shape: 'dot', text: 'Not subscribed (waiting for msg.topic)' })
     }
   }
 

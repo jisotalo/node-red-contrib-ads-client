@@ -3,6 +3,8 @@
     paletteLabel: 'ADS - Connection',
     category: 'config',
     defaults: { 
+      name: { value: '' },
+
       //ads-client settings (required)
       targetAmsNetId: { value: 'localhost', required: true },
       targetAdsPort: { value: 851, required: true, validate: RED.validators.number() },
@@ -29,6 +31,10 @@
       disableBigInt: { value: false }
     },
     label: function () {
+      if (this.name) {
+        return this.name
+      }
+      
       return `${this.targetAmsNetId}:${this.targetAdsPort}`
     },
     
@@ -67,6 +73,11 @@
 
 
 <script type="text/html" data-template-name="ads-client-connection">
+  <div class="form-row">
+      <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-config-input-name" placeholder="Name (optional)">
+  </div>
+
   <div class="form-row">
       <ul style="background: #fff; min-width: 600px; margin-bottom: 20px;" id="node-input-ads-client-connection-tabs"></ul>
   </div>

@@ -10,15 +10,20 @@
       return this.variableName === '' ? "Value (topic as variable name)" : "Value"
     },
     outputs: 1,
-    inputLabels: "Data",
+    outputLabels: "Data",
     defaults: { 
+      name: { value: '' },
       connection: { value: null, type: "ads-client-connection" },
       variableName: { value: "", required: false },
       autoFill: { value: false }
     },
     label: function () {
       if (this.connection === null)
-        return  `ADS - Write Symbol (*Not configured*)`;
+        return `${(this.name || `ADS - Write Symbol`)} (*Not configured*)`;
+
+      if (this.name) {
+        return this.name
+      }
 
       return `ADS - Write Symbol (${(this.variableName === '' ? `msg.topic` : `${this.variableName}`)})`;
     },
@@ -32,6 +37,11 @@
 
 <!-- Properties -->
 <script type="text/html" data-template-name="ads-client-write-symbol">
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name (optional)">
+  </div>
+
   <div class="form-row">
       <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
       <input type="text" id="node-input-connection" placeholder="ADS Connection">
@@ -69,6 +79,13 @@
 
 
 <h3>Properties (settings)</h3>
+  <dl class="message-properties">
+    <dt>Name
+      <span class="property-type">string</span>
+    </dt>
+    <dd> Optional node name</dd>
+  </dl>
+  
   <dl class="message-properties">
     <dt>ADS connection
       <span class="property-type">ads-client-connection</span>
@@ -113,6 +130,8 @@
     <dd>Variable data type information</dd>
     <dt>symbol <span class="property-type">object</span></dt>
     <dd>Variable symbol information</dd>
+    <dt>... <span class="property-type">any</span></dt>
+    <dd>All input <code>msg</code> properties are forwarded</dd>
   </dl>
 
 <h3>Details</h3>

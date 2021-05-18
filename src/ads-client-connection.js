@@ -8,6 +8,9 @@ module.exports = function (RED) {
     this.adsClient = null
     this.connecting = false
 
+    //Properties
+    this.name = config.name
+
     this.connectionSettings = {
       //ads-client settings (required)
       targetAmsNetId: config.targetAmsNetId,
