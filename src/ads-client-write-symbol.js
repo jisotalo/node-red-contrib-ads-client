@@ -4,6 +4,7 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config)
 
     //Properties
+    this.name = config.name
     this.variableName = config.variableName
     this.autoFill = config.autoFill
 
@@ -15,19 +16,21 @@ module.exports = function (RED) {
 
       if (!this.connection) {
         this.status({ fill: 'red', shape: 'ring', text: `Error: No connection configured` })
+        this.error(`Error: No connection configured`, msg)
 
         if (done) {
-          done()
+          done(new Error(`Error: No connection configured`))
         }
         return
       }
 
       //We need to have string in msg.topic if variableName is empty
       if (this.variableName === '' && (!msg.topic || typeof (msg.topic) !== 'string')) {
-        this.status({ fill: 'red', shape: 'ring', text: `Error: Input msg.topic is missing or not valid string` })
+        this.status({ fill: 'red', shape: 'ring', text: `Error: Input msg.topic not valid string` })
+        this.error(`Error: Input msg.topic is missing or it's not valid string`, msg)
 
         if (done) {
-          done()
+          done(new Error(`Error: Input msg.topic is missing or it's not valid string`))
         }
         return
       }
@@ -39,10 +42,11 @@ module.exports = function (RED) {
 
         } catch (err) {
           //Failed to connect, we can't work..
-          this.status({ fill: 'red', shape: 'ring', text: `Error: Not connected to the target` })
+          this.status({ fill: 'red', shape: 'ring', text: `Error: Not connected` })
+          this.error(`Error: Not connected to the target`, msg)
 
           if (done) {
-            done()
+            done(new Error(`Error: Not connected to the target`))
           }
           return
         }
@@ -62,21 +66,27 @@ module.exports = function (RED) {
         this.status({ fill: 'green', shape: 'dot', text: 'Last write successful' })
 
         send({
+          ...msg,
           payload: res.value,
           type: res.type,
           symbol: res.symbol
         })
 
+        if (done) {
+          done()
+        }
+
       } catch (err) {
         const errInfo = this.connection.formatError(err)
 
-        this.status({ fill: 'red', shape: 'ring', text: `Error: ${errInfo.message}` })
+        this.status({ fill: 'red', shape: 'ring', text: `Error: Last write failed` })
         this.error(`Error: Writing variable "${variableToWrite}" failed: ${errInfo.message}`, errInfo)
+
+        if (done) {
+          done(errinfo)
+        }
       }
 
-      if (done) {
-        done()
-      }
     })
 
   }

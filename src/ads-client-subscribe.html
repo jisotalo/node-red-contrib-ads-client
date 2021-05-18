@@ -2,7 +2,8 @@
   RED.nodes.registerType('ads-client-subscribe', {
     paletteLabel: 'ADS - Subscribe',
     category: 'TwinCAT ADS',
-    icon: 'font-awesome/fa-arrow-right',
+    icon: 'font-awesome/fa-envelope-o',
+    align: 'right',
     color: '#3FADB5',
     inputLabels: function () {
       if (this.variableName === '' && this.controlSubscription) {
@@ -16,6 +17,7 @@
     outputs: 1,
     outputLabels: 'Data',
     defaults: { 
+      name: { value: '' },
       connection: { value: null, type: "ads-client-connection" },
       variableName: { value: "", required: false },
       cycleTime: { value: 200, required: true },
@@ -27,14 +29,17 @@
     },
     label: function () {
       if (this.connection === null)
-        return  `ADS - Subscribe (*Not configured*)`;
+        return `${(this.name || `ADS - Subscribe`)} (*Not configured*)`;
+
+      if (this.name) {
+        return this.name
+      }
 
       return `ADS - Subscribe (${(this.variableName === '' ? `msg.topic` : `${this.variableName}`)})`;
     },
     oneditprepare: function () {
       //Stuff that is done when properties panel is opened
       let node = this
-
 
       let checkIfInput = function () {
         node.inputs = $('#node-input-variableName').val() === '' || $('#node-input-controlSubscription').is(':checked') ? 1 : 0
@@ -57,6 +62,11 @@
 
 <!-- Properties -->
 <script type="text/html" data-template-name="ads-client-subscribe">
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name (optional)">
+  </div>
+
   <div class="form-row">
       <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
       <input type="text" id="node-input-connection" placeholder="ADS Connection">
@@ -111,6 +121,13 @@
 
 
 <h3>Properties (settings)</h3>
+  <dl class="message-properties">
+    <dt>Name
+      <span class="property-type">string</span>
+    </dt>
+    <dd> Optional node name</dd>
+  </dl>
+
   <dl class="message-properties">
     <dt>ADS connection
       <span class="property-type">ads-client-connection</span>
@@ -187,6 +204,8 @@
     <dd>Variable symbol information</dd>
     <dt>timestamp <span class="property-type">object</span></dt>
     <dd>Variable timestamp</dd>
+    <dt>... <span class="property-type">any</span></dt>
+    <dd>All input <code>msg</code> properties are forwarded</dd>
   </dl>
 
 <h3>Details</h3>
