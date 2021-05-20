@@ -6,7 +6,6 @@ module.exports = function (RED) {
     //Properties
     this.name = config.name
     this.methodName = config.methodName
-	console.log(this.methodName)
 	
     //Getting the ads-client instance
     this.connection = RED.nodes.getNode(config.connection)
@@ -15,7 +14,7 @@ module.exports = function (RED) {
     this.on('input', async (msg, send, done) => {
 
       if (!this.connection) {
-        this.status({ fill: 'red', shape: 'ring', text: `Error: No connection configured` })
+        this.status({ fill: 'red', shape: 'dot', text: `Error: No connection configured` })
         this.error(`Error: No connection configured`, msg)
 
         if (done) {
@@ -26,7 +25,7 @@ module.exports = function (RED) {
 
       //We need to have string in msg.topic if methodName is empty
       if ( (this.methodName || '') === '' && (!msg.topic || typeof (msg.topic) !== 'string')) {
-        this.status({ fill: 'red', shape: 'ring', text: `Error: Input msg.topic not valid string` })
+        this.status({ fill: 'red', shape: 'dot', text: `Error: Input msg.topic not valid string` })
         this.error(`Error: Input msg.topic is missing or it's not valid string`, msg)
 
         if (done) {
@@ -42,7 +41,7 @@ module.exports = function (RED) {
 
         } catch (err) {
           //Failed to connect, we can't work..
-          this.status({ fill: 'red', shape: 'ring', text: `Error: Not connected` })
+          this.status({ fill: 'red', shape: 'dot', text: `Error: Not connected` })
           this.error(`Error: Not connected to the target`, msg)
 
           if (done) {
@@ -54,12 +53,12 @@ module.exports = function (RED) {
 
 
       const fullMethodCall = this.methodName === '' ? msg.topic : this.methodName
-	  const [functionBlock, methodToCall] = fullMethodCall.split(/\.(?=[^\.]+$)/); //Split on last dot (.)
+	    const [functionBlock, methodToCall] = fullMethodCall.split(/\.(?=[^\.]+$)/); //Split on last dot (.)
 	  
-      //Finally, writing the data
+      //Finally, calling the RPC method
       try {
         const res = await this.connection.getClient().invokeRpcMethod(
-		  functionBlock,
+          functionBlock,
           methodToCall,
           msg.payload
         )
@@ -80,7 +79,7 @@ module.exports = function (RED) {
       } catch (err) {
         const errInfo = this.connection.formatError(err)
 
-        this.status({ fill: 'red', shape: 'ring', text: `Error: Last call failed` })
+        this.status({ fill: 'red', shape: 'dot', text: `Error: Last call failed` })
         this.error(`Error: Calling "${fullMethodCall}" failed: ${errInfo.message}`, errInfo)
 
         if (done) {
@@ -92,5 +91,5 @@ module.exports = function (RED) {
 
   }
 
-  RED.nodes.registerType('ads-client-rpc', AdsClientRpc)
+  RED.nodes.registerType('ads-client-invoke-rpc-method', AdsClientRpc)
 }

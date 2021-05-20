@@ -1,12 +1,12 @@
 <script type="text/javascript">
-  RED.nodes.registerType('ads-client-rpc', {
-    paletteLabel: 'ADS - Method Call',
+  RED.nodes.registerType('ads-client-invoke-rpc-method', {
+    paletteLabel: 'ADS - Invoke RPC Method',
     category: 'TwinCAT ADS',
     icon: 'font-awesome/fa-terminal',
     color: '#3FADB5',
     inputs: 1,
     inputLabels: function () {
-      return this.methodName === '' ? "Method input (topic as method path)" : "Method input"
+      return this.methodName === '' ? "Method inputs (topic as method path)" : "Method inputs"
     },
     outputs: 1,
     outputLabels: "Return data",
@@ -17,13 +17,13 @@
     },
     label: function () {
       if (this.connection === null)
-        return `${(this.name || `ADS - Method call`)} (*Not configured*)`;
+        return `${(this.name || `ADS - Invoke RPC Method`)} (*Not configured*)`;
 
       if (this.name) {
         return this.name
       }
 
-      return `ADS - Method call (${(this.methodName === '' ? `msg.topic` : `${this.methodName}`)})`;
+      return `ADS - Invoke RPC Method (${(this.methodName === '' ? `msg.topic` : `${this.methodName}`)})`;
     },
     oneditprepare: function () {
       //Stuff that is done when properties panel is opened
@@ -34,7 +34,7 @@
 
 
 <!-- Properties -->
-<script type="text/html" data-template-name="ads-client-rpc">
+<script type="text/html" data-template-name="ads-client-invoke-rpc-method">
   <div class="form-row">
       <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
       <input type="text" id="node-input-name" placeholder="Name (optional)">
@@ -49,7 +49,7 @@
       <label for="node-input-methodName"><i class="fa fa-tag"></i> Method</label>
       <input type="text" id="node-input-methodName" placeholder="Method path">
   </div>
-  <div class="form-tips"><b>Tip:</b> Leave Method empty to use <code>msg.topic</code> input instead.</div>
+  <div class="form-tips"><b>Tip:</b> Leave method path empty to use <code>msg.topic</code> input instead.</div>
   
   <div class="form-row">
     <!-- Some margin after tip -->
@@ -59,13 +59,14 @@
 
 
 <!-- Help -->
-<script type="text/html" data-help-name="ads-client-rpc">
+<script type="text/html" data-help-name="ads-client-invoke-rpc-method">
 <p>
-  Calls a method with the given input values and returns the methods return value and outputs.
+  Calls a function block method with parameters using RPC (remote procedure call). 
+  Input and output parameters are available as well as method return value
 </p>
 <p>
-  The input <code>msg.payload</code> is the input values of the method.
-  If input <code>msg.topic</code> is given and no method is given in the properties, the topic is used as method.
+  The input <code>msg.payload</code> is the object containing all method input variables.
+  If input <code>msg.topic</code> is given, and no method set in the properties, the topic is used as method path to call.
 </p>
 
 
@@ -88,7 +89,7 @@
     <dt>Method
       <span class="property-type">string</span>
     </dt>
-    <dd> Path to the method to be called.</dd>
+    <dd> Full path to the method to be called.</dd>
   </dl>
 
 
@@ -97,7 +98,7 @@
     <dt>payload
       <span class="property-type">object</span>
     </dt>
-    <dd> The input values of the method.</dd>
+    <dd> Input values of the method (<code>VAR_INPUT</code>).</dd>
   </dl>
   <dl class="message-properties">
     <dt>topic
@@ -111,25 +112,21 @@
     <dt>payload <span class="property-type">any</span></dt>
     <dd>The return value of the method.</dd>
     <dt>outputs <span class="property-type">object</span></dt>
-    <dd>Output values from the method call.</dd>
+    <dd>Output values from the method call (<code>VAR_OUTPUT</code>).</dd>
     <dt>... <span class="property-type">any</span></dt>
     <dd>All input <code>msg</code> properties are forwarded</dd>
   </dl>
 
 <h3>Details</h3>
   <p>
-  The input <code>msg.payload</code> should be an object containing all the methods input PLC variable  with matching type. For example <code>{"sString":"","xBool":true,"rReal":0.5}</code>.
+  The input <code>msg.payload</code> should be an object containing all the methods input variables (<code>VAR_INPUT</code>). For example <code>{"sString":"","xBool":true,"rReal":0.5}</code>.
   </p>
   <p>
-  The method path should be defined in the properties or in <code>msg.topic</code>. Example: <code>"Main.fbSample.mMyMethod"</code>. 
+  The method path should be defined in the properties or in input <code>msg.topic</code>. Example: <code>"Main.fbSample.mMyMethod"</code>. 
   </p>
   Note: A method can only be called when the <code>{attribute 'TcRpcEnable'}</code> pragma is added above the methods definition.
   <p>
-  </p>
-  <p>
-  </p>
-  <p>
-  See <code>ads-client</code> readme for more help and info.</code>
+  Note that RPC methods have some known problems with ARRAYs etc. See <code>ads-client</code> readme for more help and info.</code>
   </p>
 
 
