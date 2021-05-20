@@ -1,20 +1,19 @@
 <script type="text/javascript">
   RED.nodes.registerType('ads-client-rpc', {
-    paletteLabel: 'ADS - RPC',
+    paletteLabel: 'ADS - Method Call',
     category: 'TwinCAT ADS',
-    icon: 'font-awesome/fa-angle-double-right',
-    align: 'right',
+    icon: 'font-awesome/fa-terminal',
     color: '#3FADB5',
     inputs: 1,
     inputLabels: function () {
-      return this.methodName === '' ? "Value (topic as variable name)" : "Value"
+      return this.methodName === '' ? "Method input (topic as method path)" : "Method input"
     },
     outputs: 1,
     outputLabels: "Return data",
     defaults: { 
       name: { value: '' },
       connection: { value: null, type: "ads-client-connection" },
-      methodName: { value: "", required: true },
+      methodName: { value: ""},
     },
     label: function () {
       if (this.connection === null)
@@ -47,13 +46,100 @@
   </div>
 
   <div class="form-row">
-      <label for="node-input-methodName"><i class="fa fa-tag"></i> Method name</label>
-      <input type="text" id="node-input-methodName" placeholder="Method name">
+      <label for="node-input-methodName"><i class="fa fa-tag"></i> Method</label>
+      <input type="text" id="node-input-methodName" placeholder="Method path">
   </div>
-  <div class="form-tips"><b>Tip:</b> Leave method name empty to use <code>msg.topic</code> input instead.</div>
+  <div class="form-tips"><b>Tip:</b> Leave Method empty to use <code>msg.topic</code> input instead.</div>
   
   <div class="form-row">
     <!-- Some margin after tip -->
   </div>
 
+</script>
+
+
+<!-- Help -->
+<script type="text/html" data-help-name="ads-client-rpc">
+<p>
+  Calls a method with the given input values and returns the methods return value and outputs.
+</p>
+<p>
+  The input <code>msg.payload</code> is the input values of the method.
+  If input <code>msg.topic</code> is given and no method is given in the properties, the topic is used as method.
+</p>
+
+
+<h3>Properties (settings)</h3>
+  <dl class="message-properties">
+    <dt>Name
+      <span class="property-type">string</span>
+    </dt>
+    <dd> Optional node name.</dd>
+  </dl>
+  
+  <dl class="message-properties">
+    <dt>ADS connection
+      <span class="property-type">ads-client-connection</span>
+    </dt>
+    <dd> ADS client connection (target system) to use.</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Method
+      <span class="property-type">string</span>
+    </dt>
+    <dd> Path to the method to be called.</dd>
+  </dl>
+
+
+<h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>payload
+      <span class="property-type">object</span>
+    </dt>
+    <dd> The input values of the method.</dd>
+  </dl>
+  <dl class="message-properties">
+    <dt>topic
+      <span class="property-type">undefined | string</span>
+    </dt>
+    <dd> If given and no method is set in properties, this topic is used as method path.</code></dd>
+  </dl>
+
+<h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">any</span></dt>
+    <dd>The return value of the method.</dd>
+    <dt>outputs <span class="property-type">object</span></dt>
+    <dd>Output values from the method call.</dd>
+    <dt>... <span class="property-type">any</span></dt>
+    <dd>All input <code>msg</code> properties are forwarded</dd>
+  </dl>
+
+<h3>Details</h3>
+  <p>
+  The input <code>msg.payload</code> should be an object containing all the methods input PLC variable  with matching type. For example <code>{"sString":"","xBool":true,"rReal":0.5}</code>.
+  </p>
+  <p>
+  The method path should be defined in the properties or in <code>msg.topic</code>. Example: <code>"Main.fbSample.mMyMethod"</code>. 
+  </p>
+  Note: A method can only be called when the <code>{attribute 'TcRpcEnable'}</code> pragma is added above the methods definition.
+  <p>
+  </p>
+  <p>
+  </p>
+  <p>
+  See <code>ads-client</code> readme for more help and info.</code>
+  </p>
+
+
+<h3>References</h3>
+  <ul>
+    <li><a href="https://github.com/jisotalo/ads-client#calling-a-function-block-method-with-parameters-using-rpc-remote-procedure-call" target="_blank" style="text-decoration: underline">
+      ads-client invokeRpcMethod() readme
+    </a></li>
+    <li><a href="https://jisotalo.github.io/ads-client/Client.html#invokeRpcMethod" target="_blank" style="text-decoration: underline">
+      ads-client invokeRpcMethod() documentation
+    </a></li>
+  </ul>
 </script>
