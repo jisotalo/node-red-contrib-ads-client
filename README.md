@@ -11,9 +11,8 @@ TwinCAT ADS client for Node-RED (unofficial). Basically a Node-RED wrapper on ba
 
 # Project status
 
-**TEST VERSION NOT FOR PRODUCTION**
-
-First release. Not for production, everything might still change.
+Not all nodes are yet developed, work is in progress.
+Readme is under development. Not production ready at the moment.
 
 Please see [ads-client](https://github.com/jisotalo/ads-client) README for help at this point.
 

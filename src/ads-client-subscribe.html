@@ -25,6 +25,7 @@
       initialDelay: { value: 0, required: true },
       retryInterval: { value: 2000, required: true },
       controlSubscription: { value: false },
+      resubscribeTimeout: { value: 2000 },
       inputs: { value: 0 }
     },
     label: function () {
@@ -109,6 +110,11 @@
     <input type="checkbox" id="node-input-controlSubscription" style="display: inline-block; width: auto; vertical-align: top">
     <label for="node-input-controlSubscription" style="width: 70%"><span>Control subscription with input (<code>msg.subscribe</code>)</span></label>
   </div>
+  
+  <div class="form-row">
+      <label for="node-input-resubscribeTimeout"><i class="fa fa-tag"></i> Resubscribe timeout [ms]</label>
+      <input type="text" id="node-input-resubscribeTimeout" placeholder="Resubscribe timeout [ms]">
+  </div>
 </script>
 
 
@@ -151,7 +157,7 @@
 
   <dl class="message-properties">
     <dt>Cycle time [ms]
-      <span class="property-type">string</span>
+      <span class="property-type">number</span>
     </dt>
     <dd> How often the PLC should check if value has changed (or how often to send, see details)</dd>
   </dl>
@@ -165,16 +171,25 @@
 
   <dl class="message-properties">
     <dt>Retry interval [ms]
-      <span class="property-type">string</span>
+      <span class="property-type">number</span>
     </dt>
     <dd> If connecting or subscribing fails, how often to try again until success</dd>
   </dl>
 
   <dl class="message-properties">
     <dt>Control subscription with input
-      <span class="property-type">string</span>
+      <span class="property-type">boolean</span>
     </dt>
     <dd> If checked, node subscription is controlled with input (see details)</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Resubscribe timeout [ms]
+      <span class="property-type">number</span>
+    </dt>
+    <dd> How long to wait for new notifications after connection loss.
+      If no data received in given time, node will try to subscribe again.
+    </dd>
   </dl>
 
 

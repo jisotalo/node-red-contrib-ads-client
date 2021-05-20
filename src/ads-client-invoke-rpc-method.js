@@ -1,13 +1,12 @@
 module.exports = function (RED) {
 
-  function AdsClientWriteSymbol(config) {
+  function AdsClientRpc(config) {
     RED.nodes.createNode(this, config)
 
     //Properties
     this.name = config.name
-    this.variableName = config.variableName
-    this.autoFill = config.autoFill
-
+    this.methodName = config.methodName
+	
     //Getting the ads-client instance
     this.connection = RED.nodes.getNode(config.connection)
 
@@ -24,8 +23,8 @@ module.exports = function (RED) {
         return
       }
 
-      //We need to have string in msg.topic if variableName is empty
-      if (this.variableName === '' && (!msg.topic || typeof (msg.topic) !== 'string')) {
+      //We need to have string in msg.topic if methodName is empty
+      if ( (this.methodName || '') === '' && (!msg.topic || typeof (msg.topic) !== 'string')) {
         this.status({ fill: 'red', shape: 'dot', text: `Error: Input msg.topic not valid string` })
         this.error(`Error: Input msg.topic is missing or it's not valid string`, msg)
 
@@ -52,24 +51,25 @@ module.exports = function (RED) {
         }
       }
 
-      const variableToWrite = this.variableName === '' ? msg.topic : this.variableName
 
-      //Finally, writing the data
+      const fullMethodCall = this.methodName === '' ? msg.topic : this.methodName
+	    const [functionBlock, methodToCall] = fullMethodCall.split(/\.(?=[^\.]+$)/); //Split on last dot (.)
+	  
+      //Finally, calling the RPC method
       try {
-        const res = await this.connection.getClient().writeSymbol(
-          variableToWrite,
-          msg.payload,
-          this.autoFill
+        const res = await this.connection.getClient().invokeRpcMethod(
+          functionBlock,
+          methodToCall,
+          msg.payload
         )
 
         //We are here -> success
-        this.status({ fill: 'green', shape: 'dot', text: 'Last write successful' })
+        this.status({ fill: 'green', shape: 'dot', text: 'Last call successful' })
 
         send({
           ...msg,
-          payload: res.value,
-          type: res.type,
-          symbol: res.symbol
+          payload: res.returnValue,
+          outputs: res.outputs
         })
 
         if (done) {
@@ -79,11 +79,11 @@ module.exports = function (RED) {
       } catch (err) {
         const errInfo = this.connection.formatError(err)
 
-        this.status({ fill: 'red', shape: 'dot', text: `Error: Last write failed` })
-        this.error(`Error: Writing variable "${variableToWrite}" failed: ${errInfo.message}`, errInfo)
+        this.status({ fill: 'red', shape: 'dot', text: `Error: Last call failed` })
+        this.error(`Error: Calling "${fullMethodCall}" failed: ${errInfo.message}`, errInfo)
 
         if (done) {
-          done(errinfo)
+          done(errInfo)
         }
       }
 
@@ -91,5 +91,5 @@ module.exports = function (RED) {
 
   }
 
-  RED.nodes.registerType('ads-client-write-symbol', AdsClientWriteSymbol)
+  RED.nodes.registerType('ads-client-invoke-rpc-method', AdsClientRpc)
 }
