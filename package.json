@@ -42,7 +42,8 @@
       "ads-client-connection": "src/ads-client-connection.js",
       "ads-client-read-symbol": "src/ads-client-read-symbol.js",
       "ads-client-write-symbol": "src/ads-client-write-symbol.js",
-      "ads-client-subscribe": "src/ads-client-subscribe.js"
+      "ads-client-subscribe": "src/ads-client-subscribe.js",
+	  "ads-client-rpc": "src/ads-client-rpc.js"
     }
   }
 }
