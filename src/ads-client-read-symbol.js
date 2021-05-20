@@ -14,7 +14,7 @@ module.exports = function (RED) {
     this.on('input', async (msg, send, done) => {
 
       if (!this.connection) {
-        this.status({ fill: 'red', shape: 'ring', text: `Error: No connection configured` })
+        this.status({ fill: 'red', shape: 'dot', text: `Error: No connection configured` })
         this.error(`Error: No connection configured`, msg)
 
         if (done) {
@@ -25,7 +25,7 @@ module.exports = function (RED) {
 
       //We need to have string in msg.topic if variableName is empty
       if (this.variableName === '' && (!msg.topic || typeof (msg.topic) !== 'string')) {
-        this.status({ fill: 'red', shape: 'ring', text: `Error: Input msg.topic not valid string` })
+        this.status({ fill: 'red', shape: 'dot', text: `Error: Input msg.topic not valid string` })
         this.error(`Error: Input msg.topic is missing or it's not valid string`, msg)
 
         if (done) {
@@ -41,7 +41,7 @@ module.exports = function (RED) {
           
         } catch (err) {
           //Failed to connect, we can't work..
-          this.status({ fill: 'red', shape: 'ring', text: `Error: Not connected` })
+          this.status({ fill: 'red', shape: 'dot', text: `Error: Not connected` })
           this.error(`Error: Not connected to the target`, msg)
 
           if (done) {
@@ -74,7 +74,7 @@ module.exports = function (RED) {
       } catch (err) {
         const errInfo = this.connection.formatError(err)
         
-        this.status({ fill: 'red', shape: 'ring', text: `Error: Last read failed` })
+        this.status({ fill: 'red', shape: 'dot', text: `Error: Last read failed` })
         this.error(`Error: Reading variable "${variableToRead}" failed: ${errInfo.message}`, errInfo)
 
         if (done) {

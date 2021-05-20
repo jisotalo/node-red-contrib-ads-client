@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 20.05.2021
+### Changed
+- `Subscribe` node
+  - If connection is lost, status is updated
+  - If no notifications received in configured time after reconnection, the node will try resubscribe (new setting `Resubscribe timeout [ms]`)
+- All nodes now have similar status icons
+
 ## [1.0.4] - 18.05.2021
 ### Added
 - Name properties to all nodes (also connection config -> PLCs can be named)
