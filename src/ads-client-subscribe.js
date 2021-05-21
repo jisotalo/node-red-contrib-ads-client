@@ -18,6 +18,7 @@ module.exports = function (RED) {
     this.subscription = null
     this.subcribeRetryTimer = null
     this.resubscribeTimer = null
+    this.silenceError = false
 
     //Getting the ads-client instance
     this.connection = RED.nodes.getNode(config.connection)
@@ -115,16 +116,22 @@ module.exports = function (RED) {
       if (!this.connection.isConnected()) {
         //Try to connect
         try {
-          await this.connection.connect()
+          await this.connection.connect( this.silenceError )
+          this.silenceError = false
 
         } catch (err) {
           //Failed to connect, we can't work..
           this.status({ fill: 'red', shape: 'dot', text: `Error: Not connected, retrying...` })
-          this.error(`Error: Not connected to the target`, { error: `Not connected to the target` })
+          //Only log error ones to prevent console spam
+          if ( !this.silenceError ){
+             this.error(`Error: Not connected to the target, retrying in the background.`)
+          }
+
           this.subscriptionOK = false
           
           //Try again soon
           this.subcribeRetryTimer = setTimeout(() => subscribe(target), this.retryInterval)
+          this.silenceError = true
 
           return
         }

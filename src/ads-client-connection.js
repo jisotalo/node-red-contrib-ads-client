@@ -79,28 +79,30 @@ module.exports = function (RED) {
      * Connects to the target
      * @returns 
      */
-    this.connect = async () => {
+    this.connect = async (silence) => {
 
       if (this.connecting) {
         throw new Error('Already connecting to the target')
       }
 
       this.connecting = true
-      this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}...`)
+      if (!silence){
+         this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}...`)
+      }
 
 
       try {
         this.adsClient = new ads.Client(this.connectionSettings)
         const res = await this.adsClient.connect()
-
-        this.log(`Connected to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}!`)
-
+        
+        if(!silence){
+           this.log(`Connected to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}!`)
+        }
         return res
 
       } catch (err) {
-        const errInfo = this.formatError(err)
 
-        this.error(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} failed - ${errInfo.message}`, errInfo)
+        this.formatError(err)
 
         //Throwing the error so caller knows that no success..
         throw err
@@ -139,19 +141,14 @@ module.exports = function (RED) {
      * Helper that formats the fiven ads-client error to object that can be debugged in Node-RED
      * @param {*} err 
      */
-    this.formatError = (err) => {
-      const obj = {
-        adsClientError: this.stringifyError(err),
-        adsErrorInfo: null,
-        message: err.message
-      }
-
+    this.formatError = (err,msg) => {
       if (err.adsError) {
-        obj.adsErrorInfo = err.adsErrorInfo
-        obj.message = `${obj.message} - ADS error ${err.adsErrorInfo.adsErrorCode} (${err.adsErrorInfo.adsErrorStr})`
+        if (typeof msg === 'object' && msg !== null){
+           msg.adsErrorInfo = err.adsErrorInfo;
+        }
+        err.message = `${err.message} - ADS error ${err.adsErrorInfo.adsErrorCode} (${err.adsErrorInfo.adsErrorStr})`
       }
-
-      return obj
+      return err
     }
 
 
@@ -196,7 +193,7 @@ module.exports = function (RED) {
     //TODO: How this should be done? 
     //Now if connection fails at startup, it is retried only when some node needs the connection
     this.connect()
-      .catch(err => this.log(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup`))
+      .catch(err => this.error(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup`))
   }
 
   
