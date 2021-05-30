@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.1.1] - 30.05.2021
+### Changed
+  - Improved error handling (see [pull request #8](https://github.com/jisotalo/node-red-contrib-ads-client/pull/8))
+    - Thank you [Hopperpop](https://github.com/Hopperpop) for contribution!
+  - Updated README
+    - Example how to configure and read value
+
+
 ## [1.1.0] - 20.05.2021
 ### Added
   - New node `Invoke RPC Method` that implements ads-client library `invokeRpcMethod()`
