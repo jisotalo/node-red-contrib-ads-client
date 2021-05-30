@@ -15,23 +15,17 @@ module.exports = function (RED) {
 
       if (!this.connection) {
         this.status({ fill: 'red', shape: 'dot', text: `Error: No connection configured` })
-        this.error(`Error: No connection configured`, msg)
-
-        if (done) {
-          done(new Error(`Error: No connection configured`))
-        }
-        return
+        var err = new Error(`No connection configured`);
+        (done)? done(err):  this.error(err, msg);
+        return;
       }
 
       //We need to have string in msg.topic if variableName is empty
       if (this.variableName === '' && (!msg.topic || typeof (msg.topic) !== 'string')) {
         this.status({ fill: 'red', shape: 'dot', text: `Error: Input msg.topic not valid string` })
-        this.error(`Error: Input msg.topic is missing or it's not valid string`, msg)
-
-        if (done) {
-          done(new Error(`Error: Input msg.topic is missing or it's not valid string`))
-        }
-        return
+        var err = new Error(`Input msg.topic is missing or it's not valid string`);
+        (done)? done(err):  this.error(err, msg);
+        return;
       }
 
       if (!this.connection.isConnected()) {
@@ -41,13 +35,9 @@ module.exports = function (RED) {
           
         } catch (err) {
           //Failed to connect, we can't work..
-          this.status({ fill: 'red', shape: 'dot', text: `Error: Not connected` })
-          this.error(`Error: Not connected to the target`, msg)
-
-          if (done) {
-            done(new Error(`Error: Not connected to the target`))
-          }
-          return
+          this.status({ fill: 'red', shape: 'dot', text: `Error: Not connected` });
+          (done)? done(err):  this.error(err, msg);
+          return;
         }
       }
 
@@ -72,14 +62,12 @@ module.exports = function (RED) {
         }
 
       } catch (err) {
-        const errInfo = this.connection.formatError(err)
-        
-        this.status({ fill: 'red', shape: 'dot', text: `Error: Last read failed` })
-        this.error(`Error: Reading variable "${variableToRead}" failed: ${errInfo.message}`, errInfo)
 
-        if (done) {
-          done(errinfo)
-        }
+        this.status({ fill: 'red', shape: 'dot', text: `Error: Last read failed` })
+        this.connection.formatError(err,msg);
+        (done)? done(err):  this.error(err, msg);
+        return;
+
       }
 
     })
