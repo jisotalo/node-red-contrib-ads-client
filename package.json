@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-ads-client",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Beckhoff TwinCAT ADS client library for Node-RED (unofficial). Connects to Beckhoff TwinCAT automation systems using ADS protocol.",
   "keywords": [
     "node-red",
