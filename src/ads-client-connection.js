@@ -1,4 +1,7 @@
 const ads = require('ads-client')
+const EventEmitter = require('events');
+
+class ConnectionEventEmitter extends EventEmitter { }
 
 module.exports = function (RED) {
 
@@ -7,6 +10,7 @@ module.exports = function (RED) {
 
     this.adsClient = null
     this.connecting = false
+    this.eventEmitter = new ConnectionEventEmitter()
 
     //Properties
     this.name = config.name
@@ -93,8 +97,12 @@ module.exports = function (RED) {
 
       try {
         this.adsClient = new ads.Client(this.connectionSettings)
+
+        this.adsClient.on('connect', () => this.eventEmitter.emit('connected', true))
+        this.adsClient.on('disconnect', () => this.eventEmitter.emit('connected', false))
+
         const res = await this.adsClient.connect()
-        
+
         if(!silence){
            this.log(`Connected to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}!`)
         }
@@ -135,6 +143,9 @@ module.exports = function (RED) {
      */
     this.isConnecting = () => this.connecting
 
+
+    
+    this.getEventEmitter = () => this.eventEmitter
     
 
     /**
@@ -193,7 +204,7 @@ module.exports = function (RED) {
     //TODO: How this should be done? 
     //Now if connection fails at startup, it is retried only when some node needs the connection
     this.connect()
-      .catch(err => this.error(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup`))
+      .catch(err => this.error(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup: ${err}`))
   }
 
   

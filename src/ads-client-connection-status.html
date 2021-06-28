@@ -1,0 +1,192 @@
+<script type="text/javascript">
+  RED.nodes.registerType('ads-client-connection-status', {
+    paletteLabel: 'ADS - Connection Status',
+    category: 'TwinCAT ADS',
+    icon: 'font-awesome/fa-info',
+    align: 'right',
+    color: '#3FADB5',
+    outputs: 1,
+    outputLabels: 'Status',
+    defaults: { 
+      name: { value: '' },
+      connection: { value: null, type: "ads-client-connection" },
+    },
+    label: function () {
+      if (this.connection === null)
+        return `${(this.name || `ADS - Connection Status`)} (*Not configured*)`;
+
+        console.log()
+      if (this.name) {
+        return this.name
+      }
+
+      const connectionNode = RED.nodes.node(this.connection)
+
+      if (connectionNode && connectionNode.name)
+        return `ADS - Connection Status (${connectionNode.name})`;
+      else if (connectionNode)
+        return `ADS - Connection Status (${connectionNode.targetAmsNetId}:${connectionNode.targetAdsPort})`;
+      
+      return `ADS - Connection Status`;
+    },
+    oneditprepare: function () {
+    }
+  });
+</script>
+
+
+
+<!-- Properties -->
+<script type="text/html" data-template-name="ads-client-connection-status">
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name (optional)">
+  </div>
+
+  <div class="form-row">
+      <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
+      <input type="text" id="node-input-connection" placeholder="ADS Connection">
+  </div>
+</script>
+
+
+
+<!-- Help -->
+<script type="text/html" data-help-name="ads-client-connection-status">
+  <p>
+    Subscribes to given variable to receive notifications.
+  </p>
+
+
+<h3>Properties (settings)</h3>
+  <dl class="message-properties">
+    <dt>Name
+      <span class="property-type">string</span>
+    </dt>
+    <dd> Optional node name</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>ADS connection
+      <span class="property-type">ads-client-connection</span>
+    </dt>
+    <dd> ADS client connection (target system) to use</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Variable name
+      <span class="property-type">string</span>
+    </dt>
+    <dd> Variable name/path to read</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Subscription mode
+      <span class="property-type"></span>
+    </dt>
+    <dd> How to subscribe to the variable (see details)</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Cycle time [ms]
+      <span class="property-type">number</span>
+    </dt>
+    <dd> How often the PLC should check if value has changed (or how often to send, see details)</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Initial delay [ms]
+      <span class="property-type">string</span>
+    </dt>
+    <dd> How long to wait before sending the first notification</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Retry interval [ms]
+      <span class="property-type">number</span>
+    </dt>
+    <dd> If connecting or subscribing fails, how often to try again until success</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Control subscription with input
+      <span class="property-type">boolean</span>
+    </dt>
+    <dd> If checked, node subscription is controlled with input (see details)</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Resubscribe timeout [ms]
+      <span class="property-type">number</span>
+    </dt>
+    <dd> How long to wait for new notifications after connection loss.
+      If no data received in given time, node will try to subscribe again.
+    </dd>
+  </dl>
+
+
+<h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>topic
+      <span class="property-type">undefined | string</span>
+    </dt>
+    <dd> If given and no variable name set in properties, this topic is used as variable name.</code></dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>subscribe
+      <span class="property-type">undefined | boolean</span>
+    </dt>
+    <dd> If <code>Control subscription with input</code> is checked, this input is used to subscribe/unsubscribe (see details).</code></dd>
+  </dl>
+
+
+<h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">any</span></dt>
+    <dd>The value read</dd>
+    <dt>type <span class="property-type">object</span></dt>
+    <dd>Variable data type information</dd>
+    <dt>symbol <span class="property-type">object</span></dt>
+    <dd>Variable symbol information</dd>
+    <dt>timestamp <span class="property-type">object</span></dt>
+    <dd>Variable timestamp</dd>
+    <dt>... <span class="property-type">any</span></dt>
+    <dd>All input <code>msg</code> properties are forwarded</dd>
+  </dl>
+
+<h3>Details</h3>
+  <p>
+    If mode is <code>on-change</code>, the PLC sends a notification only when value has changed. The notification is sent in <code>cycle time</code> intervals at maximum.
+    So if cycle time is 200 ms and the value changes every 10 ms, a new value is still received every 200 ms only.
+  </p>
+  <p>
+    If mode is <code>cyclic</code>, the PLC sends a notification every <code>cycle time</code> interval (even if the value hasn't changed).
+    So if cycle time is 200 ms and the value changes every 10 seconds, a new value is still received every 200 ms.
+  </p>
+  <p>
+    <b>Note:</b> With default settings the node has no input as it's not needed.
+  </p>
+  <p>
+    If the variable name is not set in properties, the input <code>msg.topic</code> is used as variable name instead.
+  </p>
+  <p>
+    If the <code>Control subscription with input</code> is checked, the node doesn't subscribe automatically.
+    It will subscribe only when receiving input <code>msg.subscribe</code> that has truthy value (like <code>true</code>, <code>1</code>..).
+    The node can then be unsubscribed by giving a non-truthy value (like <code>false</code>, <code>0</code>..) to input <code>msg.subscribe</code>.
+  </p>
+  <p>
+    See <code>ads-client</code> readme for help. Valid variable name for TwinCAT 3 can be something like <code>GVL.VariableName</code>
+  </p>
+
+
+<h3>References</h3>
+  <ul>
+    <li><a href="https://github.com/jisotalo/ads-client#subscribing-to-plc-variables-device-notifications" target="_blank" style="text-decoration: underline">
+      ads-client subscribe() readme
+    </a></li>
+    <li><a href="https://jisotalo.github.io/ads-client/Client.html#subscribe" target="_blank" style="text-decoration: underline">
+      ads-client subscribe() documentation
+    </a></li>
+  </ul>
+</script>
