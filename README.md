@@ -20,6 +20,9 @@ Available nodes at the moment
 - Write Symbol
 - Subscribe
 - Invoke RPC method
+- Connection Status
+- Read Runtime State
+- Read System Manager State
 
 # Features
 Target is to have all same features as the [ads-client](https://github.com/jisotalo/ads-client) has.
