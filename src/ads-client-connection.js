@@ -9,7 +9,7 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config)
 
     this.adsClient = null
-    this.connecting = false
+    this.connecting = null
     this.retryTimer = null
     this.eventEmitter = new ConnectionEventEmitter()
     this.connected = false
@@ -104,21 +104,11 @@ module.exports = function (RED) {
     }
 
 
-
-
-    
     /**
-     * Connects to the target
+     * Connect to the target (internal)
      * @returns 
      */
-    this.connect = async (silence) => {
-
-      if (this.connecting) {
-        throw new Error('Already connecting to the target')
-      }
-
-      clearTimeout(this.retryTimer)
-      this.connecting = true
+    const _Connect = async(silence) => {
 
       if (!silence){
         this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}...`)
@@ -164,9 +154,38 @@ module.exports = function (RED) {
 
         //Throwing the error so caller knows that no success..
         throw err
+      } 
+
+    }
+
+
+    /**
+     * Connects to the target
+     * @returns 
+     */
+    this.connect = async (silence) => {
+
+      clearTimeout(this.retryTimer)
+
+      //If no one is trying to connect => make new connect call, else reuse previously started connect call
+      let firstConnectCall = false;
+      if (!this.connecting) {
+        this.connecting = _Connect(silence);
+        firstConnectCall = true;
+      }
+
+      try{
+        const res = await this.connecting;
+        return res;
+
+      } catch (err) {
+          throw err;
 
       } finally {
-        this.connecting = false
+        //First caller clears connecting function(=flag)
+        if (firstConnectCall){
+          this.connecting = null;
+        }
       }
     }
 
@@ -191,7 +210,7 @@ module.exports = function (RED) {
      * Returns true if connected, otherwise false
      * @returns 
      */
-    this.isConnecting = () => this.connecting
+    this.isConnecting = () => this.connecting === null ? false : true
 
 
     
@@ -253,7 +272,7 @@ module.exports = function (RED) {
     //Finally, try to connect immediately
     this.connect()
       .catch(err => {
-        this.error(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup: ${err}`)
+        this.warn(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup: ${err}`)
       })
   }
 
