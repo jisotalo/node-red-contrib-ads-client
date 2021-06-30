@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 30.06.2021
+### Added
+  - New node `Connection Status` that reports ADS connection status changes
+    - Automatically outputs latest connection status when changes detected
+    - Can also be read manually using input trigger
+    - Outputs true/false (ok/not ok) and connection info
+  - New node `Read Runtime State` that implements ads-client library `readPlcRuntimeState()`
+    - Possible to read PLC status (run, stop) from Node-RED
+  - New node `Read System Manager State` that implements ads-client library `readSystemManagerState()`
+    - Possible to read system manager status (run, config) from Node-RED
+  - Updated `ADS connection` node
+    - Automatically tries to connect to the target PLC in the background
+    - Before the connection was retried only when reading/writing/subscribing
+    - Now automatically connects when possible -> supports the new `Connection Status` node
+  - Updated `Subscribe` node
+    - Listens on connection state changes in a better way than before
+    
 
 ## [1.1.1] - 30.05.2021
 ### Changed

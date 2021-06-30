@@ -19,29 +19,21 @@ module.exports = function (RED) {
     this.subcribeRetryTimer = null
     this.resubscribeTimer = null
     this.silenceError = false
+    this.initialSubscribeDone = false
 
     //Getting the ads-client instance
     this.connection = RED.nodes.getNode(config.connection)
 
 
-
-    //Event listeners
-    const onConnect = () => onClientStateChange('connect')
-    const onDisconnect = () => onClientStateChange('disconnect')
-    const onReconnect = () => onClientStateChange('reconnect')
-
     /**
-     * Called when ads-client state changes
+     * Called when connected/disconnected
      * @param {*} state 
      */
-    const onClientStateChange = (state) => {
-      if (state === 'disconnect') {
-        this.subscriptionOK = false
-        this.status({ fill: 'red', shape: 'dot', text: `Error: Not connected` })
+    const onConnectedChange = (connected) => {
 
-      }
-      else if (state === 'reconnect') {
-
+      //Note: We will do this only if subscribed at least one
+      //If not yet subscribed, no need to do this as there is timer running.
+      if (connected && this.initialSubscribeDone) {
         //Reconnected to the target
         //If no new data received in a while -> resubscribe
         //ads-client library should resubscribe automatically so this is just a backup if stuff goes wrong
@@ -57,10 +49,13 @@ module.exports = function (RED) {
           }
         }, Math.max(this.resubscribeTimeout ? this.resubscribeTimeout : 2000, this.initialDelay * 2 + this.cycleTime * 2))
 
+      } else if (!connected) {
+        this.subscriptionOK = false
+        this.status({ fill: 'red', shape: 'dot', text: `Error: Not connected` })
+
       }
+
     }
-
-
 
 
 
@@ -116,7 +111,7 @@ module.exports = function (RED) {
       if (!this.connection.isConnected()) {
         //Try to connect
         try {
-          await this.connection.connect( this.silenceError )
+          await this.connection.connect(this.silenceError)
           this.silenceError = false
 
         } catch (err) {
@@ -152,16 +147,10 @@ module.exports = function (RED) {
             this.initialDelay
           )
 
-          this.connection.getClient().off('connect', onConnect)
-          this.connection.getClient().off('disconnect', onDisconnect)
-          this.connection.getClient().off('reconnect', onReconnect)
-          this.connection.getClient().on('connect', onConnect)
-          this.connection.getClient().on('disconnect', onDisconnect)
-          this.connection.getClient().on('reconnect', onReconnect)
-
           //Successful
           this.status({ fill: 'green', shape: 'dot', text: 'Subscribed' })
           this.subscriptionOK = true
+          this.initialSubscribeDone = true
 
         } catch (err) {
           const errInfo = this.connection.formatError(err)
@@ -290,6 +279,9 @@ module.exports = function (RED) {
     } else {
       this.status({ fill: 'yellow', shape: 'dot', text: 'Not subscribed (waiting for msg.topic)' })
     }
+
+    //Listening for connected state change events
+    this.connection.eventEmitter.on('connected', connected => onConnectedChange(connected))
   }
 
   RED.nodes.registerType('ads-client-subscribe', AdsClientSubscribe)

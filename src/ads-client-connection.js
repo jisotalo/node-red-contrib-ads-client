@@ -10,8 +10,11 @@ module.exports = function (RED) {
 
     this.adsClient = null
     this.connecting = false
+    this.retryTimer = null
     this.eventEmitter = new ConnectionEventEmitter()
-
+    this.connected = false
+    this.firstConnectedEventSent = false
+    
     //Properties
     this.name = config.name
 
@@ -78,6 +81,31 @@ module.exports = function (RED) {
 
 
 
+
+
+    /**
+     * This is called from ads-client when connect or disconnect
+     * events are thrown. The reason for this is that the ads-client might send
+     * multiple events even though the connected state hasn't changed (filtering the real changes here)
+     * @param {*} connected 
+     */
+    this.onConnectedStateChange = (connected) => {
+      if (this.connected != connected || !this.firstConnectedEventSent) {
+        //Changed
+        if (connected) {
+          this.eventEmitter.emit('connected', true)
+        } else {
+          this.eventEmitter.emit('connected', false)
+        }
+      }
+
+      this.connected = connected
+      this.firstConnectedEventSent = true
+    }
+
+
+
+
     
     /**
      * Connects to the target
@@ -89,17 +117,19 @@ module.exports = function (RED) {
         throw new Error('Already connecting to the target')
       }
 
+      clearTimeout(this.retryTimer)
       this.connecting = true
+
       if (!silence){
-         this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}...`)
+        this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}...`)
       }
 
 
       try {
         this.adsClient = new ads.Client(this.connectionSettings)
 
-        this.adsClient.on('connect', () => this.eventEmitter.emit('connected', true))
-        this.adsClient.on('disconnect', () => this.eventEmitter.emit('connected', false))
+        this.adsClient.on('connect', () => this.onConnectedStateChange(true))
+        this.adsClient.on('disconnect', () => this.onConnectedStateChange(false))
 
         const res = await this.adsClient.connect()
 
@@ -109,6 +139,26 @@ module.exports = function (RED) {
         return res
 
       } catch (err) {
+        //Try again every 2000 ms or so
+        const retryInterval = this.connectionSettings.reconnectInterval ? this.connectionSettings.reconnectInterval : ads.Client.defaultSettings().reconnectInterval
+
+        if (!silence) {
+          this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} failed, keeping trying..`)
+        }
+
+
+        this.onConnectedStateChange(false)
+
+        this.retryTimer = setTimeout(async () => {
+          try {
+            //Call again but with silent mode
+            await this.connect(true)
+            
+          } catch (err) {
+            //Nothing to do here as it will be called again
+          }
+        }, retryInterval)
+
 
         this.formatError(err)
 
@@ -200,11 +250,11 @@ module.exports = function (RED) {
 
 
 
-    //Finally, try to connect immediately´
-    //TODO: How this should be done? 
-    //Now if connection fails at startup, it is retried only when some node needs the connection
+    //Finally, try to connect immediately
     this.connect()
-      .catch(err => this.error(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup: ${err}`))
+      .catch(err => {
+        this.error(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup: ${err}`)
+      })
   }
 
   
