@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 07.07.2021
+### Added
+  - New setting for `ads-client-connection`: `Debugging level`
+    - Possible to set `ads-client` debugging level from Node-RED
+    - Easier to debug connection problems & library bugs
+### Changed
+  - Thank you [Hopperpop](https://github.com/Hopperpop) for contribution, awesome work!
+    - Better support for nodes that operate at the same time
+      - No more errors when all nodes try to connect to the PLC (`Already connecting to the target`)
+      - Other nodes will wait for the result of the connection that the first node is creating
+    - If first connection to the PLC fails at startup, warning is shown instead of error
+  - Old `ads-client-connection` is always disconnected (if possible) in handled manner when (re)connecting
+
 ## [1.2.0] - 30.06.2021
 ### Added
   - New node `Connection Status` that reports ADS connection status changes

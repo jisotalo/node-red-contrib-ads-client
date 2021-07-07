@@ -9,7 +9,7 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, config)
 
     this.adsClient = null
-    this.connecting = false
+    this.connecting = null
     this.retryTimer = null
     this.eventEmitter = new ConnectionEventEmitter()
     this.connected = false
@@ -79,6 +79,7 @@ module.exports = function (RED) {
     }
 
 
+    this.debuggingLevel = config.debuggingLevel
 
 
 
@@ -104,21 +105,11 @@ module.exports = function (RED) {
     }
 
 
-
-
-    
     /**
-     * Connects to the target
+     * Connect to the target (internal)
      * @returns 
      */
-    this.connect = async (silence) => {
-
-      if (this.connecting) {
-        throw new Error('Already connecting to the target')
-      }
-
-      clearTimeout(this.retryTimer)
-      this.connecting = true
+    const _connect = async(silence) => {
 
       if (!silence){
         this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}...`)
@@ -126,7 +117,23 @@ module.exports = function (RED) {
 
 
       try {
+        //First try to disconnect the previous session if there is one
+        if (this.adsClient) {
+          try {
+            await this.adsClient.disconnect()
+
+          } catch (err) {
+            //Failed to disconnect, however continue
+           }
+          finally {
+            delete this.adsClient
+          }
+        }
+        
         this.adsClient = new ads.Client(this.connectionSettings)
+        
+        if (!isNaN(parseInt(this.debuggingLevel)))
+          this.adsClient.setDebugging(parseInt(this.debuggingLevel))
 
         this.adsClient.on('connect', () => this.onConnectedStateChange(true))
         this.adsClient.on('disconnect', () => this.onConnectedStateChange(false))
@@ -164,9 +171,38 @@ module.exports = function (RED) {
 
         //Throwing the error so caller knows that no success..
         throw err
+      } 
+
+    }
+
+
+    /**
+     * Connects to the target
+     * @returns 
+     */
+    this.connect = async (silence) => {
+
+      clearTimeout(this.retryTimer)
+
+      //If no one is trying to connect => make new connect call, else reuse previously started connect call
+      let firstConnectCall = false;
+      if (!this.connecting) {
+        this.connecting = _connect(silence);
+        firstConnectCall = true;
+      }
+
+      try{
+        const res = await this.connecting;
+        return res;
+
+      } catch (err) {
+          throw err;
 
       } finally {
-        this.connecting = false
+        //First caller clears connecting function(=flag)
+        if (firstConnectCall){
+          this.connecting = null;
+        }
       }
     }
 
@@ -185,16 +221,20 @@ module.exports = function (RED) {
      * Returns true if connected, otherwise false
      * @returns 
      */
-    this.isConnected = () => this.adsClient === null ? false : this.adsClient.connection.connected
+    this.isConnected = () => this.adsClient === null ? false : this.adsClient.connection.connected && !this.isConnecting()
 
+    
     /**
      * Returns true if connected, otherwise false
      * @returns 
      */
-    this.isConnecting = () => this.connecting
+    this.isConnecting = () => this.connecting === null ? false : true
 
 
-    
+    /**
+     * Returns event emitter for ads-client-connection events
+     * @returns 
+     */
     this.getEventEmitter = () => this.eventEmitter
     
 
@@ -253,7 +293,7 @@ module.exports = function (RED) {
     //Finally, try to connect immediately
     this.connect()
       .catch(err => {
-        this.error(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup: ${err}`)
+        this.warn(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup: ${err}`)
       })
   }
 
