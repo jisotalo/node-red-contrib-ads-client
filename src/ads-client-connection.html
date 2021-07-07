@@ -28,7 +28,8 @@
       checkStateInterval: { value: null },
       connectionDownDelay: { value: null },
       allowHalfOpen: { value: false },
-      disableBigInt: { value: false }
+      disableBigInt: { value: false },
+      debuggingLevel: { value: 0 }
     },
     label: function () {
       if (this.name) {
@@ -96,6 +97,11 @@
     </div>
 
     <div id="ads-client-connection-options-tab" style="display:none">
+      <div class="form-row">
+        <label for="node-config-input-debuggingLevel">Debugging level</label>
+        <input type="text" id="node-config-input-debuggingLevel" placeholder="0"> 
+      </div>
+      
       <div class="form-row">
         <input type="checkbox" id="node-config-input-objectifyEnumerations" style="display: inline-block; width: auto; vertical-align: top">
         <label for="node-config-input-objectifyEnumerations" style="width: 70%"><span>objectifyEnumerations</span></label>
@@ -223,6 +229,11 @@
       <li>
         See <a href="https://jisotalo.github.io/ads-client/global.html#Settings" target="_blank" style="text-decoration: underline">
           ads-client settings documentation
+        </a>
+      </li>
+      <li>
+        <b>Debugging level</b> - ads-client debugging level. See <a href="https://github.com/jisotalo/ads-client#debugging" target="_blank" style="text-decoration: underline">
+          ads-client readme
         </a>
       </li>
     </ul>

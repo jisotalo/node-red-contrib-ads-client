@@ -79,6 +79,7 @@ module.exports = function (RED) {
     }
 
 
+    this.debuggingLevel = config.debuggingLevel
 
 
 
@@ -108,7 +109,7 @@ module.exports = function (RED) {
      * Connect to the target (internal)
      * @returns 
      */
-    const _Connect = async(silence) => {
+    const _connect = async(silence) => {
 
       if (!silence){
         this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}...`)
@@ -116,7 +117,23 @@ module.exports = function (RED) {
 
 
       try {
+        //First try to disconnect the previous session if there is one
+        if (this.adsClient) {
+          try {
+            await this.adsClient.disconnect()
+
+          } catch (err) {
+            //Failed to disconnect, however continue
+           }
+          finally {
+            delete this.adsClient
+          }
+        }
+        
         this.adsClient = new ads.Client(this.connectionSettings)
+        
+        if (!isNaN(parseInt(this.debuggingLevel)))
+          this.adsClient.setDebugging(parseInt(this.debuggingLevel))
 
         this.adsClient.on('connect', () => this.onConnectedStateChange(true))
         this.adsClient.on('disconnect', () => this.onConnectedStateChange(false))
@@ -170,7 +187,7 @@ module.exports = function (RED) {
       //If no one is trying to connect => make new connect call, else reuse previously started connect call
       let firstConnectCall = false;
       if (!this.connecting) {
-        this.connecting = _Connect(silence);
+        this.connecting = _connect(silence);
         firstConnectCall = true;
       }
 
@@ -204,8 +221,9 @@ module.exports = function (RED) {
      * Returns true if connected, otherwise false
      * @returns 
      */
-    this.isConnected = () => this.adsClient === null ? false : this.adsClient.connection.connected
+    this.isConnected = () => this.adsClient === null ? false : this.adsClient.connection.connected && !this.isConnecting()
 
+    
     /**
      * Returns true if connected, otherwise false
      * @returns 
@@ -213,7 +231,10 @@ module.exports = function (RED) {
     this.isConnecting = () => this.connecting === null ? false : true
 
 
-    
+    /**
+     * Returns event emitter for ads-client-connection events
+     * @returns 
+     */
     this.getEventEmitter = () => this.eventEmitter
     
 
