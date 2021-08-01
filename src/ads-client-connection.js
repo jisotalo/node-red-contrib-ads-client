@@ -275,8 +275,6 @@ module.exports = function (RED) {
       this.log(`Disconnecting from ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} and unsubscribing from all...`)
       
       if (this.adsClient === null) {
-        this.adsClient = null
-
         done()
         return
       }
