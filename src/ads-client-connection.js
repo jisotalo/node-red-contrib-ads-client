@@ -1,5 +1,5 @@
 const ads = require('ads-client')
-const EventEmitter = require('events');
+const EventEmitter = require('events')
 
 class ConnectionEventEmitter extends EventEmitter { }
 
@@ -129,7 +129,7 @@ module.exports = function (RED) {
             delete this.adsClient
           }
         }
-        
+
         this.adsClient = new ads.Client(this.connectionSettings)
         
         if (!isNaN(parseInt(this.debuggingLevel)))
@@ -146,29 +146,35 @@ module.exports = function (RED) {
         return res
 
       } catch (err) {
-        //Try again every 2000 ms or so
-        const retryInterval = this.connectionSettings.reconnectInterval ? this.connectionSettings.reconnectInterval : ads.Client.defaultSettings().reconnectInterval
+        //Try again every 2000 ms or so but only if client is not deleted
+        //If node-red node is deleted but connection has been running, this prevents trying again when we shouldn't
+        if (this.adsClient) {
+          const retryInterval = this.connectionSettings.reconnectInterval ? this.connectionSettings.reconnectInterval : ads.Client.defaultSettings().reconnectInterval
 
-        if (!silence) {
-          this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} failed, keeping trying..`)
+          if (!silence) {
+            this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} failed, keeping trying..`)
+          }
+
+
+          this.onConnectedStateChange(false)
+
+          clearTimeout(this.retryTimer)
+
+          this.retryTimer = setTimeout(async () => {
+            try {
+              //Call again but with silent mode
+              await this.connect(true)
+            
+            } catch (err) {
+              //Nothing to do here as it will be called again
+            }
+          }, retryInterval)
+
+        } else {
+          this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} failed and node probably deleted, doing nothing..`)
         }
 
-
-        this.onConnectedStateChange(false)
-
-        this.retryTimer = setTimeout(async () => {
-          try {
-            //Call again but with silent mode
-            await this.connect(true)
-            
-          } catch (err) {
-            //Nothing to do here as it will be called again
-          }
-        }, retryInterval)
-
-
         this.formatError(err)
-
         //Throwing the error so caller knows that no success..
         throw err
       } 
@@ -185,23 +191,23 @@ module.exports = function (RED) {
       clearTimeout(this.retryTimer)
 
       //If no one is trying to connect => make new connect call, else reuse previously started connect call
-      let firstConnectCall = false;
+      let firstConnectCall = false
       if (!this.connecting) {
-        this.connecting = _connect(silence);
-        firstConnectCall = true;
+        this.connecting = _connect(silence)
+        firstConnectCall = true
       }
 
       try{
-        const res = await this.connecting;
-        return res;
+        const res = await this.connecting
+        return res
 
       } catch (err) {
-          throw err;
+          throw err
 
       } finally {
         //First caller clears connecting function(=flag)
-        if (firstConnectCall){
-          this.connecting = null;
+        if (firstConnectCall) {
+          this.connecting = null
         }
       }
     }
@@ -245,7 +251,7 @@ module.exports = function (RED) {
     this.formatError = (err,msg) => {
       if (err.adsError) {
         if (typeof msg === 'object' && msg !== null){
-           msg.adsErrorInfo = err.adsErrorInfo;
+           msg.adsErrorInfo = err.adsErrorInfo
         }
         err.message = `${err.message} - ADS error ${err.adsErrorInfo.adsErrorCode} (${err.adsErrorInfo.adsErrorStr})`
       }
@@ -264,19 +270,20 @@ module.exports = function (RED) {
 
     //When node is closed, we should disconnect
     this.on('close', async (removed, done) => {
+      clearTimeout(this.retryTimer)
 
       this.log(`Disconnecting from ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} and unsubscribing from all...`)
       
-      if (this.adsClient === null || !this.adsClient.connection.connected) {
-        this.adsClient = null
-
+      if (this.adsClient === null) {
         done()
         return
       }
         
 
       try {
-        await this.adsClient.disconnect()
+        //Note: If not connected, call disconnect(true). It means that we haven't successfully connected so it's better to just destroy socket
+        await this.adsClient.disconnect(!this.adsClient.connection.connected)
+
         this.log(`Disconnected from ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}`)
 
       } catch (err) {
