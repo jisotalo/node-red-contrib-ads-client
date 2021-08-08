@@ -60,7 +60,7 @@ module.exports = function (RED) {
     })
 
     //Listening for connected state change events
-    if (this.connection){ //Check if node is enabled
+    if (this.connection) { //Check if node is enabled
       this.connection.eventEmitter.on('connected', connected => onConnectedChange(connected))
     }
   }
