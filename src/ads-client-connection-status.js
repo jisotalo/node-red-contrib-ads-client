@@ -60,7 +60,9 @@ module.exports = function (RED) {
     })
 
     //Listening for connected state change events
-    this.connection.eventEmitter.on('connected', connected => onConnectedChange(connected))
+    if (this.connection){ //Check if node is enabled
+      this.connection.eventEmitter.on('connected', connected => onConnectedChange(connected))
+    }
   }
 
   RED.nodes.registerType('ads-client-connection-status', AdsClientConnectionStatus)
