@@ -43,6 +43,7 @@
       "ads-client-read-runtime-state": "src/ads-client-read-runtime-state.js",
       "ads-client-read-system-manager-state": "src/ads-client-read-system-manager-state.js",
       "ads-client-connection-status": "src/ads-client-connection-status.js",
+      "ads-client-get-symbol-info": "src/ads-client-get-symbol-info.js",
       "ads-client-read-raw": "src/ads-client-read-raw.js",
       "ads-client-write-raw": "src/ads-client-write-raw.js"
     }
