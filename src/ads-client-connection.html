@@ -29,49 +29,40 @@
       connectionDownDelay: { value: null },
       allowHalfOpen: { value: false },
       disableBigInt: { value: false },
-      debuggingLevel: { value: 0 }
+      debuggingLevel: { value: 0 },
+      bareClient: { value: false }
     },
     label: function () {
       if (this.name) {
-        return this.name
+        return this.name;
       }
       
-      return `${this.targetAmsNetId}:${this.targetAdsPort}`
+      return `${this.targetAmsNetId}:${this.targetAdsPort}`;
     },
     
 
     oneditprepare: function () {
       //Stuff that is done when properties panel is opened
-
       let tabs = RED.tabs.create({
         id: "node-input-ads-client-connection-tabs",
         onchange: function (tab) {
-          $("#node-input-ads-client-connection-tabs-content").children().hide()
-          $("#" + tab.id).show()
+          $("#node-input-ads-client-connection-tabs-content").children().hide();
+          $("#" + tab.id).show();
         }
-      })
+      });
 
       tabs.addTab({
         id: "ads-client-connection-settings-tab",
         label: "Target settings"
-      })
+      });
 
       tabs.addTab({
         id: "ads-client-connection-options-tab",
         label: "Optional settings"
-      })
+      });
     }
   })
 </script>
-
-
-
-
-
-
-
-
-
 
 <script type="text/html" data-template-name="ads-client-connection">
   <div class="form-row">
@@ -196,15 +187,15 @@
         <input type="checkbox" id="node-config-input-disableBigInt" style="display: inline-block; width: auto; vertical-align: top">
         <label for="node-config-input-disableBigInt" style="width: 70%"><span>disableBigInt</span></label>
       </div>
+
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-bareClient" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-bareClient" style="width: 70%"><span>bareClient</span></label>
+      </div>
     </div>
   </div>
 </div>
 </script>
-
-
-
-
-
 
 <script type="text/html" data-help-name="ads-client-connection">
 <p>
@@ -227,8 +218,8 @@
     <h3>Optional settings</h3>
     <ul>
       <li>
-        See <a href="https://jisotalo.github.io/ads-client/global.html#Settings" target="_blank" style="text-decoration: underline">
-          ads-client settings documentation
+        See <a href="https://github.com/jisotalo/ads-client/#available-settings" target="_blank" style="text-decoration: underline">
+          ads-client settings readme
         </a>
       </li>
       <li>
@@ -240,6 +231,9 @@
 </p>
 <h3>References</h3>
     <ul>
+        <li><a href="https://github.com/jisotalo/ads-client/#creating-a-new-client-instance" target="_blank" style="text-decoration: underline">
+          ads-client readme
+        </a></li>
         <li><a href="https://jisotalo.github.io/ads-client/" target="_blank" style="text-decoration: underline">
           ads-client documentation
         </a></li>

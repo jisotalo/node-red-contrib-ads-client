@@ -28,10 +28,6 @@
     "type": "git",
     "url": "https://github.com/jisotalo/node-red-contrib-ads-client.git"
   },
-  "dependencies": {
-    "ads-client": "^1.11.3"
-  },
-  "devDependencies": {},
   "files": [
     "src/",
     "CHANGELOG.md",
@@ -46,7 +42,12 @@
       "ads-client-invoke-rpc-method": "src/ads-client-invoke-rpc-method.js",
       "ads-client-read-runtime-state": "src/ads-client-read-runtime-state.js",
       "ads-client-read-system-manager-state": "src/ads-client-read-system-manager-state.js",
-      "ads-client-connection-status": "src/ads-client-connection-status.js"
+      "ads-client-connection-status": "src/ads-client-connection-status.js",
+      "ads-client-read-raw": "src/ads-client-read-raw.js",
+      "ads-client-write-raw": "src/ads-client-write-raw.js"
     }
+  },
+  "dependencies": {
+    "ads-client": "^1.14.1"
   }
 }

@@ -1,0 +1,152 @@
+<script type="text/javascript">
+  RED.nodes.registerType('ads-client-write-raw', {
+    paletteLabel: 'ADS - Write Raw',
+    category: 'TwinCAT ADS',
+    icon: 'font-awesome/fa-angle-double-right',
+    color: '#3FADB5',
+    inputs: 1,
+    inputLabels: function() {
+      return "Value"
+    },
+    outputs: 0,
+    outputLabels: 'Data',
+    defaults: { 
+      name: { value: '' },
+      connection: { value: null, type: "ads-client-connection" },
+      indexGroup: { value: null, required: false, validate: (v) => (v === '' || !isNaN(parseInt(v))) },
+      indexOffset: { value: null, required: false, validate: (v) => (v === '' || !isNaN(parseInt(v))) },
+      targetAdsPort: { value: null, required: false, validate: (v) => (v === '' || !isNaN(parseInt(v))) }
+    },
+    label: function () {
+      if(this.connection === null)
+        return  `${(this.name || `ADS - Write Raw`)} (*Not configured*)`;
+ 
+      if (this.name) {
+        return this.name;
+      }
+
+      //return `ADS - Write Raw (${this.indexGroup}:${this.indexOffset})`;
+      return `ADS - Write Raw`;
+    },
+    oneditprepare: function () {
+      //Stuff that is done when properties panel is opened
+    }
+  })
+</script>
+
+<!-- Properties -->
+<script type="text/html" data-template-name="ads-client-write-raw">
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name (optional)">
+  </div>
+
+  <div class="form-row">
+      <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
+      <input type="text" id="node-input-connection" placeholder="ADS Connection">
+  </div>
+
+  <div class="form-row">
+      <label for="node-input-indexGroup"><i class="fa fa-tag"></i> Index group</label>
+      <input type="text" id="node-input-indexGroup" placeholder="Index group">
+  </div>
+  
+  <div class="form-row">
+      <label for="node-input-indexOffset"><i class="fa fa-tag"></i> Index offset</label>
+      <input type="text" id="node-input-indexOffset" placeholder="Index offset">
+  </div>
+
+  <div class="form-row">
+      <label for="node-input-targetAdsPort"><i class="fa fa-tag"></i> Target ADS port (optional)</label>
+      <input type="text" id="node-input-targetAdsPort" placeholder="(default)">
+  </div>
+  <div class="form-tips"><b>Tip:</b> You can provide the parameters in <code>msg.topic</code> instead (see help).</div>
+  <div class="form-row">
+    <!-- Some margin after tip -->
+  </div>
+</script>
+
+<!-- Help -->
+<script type="text/html" data-help-name="ads-client-write-raw">
+<p>
+  Writes (raw byte) buffer data to PLC by given index group and index offset.
+</p>
+<p>
+  All required parameters can be read for example with getSymbolInfo() method, see also readRawBySymbol()
+</p>
+<p>
+  <b>NOTE:</b> The size of the payload is not checked, please make sure size matches the PLC data.
+</p>
+
+<h3>Properties (settings)</h3>
+  <dl class="message-properties">
+    <dt>Name
+      <span class="property-type">string</span>
+    </dt>
+    <dd> Optional node name</dd>
+  </dl>
+  
+  <dl class="message-properties">
+    <dt>ADS connection
+      <span class="property-type">ads-client-connection</span>
+    </dt>
+    <dd> ADS client connection (target system) to use</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Index group 
+      <span class="property-type">number</span>
+    </dt>
+    <dd> Index group of the write target</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Index offset
+      <span class="property-type">number</span>
+    </dt>
+    <dd> Index offset of the write target</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Target ADS port
+      <span class="property-type">number</span>
+    </dt>
+    <dd> Optional setting for target ADS port to use. Default is the same as in used ADS connection.</dd>
+  </dl>
+
+<h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>topic
+      <span class="property-type">undefined | json</span>
+    </dt>
+    <dd> If provided, the settings are overrided with provided values (only the ones found in json object)</dd>
+    <dd> Example <code>msg.topic</code> json:
+      <code>
+      {
+        "indexGroup": 123,
+        "indexOffset": 456,
+        "targetAdsPort": 851
+      }
+    </code></dd>
+  </dl>
+
+<h3>Details</h3>
+  <p>
+    You can override just the parameters you want using the <code>msg.topic</code> input. For example to override just the indexOffset, set topic as:
+    <code>{
+      "indexOffset": 456
+    }
+    </code>
+  </p>
+
+
+<h3>References</h3>
+  <ul>
+    <li><a href="https://github.com/jisotalo/ads-client/#writing-a-single-raw-value" target="_blank" style="text-decoration: underline">
+      ads-client writeRaw() readme
+    </a></li>
+    <li><a href="https://jisotalo.github.io/ads-client/Client.html#writeRaw" target="_blank" style="text-decoration: underline">
+      ads-client writeRaw() documentation
+    </a></li>
+  </ul>
+</script>
