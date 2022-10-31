@@ -13,7 +13,7 @@ TwinCAT ADS client for Node-RED (unofficial). Basically a Node-RED wrapper on ba
 
 The `ads-client` library used under the hood is battle-tested and reliable.
 
-Not all features are yet in this node-red version but work is in progress.
+Not all features are yet in this Node-RED port version work is in progress.
 
 
 # Features
@@ -113,7 +113,7 @@ Now pressing the button in inject node will command the Read Symbol node to read
 
 # License
 
-Licensed under [MIT License](http://www.opensource.org/licenses/MIT) so commercial use is possible. Please respect the licens - see e, linking to this page is also much appreciated.
+Licensed under [MIT License](http://www.opensource.org/licenses/MIT) so commercial use is possible. Please respect the license, linking to this page is also much appreciated.
 
 Copyright (c) Jussi Isotalo <<j.isotalo91@gmail.com>>
 
