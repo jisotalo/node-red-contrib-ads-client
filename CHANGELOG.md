@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 31.10.2022
+### Added
+  - New new nodes
+    - Read Raw
+    - Write Raw
+    - Convert To Raw
+    - Convert From Raw
+    - Get Symbol Info
+  - Updated README
+  - Updated ADS connection to have new client setting `bareclient`
+
 ## [1.3.2] - 08.08.2021
 ### Changed
   - Minor fix to prevent problems if connection is not enabled (see [pull request #16(https://github.com/jisotalo/node-red-contrib-ads-client/pull/16))
