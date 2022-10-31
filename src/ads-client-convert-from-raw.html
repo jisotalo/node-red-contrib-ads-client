@@ -1,0 +1,137 @@
+<script type="text/javascript">
+  RED.nodes.registerType('ads-client-convert-from-raw', {
+    paletteLabel: 'ADS - Convert From Raw',
+    category: 'TwinCAT ADS',
+    icon: 'font-awesome/fa-exchange',
+    color: '#3FADB5',
+    inputs: 1,
+    inputLabels: function () {
+      return this.dataTypeName === '' ? "Value (topic as data type)" : "Value"
+    },
+    outputs: 1,
+    outputLabels: "Data",
+    defaults: { 
+      name: { value: '' },
+      connection: { value: null, type: "ads-client-connection" },
+      dataTypeName: { value: "", required: false }
+    },
+    label: function () {
+      if (this.connection === null)
+        return `${(this.name || `ADS - Convert From Raw`)} (*Not configured*)`;
+
+      if (this.name) {
+        return this.name;
+      }
+
+      return `ADS - Convert From Raw (${(this.dataTypeName === '' ? `msg.topic` : `${this.dataTypeName}`)})`;
+    },
+    oneditprepare: function () {
+      //Stuff that is done when properties panel is opened
+    }
+  })
+</script>
+
+
+
+<!-- Properties -->
+<script type="text/html" data-template-name="ads-client-convert-from-raw">
+  <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name (optional)">
+  </div>
+
+  <div class="form-row">
+      <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
+      <input type="text" id="node-input-connection" placeholder="ADS Connection">
+  </div>
+
+  <div class="form-row">
+      <label for="node-input-dataTypeName"><i class="fa fa-tag"></i> Data type</label>
+      <input type="text" id="node-input-dataTypeName" placeholder="Data type">
+  </div>
+  <div class="form-tips"><b>Tip:</b> Leave data type empty to use <code>msg.topic</code> input instead.</div>
+  
+  <div class="form-row">
+    <!-- Some margin after tip -->
+  </div>
+</script>
+
+
+
+
+<!-- Help -->
+<script type="text/html" data-help-name="ads-client-convert-from-raw">
+<p>
+  Converts given raw data (byte Buffer) to Javascript object by given data type (like REAL, ST_Struct).
+</p>
+<p>
+  The input <code>msg.payload</code> is the raw Buffer value to be converted. The buffer length needs to match PLC data type size.
+</p>
+<p>
+  If input <code>msg.topic</code> is given, the topic is used as data type if no name is given in properties.
+</p>
+
+
+<h3>Properties (settings)</h3>
+  <dl class="message-properties">
+    <dt>Name
+      <span class="property-type">string</span>
+    </dt>
+    <dd> Optional node name</dd>
+  </dl>
+  
+  <dl class="message-properties">
+    <dt>ADS connection
+      <span class="property-type">ads-client-connection</span>
+    </dt>
+    <dd> ADS client connection (target system) to use</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>Data type
+      <span class="property-type">string</span>
+    </dt>
+    <dd> Data type in the PLC - Example: <code>ST_SomeStruct</code>, <code>REAL</code>,..</dd>
+  </dl>
+
+
+<h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>payload
+      <span class="property-type">Buffer</span>
+    </dt>
+    <dd> The Buffer data to convert</dd>
+  </dl>
+  <dl class="message-properties">
+    <dt>topic
+      <span class="property-type">undefined | string</span>
+    </dt>
+    <dd> If given and no data type set in properties, this topic is used as data type.</code></dd>
+  </dl>
+
+<h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">any</span></dt>
+    <dd>The value as corresponding Javascript object</dd>
+    <dt>... <span class="property-type">any</span></dt>
+    <dd>All input <code>msg</code> properties are forwarded</dd>
+  </dl>
+
+<h3>Details</h3>
+  <p>
+  The input <code>msg.payload</code> should be a Buffer data that matches the size of the PLC variable type.
+  </p>
+  <p>
+  If the data type is not set in properties, the input <code>msg.topic</code> is used as name instead.
+  </p>
+
+<h3>References</h3>
+  <ul>
+    <li><a href="https://github.com/jisotalo/ads-client#converting-a-raw-value-to-javascript-object" target="_blank" style="text-decoration: underline">
+      ads-client convertFromRaw() readme
+    </a></li>
+    <li><a href="https://jisotalo.github.io/ads-client/Client.html#convertFromRaw" target="_blank" style="text-decoration: underline">
+      ads-client convertFromRaw() documentation
+    </a></li>
+  </ul>
+</script>
