@@ -1,0 +1,57 @@
+module.exports = function (RED) {
+  function AdsClientGetSymbols(config) {
+    RED.nodes.createNode(this, config);
+
+    //Properties
+    this.name = config.name;
+
+    //Getting the ads-client instance
+    this.connection = RED.nodes.getNode(config.connection);
+
+    //When input is toggled, try to read data
+    this.on("input", async (msg, send, done) => {
+      if (!this.connection) {
+        this.status({ fill: "red", shape: "dot", text: `Error: No connection configured` });
+        var err = new Error(`No connection configured`);
+        done ? done(err) : this.error(err, msg);
+        return;
+      }
+
+      if (!this.connection.isConnected()) {
+        //Try to connect
+        try {
+          await this.connection.connect();
+        } catch (err) {
+          //Failed to connect, we can't work..
+          this.status({ fill: "red", shape: "dot", text: `Error: Not connected` });
+          done ? done(err) : this.error(err, msg);
+          return;
+        }
+      }
+
+      //Finally, getting the symbols
+      try {
+        const res = await this.connection.getClient().getSymbols();
+
+        //We are here -> success
+        this.status({ fill: "green", shape: "dot", text: "Last call successful" });
+
+        send({
+          ...msg,
+          payload: res,
+        });
+
+        if (done) {
+          done();
+        }
+      } catch (err) {
+        this.status({ fill: "red", shape: "dot", text: `Error: Last read failed` });
+        this.connection.formatError(err, msg);
+        done ? done(err) : this.error(err, msg);
+        return;
+      }
+    });
+  }
+
+  RED.nodes.registerType("ads-client-get-symbols", AdsClientGetSymbols);
+};

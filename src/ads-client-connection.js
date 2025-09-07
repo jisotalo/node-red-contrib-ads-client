@@ -1,10 +1,9 @@
-const ads = require('ads-client');
-const EventEmitter = require('events');
+const ads = require("ads-client");
+const EventEmitter = require("events");
 
-class ConnectionEventEmitter extends EventEmitter { }
+class ConnectionEventEmitter extends EventEmitter {}
 
 module.exports = function (RED) {
-
   function AdsClientConnection(config) {
     RED.nodes.createNode(this, config);
 
@@ -14,7 +13,7 @@ module.exports = function (RED) {
     this.eventEmitter = new ConnectionEventEmitter();
     this.connected = false;
     this.firstConnectedEventSent = false;
-    
+
     //Properties
     this.name = config.name;
 
@@ -28,54 +27,53 @@ module.exports = function (RED) {
       convertDatesToJavascript: config.convertDatesToJavascript,
       readAndCacheSymbols: config.readAndCacheSymbols,
       readAndCacheDataTypes: config.readAndCacheDataTypes,
-      disableSymbolVersionMonitoring: config.disableSymbolVersionMonitoring,
+      monitorPlcSymbolVersion: config.monitorPlcSymbolVersion,
       hideConsoleWarnings: config.hideConsoleWarnings,
       autoReconnect: config.autoReconnect,
       allowHalfOpen: config.allowHalfOpen,
-      disableBigInt: config.disableBigInt,
-      bareClient: config.bareClient
-    }
+      rawClient: config.rawClient,
+    };
 
     //Some optional "text" settings, only add if modified
     //If not added, ads-client uses default values
     //However with boolean optional settings it's easier to just have same defaults here
-    if (config.routerTcpPort != null && config.routerTcpPort !== '') {
+    if (config.routerTcpPort != null && config.routerTcpPort !== "") {
       this.connectionSettings.routerTcpPort = parseInt(config.routerTcpPort);
     }
 
-    if (config.routerAddress != null && config.routerAddress !== '') {
+    if (config.routerAddress != null && config.routerAddress !== "") {
       this.connectionSettings.routerAddress = config.routerAddress;
     }
 
-    if (config.localAddress != null && config.localAddress !== '') {
+    if (config.localAddress != null && config.localAddress !== "") {
       this.connectionSettings.localAddress = config.localAddress;
     }
 
-    if (config.localTcpPort != null && config.localTcpPort !== '') {
+    if (config.localTcpPort != null && config.localTcpPort !== "") {
       this.connectionSettings.localTcpPort = parseInt(config.localTcpPort);
     }
 
-    if (config.localAmsNetId != null && config.localAmsNetId !== '') {
+    if (config.localAmsNetId != null && config.localAmsNetId !== "") {
       this.connectionSettings.localAmsNetId = config.localAmsNetId;
     }
 
-    if (config.localAdsPort != null && config.localAdsPort !== '') {
+    if (config.localAdsPort != null && config.localAdsPort !== "") {
       this.connectionSettings.localAdsPort = parseInt(config.localAdsPort);
     }
 
-    if (config.timeoutDelay != null && config.timeoutDelay !== '') {
+    if (config.timeoutDelay != null && config.timeoutDelay !== "") {
       this.connectionSettings.timeoutDelay = parseInt(config.timeoutDelay);
     }
 
-    if (config.reconnectInterval != null && config.reconnectInterval !== '') {
+    if (config.reconnectInterval != null && config.reconnectInterval !== "") {
       this.connectionSettings.reconnectInterval = parseInt(config.reconnectInterval);
     }
 
-    if (config.checkStateInterval != null && config.checkStateInterval !== '') {
-      this.connectionSettings.checkStateInterval = parseInt(config.checkStateInterval);
+    if (config.connectionCheckInterval != null && config.connectionCheckInterval !== "") {
+      this.connectionSettings.connectionCheckInterval = parseInt(config.connectionCheckInterval);
     }
 
-    if (config.connectionDownDelay != null && config.connectionDownDelay !== '') {
+    if (config.connectionDownDelay != null && config.connectionDownDelay !== "") {
       this.connectionSettings.connectionDownDelay = parseInt(config.connectionDownDelay);
     }
 
@@ -85,29 +83,28 @@ module.exports = function (RED) {
      * This is called from ads-client when connect or disconnect
      * events are thrown. The reason for this is that the ads-client might send
      * multiple events even though the connected state hasn't changed (filtering the real changes here)
-     * @param {*} connected 
+     * @param {*} connected
      */
     this.onConnectedStateChange = (connected) => {
       if (this.connected != connected || !this.firstConnectedEventSent) {
         //Changed
         if (connected) {
-          this.eventEmitter.emit('connected', true);
+          this.eventEmitter.emit("connected", true);
         } else {
-          this.eventEmitter.emit('connected', false);
+          this.eventEmitter.emit("connected", false);
         }
       }
 
       this.connected = connected;
       this.firstConnectedEventSent = true;
-    }
+    };
 
     /**
      * Connect to the target (internal)
-     * @returns 
+     * @returns
      */
-    const _connect = async(silence) => {
-
-      if (!silence){
+    const _connect = async (silence) => {
+      if (!silence) {
         this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}...`);
       }
 
@@ -116,30 +113,26 @@ module.exports = function (RED) {
         if (this.adsClient) {
           try {
             await this.adsClient.disconnect();
-
           } catch (err) {
             //Failed to disconnect, however continue
-           }
-          finally {
+          } finally {
             delete this.adsClient;
           }
         }
 
         this.adsClient = new ads.Client(this.connectionSettings);
-        
-        if (!isNaN(parseInt(this.debuggingLevel)))
-          this.adsClient.setDebugging(parseInt(this.debuggingLevel));
 
-        this.adsClient.on('connect', () => this.onConnectedStateChange(true));
-        this.adsClient.on('disconnect', () => this.onConnectedStateChange(false));
+        if (!isNaN(parseInt(this.debuggingLevel))) this.adsClient.setDebugLevel(parseInt(this.debuggingLevel));
+
+        this.adsClient.on("connect", () => this.onConnectedStateChange(true));
+        this.adsClient.on("disconnect", () => this.onConnectedStateChange(false));
 
         const res = await this.adsClient.connect();
 
-        if(!silence){
+        if (!silence) {
           this.log(`Connected to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}!`);
         }
         return res;
-
       } catch (err) {
         //Try again every 2000 ms or so but only if client is not deleted
         //If node-red node is deleted but connection has been running, this prevents trying again when we shouldn't
@@ -157,12 +150,10 @@ module.exports = function (RED) {
             try {
               //Call again but with silent mode
               await this.connect(true);
-            
             } catch (err) {
               //Nothing to do here as it will be called again
             }
           }, retryInterval);
-
         } else {
           this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} failed and node probably deleted, doing nothing..`);
         }
@@ -170,13 +161,12 @@ module.exports = function (RED) {
         this.formatError(err);
         //Throwing the error so caller knows that no success..
         throw err;
-      } 
-
-    }
+      }
+    };
 
     /**
      * Connects to the target
-     * @returns 
+     * @returns
      */
     this.connect = async (silence) => {
       clearTimeout(this.retryTimer);
@@ -189,97 +179,92 @@ module.exports = function (RED) {
         firstConnectCall = true;
       }
 
-      try{
+      try {
         const res = await this.connecting;
         return res;
-
       } catch (err) {
         throw err;
-
       } finally {
         //First caller clears connecting function(=flag)
         if (firstConnectCall) {
           this.connecting = null;
         }
       }
-    }
+    };
 
     /**
      * Returns the active client instance
-     * @returns 
+     * @returns
      */
     this.getClient = () => this.adsClient;
 
     /**
      * Returns true if connected, otherwise false
-     * @returns 
+     * @returns
      */
-    this.isConnected = () => this.adsClient === null ? false : this.adsClient.connection.connected && !this.isConnecting();
-    
+    this.isConnected = () => (this.adsClient === null ? false : this.adsClient.connection.connected && !this.isConnecting());
+
     /**
      * Returns true if connected, otherwise false
-     * @returns 
+     * @returns
      */
-    this.isConnecting = () => this.connecting === null ? false : true;
+    this.isConnecting = () => (this.connecting === null ? false : true);
 
     /**
      * Returns event emitter for ads-client-connection events
-     * @returns 
+     * @returns
      */
     this.getEventEmitter = () => this.eventEmitter;
 
     /**
      * Helper that formats the given ads-client error to object that can be debugged in Node-RED
-     * @param {*} err 
+     * @param {*} err
      */
-    this.formatError = (err,msg) => {
+    this.formatError = (err, msg) => {
       if (err.adsError) {
-        if (typeof msg === 'object' && msg !== null){
-          msg.adsErrorInfo = err.adsErrorInfo;
+        if (typeof msg === "object" && msg !== null) {
+          msg.adsError = err.adsError;
         }
-        err.message = `${err.message} - ADS error ${err.adsErrorInfo.adsErrorCode} (${err.adsErrorInfo.adsErrorStr})`;
+        err.message = `${err.message} - ADS error ${err.adsError.errorCode} (${err.adsError.errorStr})`;
       }
       return err;
-    }
+    };
 
     /**
      * Stringifies the error object better
-     * @param {*} err 
-     * @returns 
+     * @param {*} err
+     * @returns
      */
     this.stringifyError = (err) => JSON.stringify(err, Object.getOwnPropertyNames(err));
 
     //When node is closed, we should disconnect
-    this.on('close', async (removed, done) => {
+    this.on("close", async (removed, done) => {
       clearTimeout(this.retryTimer);
 
       this.log(`Disconnecting from ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} and unsubscribing from all...`);
-      
+
       if (this.adsClient === null) {
         done();
         return;
-      }       
+      }
 
       try {
         //Note: If not connected, call disconnect(true). It means that we haven't successfully connected so it's better to just destroy socket
         await this.adsClient.disconnect(!this.adsClient.connection.connected);
         this.log(`Disconnected from ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort}`);
-
       } catch (err) {
         this.warn(`Disconnecting from ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} caused an error but client deleted anyways: ${err}`);
-
       } finally {
         this.adsClient = null;
         done();
       }
-    })
+    });
 
     //Finally, try to connect immediately
-    this.connect()
-      .catch(err => {
-        this.warn(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup: ${err}`);
-      })
+    this.connect().catch((err) => {
+      this.warn(`Failed to connect ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} at startup: ${err}`);
+    });
   }
-  
-  RED.nodes.registerType('ads-client-connection', AdsClientConnection);
-}
+
+  RED.nodes.registerType("ads-client-connection", AdsClientConnection);
+};
