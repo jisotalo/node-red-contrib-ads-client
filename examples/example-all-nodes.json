@@ -1,0 +1,914 @@
+[
+    {
+        "id": "8fec3f7b6bde6530",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d216b0c73604c504",
+        "type": "ads-client-connection-status",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "showInput": false,
+        "inputs": 0,
+        "x": 720,
+        "y": 120,
+        "wires": [
+            [
+                "f6f2e8fb92eb10bc"
+            ]
+        ]
+    },
+    {
+        "id": "f6f2e8fb92eb10bc",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Connection state changed",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "\"Connection state changed - connected: \" & payload",
+        "targetType": "jsonata",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1370,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "8a35a89be6ab86c8",
+        "type": "ads-client-read-value",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "variableName": "GVL_Read.ComplexTypes.STRUCT_",
+        "x": 790,
+        "y": 200,
+        "wires": [
+            [
+                "7523e73639da7118"
+            ]
+        ]
+    },
+    {
+        "id": "a7528c08377ae911",
+        "type": "inject",
+        "z": "8fec3f7b6bde6530",
+        "name": "Read value",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 430,
+        "y": 200,
+        "wires": [
+            [
+                "8a35a89be6ab86c8"
+            ]
+        ]
+    },
+    {
+        "id": "7523e73639da7118",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Read value result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1350,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "36c7ab5fce50fef6",
+        "type": "ads-client-write-value",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "variableName": "GVL_Write.ComplexTypes.STRUCT_",
+        "autoFill": false,
+        "x": 790,
+        "y": 280,
+        "wires": [
+            [
+                "5774c82c681b59f9"
+            ]
+        ]
+    },
+    {
+        "id": "7a61bd94a032722b",
+        "type": "inject",
+        "z": "8fec3f7b6bde6530",
+        "name": "Write value",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"BOOL_\":true,\"BOOL_2\":false,\"BYTE_\":255,\"WORD_\":65535,\"DWORD_\":4294967295,\"SINT_\":127,\"SINT_2\":-128,\"USINT_\":255,\"INT_\":32767,\"INT_2\":-32768,\"UINT_\":65535,\"DINT_\":2147483647,\"DINT_2\":-2147483648,\"UDINT_\":4294967295,\"REAL_\":3.3999999521443642e+38,\"REAL_2\":-3.3999999521443642e+38,\"REAL_3\":75483.546875,\"REAL_4\":-75483.546875,\"STRING_\":\"A test string ääöö!!@@\",\"STRING_2\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque bibendum mauris vel metus rutrum, sed gravida justo dignissim. Aenean et nisi cursus, auctor mi vel, posuere enim. Suspendisse ultricies mauris in finibus tristique. Nullam turpis duis.\",\"STRING_3\":\"ベッコフ\",\"DATE_\":\"2106-02-06T00:00:00.000Z\",\"DT_\":\"2106-02-06T06:28:15.000Z\",\"DT_2\":\"2106-02-06T06:28:15.000Z\",\"TOD_\":4294967295,\"TOD_2\":4294967295,\"TIME_\":4294967295,\"LWORD_\":184467440,\"LINT_\":922337203,\"LINT_2\":-92233720,\"ULINT_\":18446744,\"LREAL_\":1.7e+308,\"LREAL_2\":-1.7e+308,\"LREAL_3\":75483.546875,\"LREAL_4\":-75483.546875,\"WSTRING_\":\"A test wstring ääöö!!@@ ẞẟΔش\",\"WSTRING_2\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque bibendum mauris vel metus rutrum, sed gravida justo dignissim. Aenean et nisi cursus, auctor mi vel, posuere enim. Suspendisse ultricies mauris in finibus tristique. Nullam turpis duis.\",\"LTIME_\":1844674407}",
+        "payloadType": "json",
+        "x": 420,
+        "y": 280,
+        "wires": [
+            [
+                "36c7ab5fce50fef6"
+            ]
+        ]
+    },
+    {
+        "id": "5774c82c681b59f9",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Write value result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1350,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "e44ad640617fde09",
+        "type": "comment",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "info": "NOTE: Skipping writing of BigInt values (using smaller values for 64 bit variables)",
+        "x": 420,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "ae88eadd95827f29",
+        "type": "ads-client-subscribe",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "variableName": "GVL_Subscription.NumericValue_1000ms",
+        "cycleTime": 200,
+        "mode": "onchange",
+        "maxDelay": 0,
+        "retryInterval": 2000,
+        "controlSubscription": true,
+        "resubscribeTimeout": 2000,
+        "inputs": 1,
+        "x": 800,
+        "y": 440,
+        "wires": [
+            [
+                "f9fd961bc8b1b8b6"
+            ]
+        ]
+    },
+    {
+        "id": "f9fd961bc8b1b8b6",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Subscription value updated",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1380,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "a0d3a36f67c4b011",
+        "type": "inject",
+        "z": "8fec3f7b6bde6530",
+        "name": "Subscribe",
+        "props": [
+            {
+                "p": "subscribe",
+                "v": "true",
+                "vt": "bool"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 420,
+        "y": 440,
+        "wires": [
+            [
+                "ae88eadd95827f29"
+            ]
+        ]
+    },
+    {
+        "id": "0aaa9bcd9dd50f0c",
+        "type": "inject",
+        "z": "8fec3f7b6bde6530",
+        "name": "Unsubscribe",
+        "props": [
+            {
+                "p": "subscribe",
+                "v": "false",
+                "vt": "bool"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 430,
+        "y": 480,
+        "wires": [
+            [
+                "ae88eadd95827f29"
+            ]
+        ]
+    },
+    {
+        "id": "4294389357e235df",
+        "type": "ads-client-subscribe",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "variableName": "GVL_Subscription.NumericValue_1000ms",
+        "cycleTime": "5000",
+        "mode": "cyclic",
+        "maxDelay": 0,
+        "retryInterval": 2000,
+        "controlSubscription": false,
+        "resubscribeTimeout": 2000,
+        "inputs": 0,
+        "x": 800,
+        "y": 360,
+        "wires": [
+            [
+                "effa5a55ee9f4233"
+            ]
+        ]
+    },
+    {
+        "id": "effa5a55ee9f4233",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Subscription value updated (every 5s)",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1410,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "3c043eed724c202a",
+        "type": "ads-client-invoke-rpc-method",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "methodName": "GVL_RPC.RpcBlock.Calculator",
+        "x": 800,
+        "y": 540,
+        "wires": [
+            [
+                "4289f7e1513c2f35"
+            ]
+        ]
+    },
+    {
+        "id": "f4d8f1e9f8b737a3",
+        "type": "inject",
+        "z": "8fec3f7b6bde6530",
+        "name": "Invoke",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Value1\":3.14,\"Value2\":1000}",
+        "payloadType": "json",
+        "x": 410,
+        "y": 540,
+        "wires": [
+            [
+                "3c043eed724c202a"
+            ]
+        ]
+    },
+    {
+        "id": "4289f7e1513c2f35",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "RPC method result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1350,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "9f2a247aa6c5ccf0",
+        "type": "ads-client-read-runtime-state",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "adsPort": 851,
+        "x": 720,
+        "y": 620,
+        "wires": [
+            [
+                "5b79865fccc63211"
+            ]
+        ]
+    },
+    {
+        "id": "66842429b329de71",
+        "type": "inject",
+        "z": "8fec3f7b6bde6530",
+        "name": "Read PLC runtime state",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 460,
+        "y": 620,
+        "wires": [
+            [
+                "9f2a247aa6c5ccf0"
+            ]
+        ]
+    },
+    {
+        "id": "5b79865fccc63211",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Read PLC runtime state result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "result",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1390,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "ccbb052e458887c2",
+        "type": "ads-client-get-symbols",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "x": 670,
+        "y": 780,
+        "wires": [
+            [
+                "00f102625afc9bcc"
+            ]
+        ]
+    },
+    {
+        "id": "cf550e72d88608dc",
+        "type": "inject",
+        "z": "8fec3f7b6bde6530",
+        "name": "Read TC system state",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 460,
+        "y": 700,
+        "wires": [
+            [
+                "fbd31b6f5ead1b05"
+            ]
+        ]
+    },
+    {
+        "id": "fbd31b6f5ead1b05",
+        "type": "ads-client-read-tc-system-state",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "x": 700,
+        "y": 700,
+        "wires": [
+            [
+                "727425e64339c898"
+            ]
+        ]
+    },
+    {
+        "id": "727425e64339c898",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Read TC system state result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "result",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1380,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "131b8a0145496407",
+        "type": "inject",
+        "z": "8fec3f7b6bde6530",
+        "name": "Get all symbols",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 440,
+        "y": 780,
+        "wires": [
+            [
+                "ccbb052e458887c2"
+            ]
+        ]
+    },
+    {
+        "id": "00f102625afc9bcc",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Get all symbols result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1360,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "961a66efc8734a24",
+        "type": "ads-client-get-symbol",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "variableName": "GVL_Read.StandardTypes",
+        "x": 760,
+        "y": 860,
+        "wires": [
+            [
+                "4b58a581fdef80e2"
+            ]
+        ]
+    },
+    {
+        "id": "2282a456f22f7e5b",
+        "type": "inject",
+        "z": "8fec3f7b6bde6530",
+        "name": "Get symbol",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 430,
+        "y": 860,
+        "wires": [
+            [
+                "961a66efc8734a24"
+            ]
+        ]
+    },
+    {
+        "id": "4b58a581fdef80e2",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Get symbol result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1350,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "521b332ec03c1112",
+        "type": "ads-client-read-raw",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "indexGroup": "",
+        "indexOffset": "",
+        "size": "",
+        "targetAdsPort": "",
+        "x": 850,
+        "y": 1020,
+        "wires": [
+            [
+                "0a579a330203d10d",
+                "706fc3de230386dc"
+            ]
+        ]
+    },
+    {
+        "id": "4550fb06a70f0e97",
+        "type": "inject",
+        "z": "8fec3f7b6bde6530",
+        "name": "Read raw",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 420,
+        "y": 940,
+        "wires": [
+            [
+                "23462b8b4194e562"
+            ]
+        ]
+    },
+    {
+        "id": "23462b8b4194e562",
+        "type": "ads-client-get-symbol",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "variableName": "GVL_Read.ComplexTypes.STRUCT_",
+        "x": 790,
+        "y": 940,
+        "wires": [
+            [
+                "ab9574b96cd32137"
+            ]
+        ]
+    },
+    {
+        "id": "0a579a330203d10d",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Read raw result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "ab9574b96cd32137",
+        "type": "change",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 650,
+        "y": 1020,
+        "wires": [
+            [
+                "521b332ec03c1112"
+            ]
+        ]
+    },
+    {
+        "id": "9346b72de5335329",
+        "type": "inject",
+        "z": "8fec3f7b6bde6530",
+        "name": "Write raw",
+        "props": [
+            {
+                "p": "value",
+                "v": "{\"BOOL_\":true,\"BOOL_2\":false,\"BYTE_\":255,\"WORD_\":65535,\"DWORD_\":4294967295,\"SINT_\":127,\"SINT_2\":-128,\"USINT_\":255,\"INT_\":32767,\"INT_2\":-32768,\"UINT_\":65535,\"DINT_\":2147483647,\"DINT_2\":-2147483648,\"UDINT_\":4294967295,\"REAL_\":3.3999999521443642e+38,\"REAL_2\":-3.3999999521443642e+38,\"REAL_3\":75483.546875,\"REAL_4\":-75483.546875,\"STRING_\":\"A test string ääöö!!@@\",\"STRING_2\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque bibendum mauris vel metus rutrum, sed gravida justo dignissim. Aenean et nisi cursus, auctor mi vel, posuere enim. Suspendisse ultricies mauris in finibus tristique. Nullam turpis duis.\",\"STRING_3\":\"ベッコフ\",\"DATE_\":\"2106-02-06T00:00:00.000Z\",\"DT_\":\"2106-02-06T06:28:15.000Z\",\"DT_2\":\"2106-02-06T06:28:15.000Z\",\"TOD_\":4294967295,\"TOD_2\":4294967295,\"TIME_\":4294967295,\"LWORD_\":184467440,\"LINT_\":922337203,\"LINT_2\":-92233720,\"ULINT_\":18446744,\"LREAL_\":1.7e+308,\"LREAL_2\":-1.7e+308,\"LREAL_3\":75483.546875,\"LREAL_4\":-75483.546875,\"WSTRING_\":\"A test wstring ääöö!!@@ ẞẟΔش\",\"WSTRING_2\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque bibendum mauris vel metus rutrum, sed gravida justo dignissim. Aenean et nisi cursus, auctor mi vel, posuere enim. Suspendisse ultricies mauris in finibus tristique. Nullam turpis duis.\",\"LTIME_\":1844674407}",
+                "vt": "json"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 420,
+        "y": 1200,
+        "wires": [
+            [
+                "199ce9a3ba873e2d"
+            ]
+        ]
+    },
+    {
+        "id": "8d0a866846a46312",
+        "type": "ads-client-convert-to-raw",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "dataTypeName": "ST_StandardTypes",
+        "autoFill": false,
+        "x": 950,
+        "y": 1280,
+        "wires": [
+            [
+                "d56501698d0a9af7",
+                "2233e134dda5adaf"
+            ]
+        ]
+    },
+    {
+        "id": "706fc3de230386dc",
+        "type": "ads-client-convert-from-raw",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "dataTypeName": "ST_StandardTypes",
+        "x": 760,
+        "y": 1100,
+        "wires": [
+            [
+                "5df487b679e9f3de"
+            ]
+        ]
+    },
+    {
+        "id": "5df487b679e9f3de",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Convert from raw result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1370,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "d56501698d0a9af7",
+        "type": "debug",
+        "z": "8fec3f7b6bde6530",
+        "name": "Convert to raw result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1360,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "199ce9a3ba873e2d",
+        "type": "ads-client-get-symbol",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "variableName": "GVL_Read.ComplexTypes.STRUCT_",
+        "x": 790,
+        "y": 1200,
+        "wires": [
+            [
+                "ca506c79aa70f0b3"
+            ]
+        ]
+    },
+    {
+        "id": "ca506c79aa70f0b3",
+        "type": "change",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "value",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 660,
+        "y": 1280,
+        "wires": [
+            [
+                "8d0a866846a46312"
+            ]
+        ]
+    },
+    {
+        "id": "2233e134dda5adaf",
+        "type": "ads-client-write-raw",
+        "z": "8fec3f7b6bde6530",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "indexGroup": "",
+        "indexOffset": "",
+        "targetAdsPort": "",
+        "x": 670,
+        "y": 1360,
+        "wires": []
+    },
+    {
+        "id": "4bf895418c29201f",
+        "type": "ads-client-connection",
+        "name": "TwinCAT",
+        "targetAmsNetId": "192.168.4.1.1.1",
+        "targetAdsPort": 851,
+        "objectifyEnumerations": true,
+        "convertDatesToJavascript": true,
+        "readAndCacheSymbols": false,
+        "readAndCacheDataTypes": false,
+        "monitorPlcSymbolVersion": true,
+        "routerTcpPort": "",
+        "routerAddress": "",
+        "localAddress": "",
+        "localTcpPort": "",
+        "localAmsNetId": "",
+        "localAdsPort": "",
+        "timeoutDelay": "",
+        "hideConsoleWarnings": false,
+        "autoReconnect": true,
+        "reconnectInterval": "",
+        "connectionCheckInterval": "",
+        "connectionDownDelay": "",
+        "allowHalfOpen": false,
+        "debuggingLevel": "",
+        "rawClient": false
+    },
+    {
+        "id": "39308053b487b048",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-ads-client": "2.0.0"
+        }
+    }
+]
