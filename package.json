@@ -39,7 +39,7 @@
       "ads-client-connection-status": "src/ads-client-connection-status.js",
       "ads-client-read-value": "src/ads-client-read-value.js",
       "ads-client-write-value": "src/ads-client-write-value.js",
-      "ads-client-subscribe": "src/ads-client-subscribe.js",
+      "ads-client-subscribe-value": "src/ads-client-subscribe-value.js",
       "ads-client-invoke-rpc-method": "src/ads-client-invoke-rpc-method.js",
       "ads-client-read-runtime-state": "src/ads-client-read-runtime-state.js",
       "ads-client-read-tc-system-state": "src/ads-client-read-tc-system-state.js",

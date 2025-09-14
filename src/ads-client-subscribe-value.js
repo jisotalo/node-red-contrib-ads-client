@@ -275,5 +275,5 @@ module.exports = function (RED) {
     this.connection.eventEmitter.on("connected", (connected) => onConnectedChange(connected));
   }
 
-  RED.nodes.registerType("ads-client-subscribe", AdsClientSubscribe);
+  RED.nodes.registerType("ads-client-subscribe-value", AdsClientSubscribe);
 };

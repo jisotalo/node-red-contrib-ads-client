@@ -1,6 +1,6 @@
 <script type="text/javascript">
-  RED.nodes.registerType("ads-client-subscribe", {
-    paletteLabel: "ADS - Subscribe",
+  RED.nodes.registerType("ads-client-subscribe-value", {
+    paletteLabel: "ADS - Subscribe Value",
     category: "TwinCAT ADS",
     icon: "font-awesome/fa-envelope-o",
     align: "right",
@@ -29,13 +29,13 @@
       inputs: { value: 0 },
     },
     label: function () {
-      if (this.connection === null) return `${this.name || `ADS - Subscribe`} (*Not configured*)`;
+      if (this.connection === null) return `${this.name || `ADS - Subscribe Value`} (*Not configured*)`;
 
       if (this.name) {
         return this.name;
       }
 
-      return `ADS - Subscribe (${this.variableName === "" ? `msg.topic` : `${this.variableName}`})`;
+      return `ADS - Subscribe Value (${this.variableName === "" ? `msg.topic` : `${this.variableName}`})`;
     },
     oneditprepare: function () {
       //Stuff that is done when properties panel is opened
@@ -59,7 +59,7 @@
 </script>
 
 <!-- Properties -->
-<script type="text/html" data-template-name="ads-client-subscribe">
+<script type="text/html" data-template-name="ads-client-subscribe-value">
   <div class="form-row">
       <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
       <input type="text" id="node-input-name" placeholder="Name (optional)">
@@ -115,7 +115,7 @@
 </script>
 
 <!-- Help -->
-<script type="text/html" data-help-name="ads-client-subscribe">
+<script type="text/html" data-help-name="ads-client-subscribe-value">
     <p>
       Subscribes to given variable to receive notifications.
     </p>
