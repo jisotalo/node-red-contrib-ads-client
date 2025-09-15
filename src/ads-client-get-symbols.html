@@ -45,8 +45,15 @@
 
 <!-- Help -->
 <script type="text/html" data-help-name="ads-client-get-symbols">
-  <p>Returns symbol information for all top level symbols.</p>
-  <p>First searchs the local cache. If not found, reads it from PLC and caches it.</p>
+  <p>
+    Returns all symbols from the target PLC runtime.
+  </p>
+  <p>
+    <b>WARNING:</b> The returned object might be VERY large!
+  </p>
+  <p>
+    <b>NOTE:</b> This requires that the target is a PLC runtime or has equivalent ADS protocol support.
+  </p>
 
   <h3>Properties (settings)</h3>
   <dl class="message-properties">
@@ -71,17 +78,20 @@
   <h3>Outputs</h3>
   <dl class="message-properties">
     <dt>payload <span class="property-type">object</span></dt>
-    <dd>The symbol information as object</dd>
+    <dd>Array of all target runtime symbols</dd>
     <dt>... <span class="property-type">any</span></dt>
     <dd>All input <code>msg</code> properties are forwarded</dd>
   </dl>
 
   <h3>Details</h3>
-  <p>See <code>ads-client</code> readme for help.</p>
 
   <h3>References</h3>
   <ul>
-    <li><a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline"> ads-client getSymbols() readme </a></li>
-    <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#getSymbols" target="_blank" style="text-decoration: underline"> ads-client getSymbols() documentation </a></li>
+    <li><a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
+      ads-client readme
+    </a></li>
+    <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#getSymbols" target="_blank" style="text-decoration: underline">
+      ads-client - getSymbols()
+    </a></li>
   </ul>
 </script>

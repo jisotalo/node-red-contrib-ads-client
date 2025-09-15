@@ -43,10 +43,10 @@
   </div>
 
   <div class="form-row">
-    <label for="node-input-variableName"><i class="fa fa-tag"></i> Variable name</label>
-    <input type="text" id="node-input-variableName" placeholder="Variable name" />
+    <label for="node-input-variableName"><i class="fa fa-tag"></i> Variable path</label>
+    <input type="text" id="node-input-variableName" placeholder="Variable path" />
   </div>
-  <div class="form-tips"><b>Tip:</b> Leave variable name empty to use <code>msg.topic</code> input instead.</div>
+  <div class="form-tips"><b>Tip:</b> Leave variable path empty to use <code>msg.topic</code> input instead.</div>
 
   <div class="form-row">
     <!-- Some margin after tip -->
@@ -56,12 +56,17 @@
 <!-- Help -->
 <script type="text/html" data-help-name="ads-client-get-symbol">
   <p>
-    Returns symbol information for given variable/symbol.
+    Returns a symbol object for given variable path, such as <code>GVL_Test.ExampleStruct</code>.
+  </p> 
+  <p>
+    Returns previously cached value if available, otherwise reads it from the target and caches it.
   </p>
   <p>
-    First searchs the local cache. If not found, reads it from PLC and caches it.
+    If caching is disabled using setting <code>disableCaching</code>, data is always read from the target.
   </p>
-
+  <p>
+    <b>NOTE:</b> This requires that the target is a PLC runtime or has equivalent ADS protocol support.
+  </p>
 
   <h3>Properties (settings)</h3>
     <dl class="message-properties">
@@ -79,10 +84,10 @@
     </dl>
 
     <dl class="message-properties">
-      <dt>Variable name
+      <dt>Variable path
         <span class="property-type">string</span>
       </dt>
-      <dd> Variable name/path to get symbol information from</dd>
+      <dd> Symbol variable path at the target (such as <code>GVL_Test.ExampleStruct</code>)</dd>
     </dl>
 
 
@@ -91,33 +96,29 @@
       <dt>topic
         <span class="property-type">undefined | string</span>
       </dt>
-      <dd> If given and no variable name set in properties, this topic is used as variable name.</code></dd>
+      <dd> If provided and no variable path set in properties, this topic is used as variable path.</code></dd>
     </dl>
 
   <h3>Outputs</h3>
     <dl class="message-properties">
       <dt>payload <span class="property-type">object</span></dt>
-      <dd>The symbol information as object</dd>
+      <dd>The symbol object</dd>
       <dt>... <span class="property-type">any</span></dt>
       <dd>All input <code>msg</code> properties are forwarded</dd>
     </dl>
 
   <h3>Details</h3>
     <p>
-    If the variable name is not set in properties, the input <code>msg.topic</code> is used as variable name instead.
+    If the variable path is not set in properties, the input <code>msg.topic</code> is used as variable path instead.
     </p>
-    <p>
-    See <code>ads-client</code> readme for help. Valid variable name for TwinCAT 3 can be something like <code>GVL.VariableName</code>
-    </p>
-
 
   <h3>References</h3>
     <ul>
       <li><a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
-        ads-client getSymbol() readme
+        ads-client readme
       </a></li>
-      <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#getSymbols" target="_blank" style="text-decoration: underline">
-        ads-client getSymbol() documentation
+      <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#getSymbol" target="_blank" style="text-decoration: underline">
+        ads-client - getSymbol()
       </a></li>
     </ul>
 </script>

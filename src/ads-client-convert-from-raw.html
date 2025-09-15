@@ -10,7 +10,7 @@
     },
     outputs: 1,
     outputLabels: "Data",
-    defaults: { 
+    defaults: {
       name: { value: '' },
       connection: { value: null, type: "ads-client-connection" },
       dataTypeName: { value: "", required: false }
@@ -62,13 +62,13 @@
 <!-- Help -->
 <script type="text/html" data-help-name="ads-client-convert-from-raw">
 <p>
-  Converts given raw data (byte Buffer) to Javascript object by given data type (like REAL, ST_Struct).
+  Converts raw data to a Javascript object by using the provided data type.
 </p>
 <p>
   The input <code>msg.payload</code> is the raw Buffer value to be converted. The buffer length needs to match PLC data type size.
 </p>
 <p>
-  If input <code>msg.topic</code> is given, the topic is used as data type if no name is given in properties.
+  If input <code>msg.topic</code> is given, the topic is used as data type if no name is set in properties.
 </p>
 
 
@@ -91,7 +91,7 @@
     <dt>Data type
       <span class="property-type">string</span>
     </dt>
-    <dd> Data type in the PLC - Example: <code>ST_SomeStruct</code>, <code>REAL</code>,..</dd>
+    <dd> Data type name in the PLC as string (such as <code>ST_Struct</code>)</dd>
   </dl>
 
 
@@ -100,13 +100,13 @@
     <dt>payload
       <span class="property-type">Buffer</span>
     </dt>
-    <dd> The Buffer data to convert</dd>
+    <dd> Raw data (acquired for example using <code>ADS - Read Raw</code> node)</dd>
   </dl>
   <dl class="message-properties">
     <dt>topic
       <span class="property-type">undefined | string</span>
     </dt>
-    <dd> If given and no data type set in properties, this topic is used as data type.</code></dd>
+    <dd> If provided and no data type is set in properties, this topic is used as data type.</dd>
   </dl>
 
 <h3>Outputs</h3>
@@ -119,7 +119,7 @@
 
 <h3>Details</h3>
   <p>
-  The input <code>msg.payload</code> should be a Buffer data that matches the size of the PLC variable type.
+  The input <code>msg.payload</code> should be a Buffer object that matches the size of data type.
   </p>
   <p>
   If the data type is not set in properties, the input <code>msg.topic</code> is used as name instead.
@@ -127,11 +127,11 @@
 
 <h3>References</h3>
   <ul>
-    <li><a href="https://github.com/jisotalo/ads-client#converting-a-raw-value-to-javascript-object" target="_blank" style="text-decoration: underline">
-      ads-client convertFromRaw() readme
+    <li><a href="https://github.com/jisotalo/ads-client/?tab=readme-ov-file#converting-a-raw-value-to-a-javascript-object" target="_blank" style="text-decoration: underline">
+      ads-client readme
     </a></li>
-    <li><a href="https://jisotalo.github.io/ads-client/Client.html#convertFromRaw" target="_blank" style="text-decoration: underline">
-      ads-client convertFromRaw() documentation
+    <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#convertFromRaw" target="_blank" style="text-decoration: underline">
+      ads-client - convertFromRaw()
     </a></li>
   </ul>
 </script>
