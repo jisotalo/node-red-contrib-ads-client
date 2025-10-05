@@ -4,36 +4,38 @@
     category: "config",
     defaults: {
       name: { value: "" },
-
-      //ads-client settings (required)
-      targetAmsNetId: { value: "localhost", required: true },
+      debugLevel: {value: 0},
+      allowHalfOpen: { value: false },
+      autoReconnect: { value: true },
+      connectionCheckInterval: { value: undefined },
+      connectionDownDelay: { value: undefined },
+      convertDatesToJavascript: { value: true },
+      deleteUnknownSubscriptions: { value: true },
+      disableCaching: { value: false },
+      forceUtf8ForAdsSymbols: { value: false },
+      hideConsoleWarnings: { value: false },
+      localAddress: { value: undefined },
+      localAdsPort: { value: undefined },
+      localAmsNetId: { value: undefined },
+      localTcpPort: { value: undefined },
+      monitorPlcSymbolVersion: { value: true },
+      objectifyEnumerations: { value: true },
+      rawClient: { value: false },
+      readAndCacheDataTypes: { value: false },
+      readAndCacheSymbols: { value: false },
+      reconnectInterval: { value: undefined },
+      routerAddress: { value: undefined },
+      routerTcpPort: { value: undefined },
       targetAdsPort: {
         value: 851,
         required: true,
         validate: RED.validators.number(),
       },
-
-      //ads-client settings (optional)
-      objectifyEnumerations: { value: true },
-      convertDatesToJavascript: { value: true },
-      readAndCacheSymbols: { value: false },
-      readAndCacheDataTypes: { value: false },
-      monitorPlcSymbolVersion: { value: true },
-      routerTcpPort: { value: null },
-      routerAddress: { value: null },
-      localAddress: { value: null },
-      localTcpPort: { value: null },
-      localAmsNetId: { value: null },
-      localAdsPort: { value: null },
-      timeoutDelay: { value: null },
-      hideConsoleWarnings: { value: false },
-      autoReconnect: { value: true },
-      reconnectInterval: { value: null },
-      connectionCheckInterval: { value: null },
-      connectionDownDelay: { value: null },
-      allowHalfOpen: { value: false },
-      debuggingLevel: { value: 0 },
-      rawClient: { value: false },
+      targetAmsNetId: {
+        value: "localhost",
+        required: true
+      },
+      timeoutDelay: { value: undefined }
     },
     label: function () {
       if (this.name) {
@@ -42,7 +44,6 @@
 
       return `${this.targetAmsNetId}:${this.targetAdsPort}`;
     },
-
     oneditprepare: function () {
       //Stuff that is done when properties panel is opened
       let tabs = RED.tabs.create({
@@ -55,7 +56,7 @@
 
       tabs.addTab({
         id: "ads-client-connection-settings-tab",
-        label: "Target settings",
+        label: "Required settings",
       });
 
       tabs.addTab({
@@ -66,173 +67,257 @@
   });
 </script>
 
+<!-- Properties -->
 <script type="text/html" data-template-name="ads-client-connection">
-    <div class="form-row">
-        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-config-input-name" placeholder="Name (optional)">
-    </div>
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-config-input-name" placeholder="Name (optional)">
+  </div>
 
-    <div class="form-row">
-        <ul style="background: #fff; min-width: 600px; margin-bottom: 20px;" id="node-input-ads-client-connection-tabs"></ul>
-    </div>
+  <div class="form-row">
+    <ul style="background: #fff; min-width: 600px; margin-bottom: 20px;" id="node-input-ads-client-connection-tabs"></ul>
+  </div>
 
-    <div id="node-input-ads-client-connection-tabs-content" style="min-height: 170px;">
-      <div id="ads-client-connection-settings-tab" style="display:none">
-        <div class="form-row">
-            <label for="node-config-input-targetAmsNetId">Target AmsNetId</label>
-            <input type="text" id="node-config-input-targetAmsNetId" placeholder="Target AmsNetId">
-        </div>
-
-        <div class="form-row">
-            <label for="node-config-input-targetAdsPort">Target ADS port</label>
-            <input type="text" id="node-config-input-targetAdsPort" placeholder="Target ADS port">
-        </div>
+  <div id="node-input-ads-client-connection-tabs-content" style="min-height: 170px;">
+    <div id="ads-client-connection-settings-tab" style="display:none">
+      <div class="form-row">
+          <label for="node-config-input-targetAmsNetId">Target AmsNetId</label>
+          <input type="text" id="node-config-input-targetAmsNetId" placeholder="Target AmsNetId">
       </div>
 
-      <div id="ads-client-connection-options-tab" style="display:none">
-        <div class="form-row">
-          <label for="node-config-input-debuggingLevel">Debugging level</label>
-          <input type="text" id="node-config-input-debuggingLevel" placeholder="0">
-        </div>
+      <div class="form-row">
+          <label for="node-config-input-targetAdsPort">Target ADS port</label>
+          <input type="text" id="node-config-input-targetAdsPort" placeholder="Target ADS port">
+      </div>
+    </div>
 
-        <div class="form-row">
-          <input type="checkbox" id="node-config-input-objectifyEnumerations" style="display: inline-block; width: auto; vertical-align: top">
-          <label for="node-config-input-objectifyEnumerations" style="width: 70%"><span>objectifyEnumerations</span></label>
-        </div>
+    <div id="ads-client-connection-options-tab" style="display:none">
+      <div class="form-row">
+        <label for="node-config-input-debugLevel">Debug level</label>
+        <input type="text" id="node-config-input-debugLevel" placeholder="0">
+      </div>
 
-        <div class="form-row">
-          <input type="checkbox" id="node-config-input-convertDatesToJavascript" style="display: inline-block; width: auto; vertical-align: top">
-          <label for="node-config-input-convertDatesToJavascript" style="width: 70%"><span>convertDatesToJavascript</span></label>
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-allowHalfOpen" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-allowHalfOpen" style="width: 70%"><span>allowHalfOpen</span></label>
+      </div>
 
-        <div class="form-row">
-          <input type="checkbox" id="node-config-input-readAndCacheSymbols" style="display: inline-block; width: auto; vertical-align: top">
-          <label for="node-config-input-readAndCacheSymbols" style="width: 70%"><span>readAndCacheSymbols</span></label>
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-autoReconnect" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-autoReconnect" style="width: 70%"><span>autoReconnect</span></label>
+      </div>
 
-        <div class="form-row">
-          <input type="checkbox" id="node-config-input-readAndCacheDataTypes" style="display: inline-block; width: auto; vertical-align: top">
-          <label for="node-config-input-readAndCacheDataTypes" style="width: 70%"><span>readAndCacheDataTypes</span></label>
-        </div>
+      <div class="form-row">
+        <label for="node-config-input-connectionCheckInterval">connectionCheckInterval [ms]</label>
+        <input type="text" id="node-config-input-connectionCheckInterval" placeholder="(empty = default)">
+      </div>
 
-        <div class="form-row">
-          <input type="checkbox" id="node-config-input-monitorPlcSymbolVersion" style="display: inline-block; width: auto; vertical-align: top">
-          <label for="node-config-input-monitorPlcSymbolVersion" style="width: 70%"><span>monitorPlcSymbolVersion</span></label>
-        </div>
+      <div class="form-row">
+        <label for="node-config-input-connectionDownDelay">connectionDownDelay [ms]</label>
+        <input type="text" id="node-config-input-connectionDownDelay" placeholder="(empty = default)">
+      </div>
 
-        <div class="form-row">
-          <label for="node-config-input-routerTcpPort">routerTcpPort</label>
-          <input type="text" id="node-config-input-routerTcpPort" placeholder="(empty = default)">
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-convertDatesToJavascript" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-convertDatesToJavascript" style="width: 70%"><span>convertDatesToJavascript</span></label>
+      </div>
 
-        <div class="form-row">
-          <label for="node-config-input-routerAddress">routerAddress</label>
-          <input type="text" id="node-config-input-routerAddress" placeholder="(empty = default)">
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-deleteUnknownSubscriptions" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-deleteUnknownSubscriptions" style="width: 70%"><span>deleteUnknownSubscriptions</span></label>
+      </div>
 
-        <div class="form-row">
-          <label for="node-config-input-localAddress">localAddress</label>
-          <input type="text" id="node-config-input-localAddress" placeholder="(empty = auto)">
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-disableCaching" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-disableCaching" style="width: 70%"><span>disableCaching</span></label>
+      </div>
 
-        <div class="form-row">
-          <label for="node-config-input-localTcpPort">localTcpPort</label>
-          <input type="text" id="node-config-input-localTcpPort" placeholder="(empty = auto)">
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-forceUtf8ForAdsSymbols" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-forceUtf8ForAdsSymbols" style="width: 70%"><span>forceUtf8ForAdsSymbols</span></label>
+      </div>
 
-        <div class="form-row">
-          <label for="node-config-input-localAmsNetId">localAmsNetId</label>
-          <input type="text" id="node-config-input-localAmsNetId" placeholder="(empty = auto)">
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-hideConsoleWarnings" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-hideConsoleWarnings" style="width: 70%"><span>hideConsoleWarnings</span></label>
+      </div>
 
-        <div class="form-row">
-          <label for="node-config-input-localAdsPort">localAdsPort</label>
-          <input type="text" id="node-config-input-localAdsPort" placeholder="(empty = auto)">
-        </div>
+      <div class="form-row">
+        <label for="node-config-input-localAddress">localAddress</label>
+        <input type="text" id="node-config-input-localAddress" placeholder="(empty = default)">
+      </div>
 
-        <div class="form-row">
-          <label for="node-config-input-timeoutDelay">timeoutDelay [ms]</label>
-          <input type="text" id="node-config-input-timeoutDelay" placeholder="(empty = default)">
-        </div>
+      <div class="form-row">
+        <label for="node-config-input-localAdsPort">localAdsPort</label>
+        <input type="text" id="node-config-input-localAdsPort" placeholder="(empty = default)">
+      </div>
 
-        <div class="form-row">
-          <input type="checkbox" id="node-config-input-hideConsoleWarnings" style="display: inline-block; width: auto; vertical-align: top">
-          <label for="node-config-input-hideConsoleWarnings" style="width: 70%"><span>hideConsoleWarnings</span></label>
-        </div>
+      <div class="form-row">
+        <label for="node-config-input-localAmsNetId">localAmsNetId</label>
+        <input type="text" id="node-config-input-localAmsNetId" placeholder="(empty = default)">
+      </div>
 
-        <div class="form-row">
-          <input type="checkbox" id="node-config-input-autoReconnect" style="display: inline-block; width: auto; vertical-align: top">
-          <label for="node-config-input-autoReconnect" style="width: 70%"><span>autoReconnect</span></label>
-        </div>
+      <div class="form-row">
+        <label for="node-config-input-localTcpPort">localTcpPort</label>
+        <input type="text" id="node-config-input-localTcpPort" placeholder="(empty = default)">
+      </div>
 
-        <div class="form-row">
-          <label for="node-config-input-reconnectInterval">reconnectInterval [ms]</label>
-          <input type="text" id="node-config-input-reconnectInterval" placeholder="(empty = default)">
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-monitorPlcSymbolVersion" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-monitorPlcSymbolVersion" style="width: 70%"><span>monitorPlcSymbolVersion</span></label>
+      </div>
 
-        <div class="form-row">
-          <label for="node-config-input-connectionCheckInterval">connectionCheckInterval [ms]</label>
-          <input type="text" id="node-config-input-connectionCheckInterval" placeholder="(empty = default)">
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-objectifyEnumerations" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-objectifyEnumerations" style="width: 70%"><span>objectifyEnumerations</span></label>
+      </div>
 
-        <div class="form-row">
-          <label for="node-config-input-connectionDownDelay">connectionDownDelay [ms]</label>
-          <input type="text" id="node-config-input-connectionDownDelay" placeholder="(empty = default)">
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-rawClient" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-rawClient" style="width: 70%"><span>rawClient</span></label>
+      </div>
 
-        <div class="form-row">
-          <input type="checkbox" id="node-config-input-allowHalfOpen" style="display: inline-block; width: auto; vertical-align: top">
-          <label for="node-config-input-allowHalfOpen" style="width: 70%"><span>allowHalfOpen</span></label>
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-rawClient" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-rawClient" style="width: 70%"><span>rawClient</span></label>
+      </div>
 
-        <div class="form-row">
-          <input type="checkbox" id="node-config-input-rawClient" style="display: inline-block; width: auto; vertical-align: top">
-          <label for="node-config-input-rawClient" style="width: 70%"><span>rawClient</span></label>
-        </div>
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-readAndCacheDataTypes" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-readAndCacheDataTypes" style="width: 70%"><span>readAndCacheDataTypes</span></label>
+      </div>
+
+      <div class="form-row">
+        <input type="checkbox" id="node-config-input-readAndCacheSymbols" style="display: inline-block; width: auto; vertical-align: top">
+        <label for="node-config-input-readAndCacheSymbols" style="width: 70%"><span>readAndCacheSymbols</span></label>
+      </div>
+
+      <div class="form-row">
+        <label for="node-config-input-reconnectInterval">reconnectInterval</label>
+        <input type="text" id="node-config-input-reconnectInterval" placeholder="(empty = default)">
+      </div>
+
+      <div class="form-row">
+        <label for="node-config-input-routerAddress">routerAddress</label>
+        <input type="text" id="node-config-input-routerAddress" placeholder="(empty = default)">
+      </div>
+
+      <div class="form-row">
+        <label for="node-config-input-routerTcpPort">routerTcpPort</label>
+        <input type="text" id="node-config-input-routerTcpPort" placeholder="(empty = default)">
+      </div>
+
+      <div class="form-row">
+        <label for="node-config-input-timeoutDelay">timeoutDelay [ms]</label>
+        <input type="text" id="node-config-input-timeoutDelay" placeholder="(empty = default)">
       </div>
     </div>
   </div>
 </script>
 
+<!-- Help -->
 <script type="text/html" data-help-name="ads-client-connection">
   <p>
-    Configures an ADS client instance to target TwinCAT system that can be shared between ADS nodes.
+    Configures a shared ads-client instance.
   </p>
   <p>
-    Connects automatically at start. If fails to connect at startup, the connection is always retried when using any ADS node.
+    Connects automatically. If connection fails, tries to reconnect when using any node.
   </p>
   <p>
-    The settings are provided 1:1 to the underlying <code>ads-client</code> library. See <a href="https://jisotalo.github.io/ads-client/global.html#Settings" target="_blank"
-      style="text-decoration: underline">ads-client settings documentation</a> for description of the available settings.
+    See <a href="https://jisotalo.fi/ads-client/interfaces/AdsClientSettings.html" target="_blank" style="text-decoration: underline">ads-client documentation</a>
+    for descriptions of the settings.
   </p>
-  <p>
-      <h3>Target settings</h3>
+  
+  <h3>Required settings</h3>
+  <dl class="message-properties">
+    <dt>
+      Target AmsNetId
+      <span class="property-type">string</span>
+    </dt>
+    <dd>
+      <p>
+        Default target AmsNetId address (<code>targetAmsNetId</code>)
+      </p>
+      <p>
+        Examples:
+      </p>
       <ul>
-          <li><b>Target AmsNetId</b> - Enter the AmsNetId of the target TwinCAT system (or <code>localhost</code> if using local runtime)</li>
-          <li><b>Target ADS port</b> - Enter the ADS port of the runtime (<code>851</code> = TwinCAT 3 runtime 1)</li>
+        <li><code>localhost</code> or <code>127.0.0.1.1.1</code> - local (same machine as Node.js)</li>
+        <li><code>192.168.1.5.1.1</code> - PLC (example)</li>
+        <li><code>192.168.1.5.2.1</code> - EtherCAT I/O device (example, see also <code>rawClient</code> setting)</li>
       </ul>
+    </dd>
+  </dl>
 
-      <h3>Optional settings</h3>
+  <dl class="message-properties">
+    <dt>
+      Target ADS port (<code>targetAdsPort</code>)
+      <span class="property-type">number</span>
+    </dt>
+    <dd>
+      <p>
+        Default target ADS port
+      </p>
+      <p>
+        NOTE: This is not a TCP port (no firewall config needed).
+      </p>
+      <p>
+        Examples:
+      </p>
       <ul>
-        <li>
-          See <a href="https://github.com/jisotalo/ads-client/#available-settings" target="_blank" style="text-decoration: underline">
-            ads-client settings readme
-          </a>
-        </li>
-        <li>
-          <b>Debugging level</b> - ads-client debugging level. See <a href="https://github.com/jisotalo/ads-client#debugging" target="_blank" style="text-decoration: underline">
-            ads-client readme
-          </a>
-        </li>
+        <li><code>851</code> - TwinCAT 3 PLC runtime 1</li>
+        <li><code>852</code> - TwinCAT 3 PLC runtime 2</li>
+        <li><code>801</code> - TwinCAT 2 PLC runtime 1</li>
+        <li><code>10000</code> - TwinCAT system service</li>
       </ul>
-  </p>
+    </dd>
+  </dl>
+
+  <h3>Optional settings</h3>
+  <dl class="message-properties">
+    <dt>
+      Debug level
+      <span class="property-type">string</span>
+    </dt>
+    <dd>
+      <p>
+      Sets active debug level.
+      </p>
+      <p>
+        Debug data is available in the console (See <a href="https://www.npmjs.com/package/debug" target="_blank" style="text-decoration: underline">Debug</a> library for mode).
+      </p>
+      <p>
+        Debug levels:
+      </p>
+      <ul>
+        <li>0: no debugging (default)</li>
+        <li>1: basic debugging (<code>$env:DEBUG='ads-client'</code>)</li>
+        <li>2: detailed debugging (<code>$env:DEBUG='ads-client,ads-client:details</code>')</li>
+        <li>3: detailed debugging with raw I/O data (<code>$env:DEBUG='ads-client,ads-client:details,ads-client:raw-data'</code>)</li>
+      </ul>
+    </dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      Other settings
+    </dt>
+    <dd>
+      See <a href="https://jisotalo.fi/ads-client/interfaces/AdsClientSettings.html" target="_blank" style="text-decoration: underline">ads-client documentation</a>
+    </dd>
+  </dl>
+
   <h3>References</h3>
-      <ul>
-          <li><a href="https://github.com/jisotalo/ads-client/#creating-a-new-client-instance" target="_blank" style="text-decoration: underline">
-            ads-client readme
-          </a></li>
-          <li><a href="https://jisotalo.github.io/ads-client/" target="_blank" style="text-decoration: underline">
-            ads-client documentation
-          </a></li>
-      </ul>
+  <ul>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
+        ads-client readme
+      </a>
+    </li>
+    <li>
+      <a href="https://jisotalo.fi/ads-client/interfaces/AdsClientSettings.html" target="_blank" style="text-decoration: underline">
+        ads-client documentation
+      </a>
+    </li>
+  </ul>
 </script>

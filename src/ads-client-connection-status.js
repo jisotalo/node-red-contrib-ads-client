@@ -1,3 +1,12 @@
+/**
+ * JSDoc types so that we get type hints for Client
+ * 
+ * @typedef { import("ads-client").Client } Client
+ * 
+ * @typedef ConnectionNode
+ * @property {() => Client} getClient Returns the `Client` instance for `ads-client`
+*/
+
 module.exports = function (RED) {
   function AdsClientConnectionStatus(config) {
     RED.nodes.createNode(this, config);
@@ -8,7 +17,10 @@ module.exports = function (RED) {
     //State
     this.connected = false;
 
-    //Getting the ads-client instance
+    /**
+     * Instance of the ADS connection node
+     * @type {ConnectionNode}
+     */
     this.connection = RED.nodes.getNode(config.connection);
 
     /**

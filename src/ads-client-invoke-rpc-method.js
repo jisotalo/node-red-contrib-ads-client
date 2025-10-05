@@ -1,18 +1,28 @@
-module.exports = function (RED) {
+/**
+ * JSDoc types so that we get type hints for Client
+ * 
+ * @typedef { import("ads-client").Client } Client
+ * 
+ * @typedef ConnectionNode
+ * @property {() => Client} getClient Returns the `Client` instance for `ads-client`
+*/
 
-  function AdsClientRpc(config) {
-    RED.nodes.createNode(this, config)
+module.exports = function (RED) {
+  function AdsClientInvokeRpcMethod(config) {
+    RED.nodes.createNode(this, config);
 
     //Properties
-    this.name = config.name
-    this.methodName = config.methodName
+    this.name = config.name;
+    this.methodName = config.methodName;
 
-    //Getting the ads-client instance
-    this.connection = RED.nodes.getNode(config.connection)
+    /**
+     * Instance of the ADS connection node
+     * @type {ConnectionNode}
+     */
+    this.connection = RED.nodes.getNode(config.connection);
 
     //When input is toggled, try to write data
     this.on('input', async (msg, send, done) => {
-
       if (!this.connection) {
         this.status({ fill: 'red', shape: 'dot', text: `Error: No connection configured` })
         var err = new Error(`No connection configured`);
@@ -31,7 +41,7 @@ module.exports = function (RED) {
       if (!this.connection.isConnected()) {
         //Try to connect
         try {
-          await this.connection.connect()
+          await this.connection.connect();
 
         } catch (err) {
           //Failed to connect, we can't work..
@@ -42,7 +52,9 @@ module.exports = function (RED) {
       }
 
 
-      const fullMethodCall = this.methodName === '' ? msg.topic : this.methodName
+      const fullMethodCall = this.methodName === ''
+        ? msg.topic
+        : this.methodName
       const [functionBlock, methodToCall] = fullMethodCall.split(/\.(?=[^\.]+$)/); //Split on last dot (.)
 
       //Finally, calling the RPC method
@@ -51,33 +63,29 @@ module.exports = function (RED) {
           functionBlock,
           methodToCall,
           msg.payload
-        )
+        );
 
         //We are here -> success
-        this.status({ fill: 'green', shape: 'dot', text: 'Last call successful' })
+        this.status({ fill: 'green', shape: 'dot', text: 'Last call successful' });
 
         send({
           ...msg,
           payload: res.returnValue,
           outputs: res.outputs
-        })
+        });
 
         if (done) {
-          done()
+          done();
         }
 
       } catch (err) {
-
         this.status({ fill: 'red', shape: 'dot', text: `Error: Last call failed` })
         this.connection.formatError(err,msg);
         (done)? done(err):  this.error(err, msg);
         return;
-
       }
-
-    })
-
+    });
   }
 
-  RED.nodes.registerType('ads-client-invoke-rpc-method', AdsClientRpc)
+  RED.nodes.registerType('ads-client-invoke-rpc-method', AdsClientInvokeRpcMethod)
 }

@@ -17,56 +17,39 @@ module.exports = function (RED) {
     //Properties
     this.name = config.name;
 
-    this.connectionSettings = {
-      //ads-client settings (required)
-      targetAmsNetId: config.targetAmsNetId,
-      targetAdsPort: config.targetAdsPort,
+    this.debugLevel = 0;
 
-      //ads-client settings (optional)
-      objectifyEnumerations: config.objectifyEnumerations,
-      convertDatesToJavascript: config.convertDatesToJavascript,
-      readAndCacheSymbols: config.readAndCacheSymbols,
-      readAndCacheDataTypes: config.readAndCacheDataTypes,
-      monitorPlcSymbolVersion: config.monitorPlcSymbolVersion,
-      hideConsoleWarnings: config.hideConsoleWarnings,
-      autoReconnect: config.autoReconnect,
+    this.connectionSettings = {
       allowHalfOpen: config.allowHalfOpen,
+      autoReconnect: config.autoReconnect,
+      //connectionCheckInterval: undefined,
+      //connectionDownDelay: undefined,
+      convertDatesToJavascript: config.convertDatesToJavascript,
+      deleteUnknownSubscriptions: config.deleteUnknownSubscriptions,
+      disableCaching: config.disableCaching,
+      forceUtf8ForAdsSymbols: config.forceUtf8ForAdsSymbols,
+      hideConsoleWarnings: config.hideConsoleWarnings,
+      //localAddress: undefined,
+      //localAdsPort: undefined,
+      //localAmsNetId: undefined,
+      //localTcpPort: undefined,
+      monitorPlcSymbolVersion: config.monitorPlcSymbolVersion,
+      objectifyEnumerations: config.objectifyEnumerations,
       rawClient: config.rawClient,
+      readAndCacheDataTypes: config.readAndCacheDataTypes,
+      readAndCacheSymbols: config.readAndCacheSymbols,
+      //reconnectInterval: undefined,
+      //routerAddress: undefined,
+      //routerTcpPort: undefined,
+      targetAdsPort: config.targetAdsPort,
+      targetAmsNetId: config.targetAmsNetId,
+      //timeoutDelay: undefined
     };
 
-    //Some optional "text" settings, only add if modified
-    //If not added, ads-client uses default values
-    //However with boolean optional settings it's easier to just have same defaults here
-    if (config.routerTcpPort != null && config.routerTcpPort !== "") {
-      this.connectionSettings.routerTcpPort = parseInt(config.routerTcpPort);
-    }
-
-    if (config.routerAddress != null && config.routerAddress !== "") {
-      this.connectionSettings.routerAddress = config.routerAddress;
-    }
-
-    if (config.localAddress != null && config.localAddress !== "") {
-      this.connectionSettings.localAddress = config.localAddress;
-    }
-
-    if (config.localTcpPort != null && config.localTcpPort !== "") {
-      this.connectionSettings.localTcpPort = parseInt(config.localTcpPort);
-    }
-
-    if (config.localAmsNetId != null && config.localAmsNetId !== "") {
-      this.connectionSettings.localAmsNetId = config.localAmsNetId;
-    }
-
-    if (config.localAdsPort != null && config.localAdsPort !== "") {
-      this.connectionSettings.localAdsPort = parseInt(config.localAdsPort);
-    }
-
-    if (config.timeoutDelay != null && config.timeoutDelay !== "") {
-      this.connectionSettings.timeoutDelay = parseInt(config.timeoutDelay);
-    }
-
-    if (config.reconnectInterval != null && config.reconnectInterval !== "") {
-      this.connectionSettings.reconnectInterval = parseInt(config.reconnectInterval);
+    //Overriding optional settings that are provided
+    //Boolean settings already have same defaults as ads-client does
+    if (config.debugLevel != null && config.debugLevel !== "") {
+      this.debugLevel = parseInt(config.debugLevel);
     }
 
     if (config.connectionCheckInterval != null && config.connectionCheckInterval !== "") {
@@ -77,7 +60,37 @@ module.exports = function (RED) {
       this.connectionSettings.connectionDownDelay = parseInt(config.connectionDownDelay);
     }
 
-    this.debuggingLevel = config.debuggingLevel;
+    if (config.localAddress != null && config.localAddress !== "") {
+      this.connectionSettings.localAddress = config.localAddress;
+    }
+
+    if (config.localAdsPort != null && config.localAdsPort !== "") {
+      this.connectionSettings.localAdsPort = parseInt(config.localAdsPort);
+    }
+
+    if (config.localAmsNetId != null && config.localAmsNetId !== "") {
+      this.connectionSettings.localAmsNetId = config.localAmsNetId;
+    }
+
+    if (config.localTcpPort != null && config.localTcpPort !== "") {
+      this.connectionSettings.localTcpPort = parseInt(config.localTcpPort);
+    }
+
+    if (config.reconnectInterval != null && config.reconnectInterval !== "") {
+      this.connectionSettings.reconnectInterval = parseInt(config.reconnectInterval);
+    }
+
+    if (config.routerAddress != null && config.routerAddress !== "") {
+      this.connectionSettings.routerAddress = config.routerAddress;
+    }
+
+    if (config.routerTcpPort != null && config.routerTcpPort !== "") {
+      this.connectionSettings.routerTcpPort = parseInt(config.routerTcpPort);
+    }
+
+    if (config.timeoutDelay != null && config.timeoutDelay !== "") {
+      this.connectionSettings.timeoutDelay = parseInt(config.timeoutDelay);
+    }
 
     /**
      * This is called from ads-client when connect or disconnect
@@ -122,7 +135,7 @@ module.exports = function (RED) {
 
         this.adsClient = new ads.Client(this.connectionSettings);
 
-        if (!isNaN(parseInt(this.debuggingLevel))) this.adsClient.setDebugLevel(parseInt(this.debuggingLevel));
+        this.adsClient.setDebugLevel(parseInt(this.debugLevel));
 
         this.adsClient.on("connect", () => this.onConnectedStateChange(true));
         this.adsClient.on("disconnect", () => this.onConnectedStateChange(false));

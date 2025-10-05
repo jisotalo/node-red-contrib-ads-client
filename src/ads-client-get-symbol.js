@@ -1,3 +1,12 @@
+/**
+ * JSDoc types so that we get type hints for Client
+ * 
+ * @typedef { import("ads-client").Client } Client
+ * 
+ * @typedef ConnectionNode
+ * @property {() => Client} getClient Returns the `Client` instance for `ads-client`
+ */
+
 module.exports = function (RED) {
   function AdsClientGetSymbol(config) {
     RED.nodes.createNode(this, config);
@@ -6,7 +15,10 @@ module.exports = function (RED) {
     this.name = config.name;
     this.variableName = config.variableName;
 
-    //Getting the ads-client instance
+    /**
+     * Instance of the ADS connection node
+     * @type {ConnectionNode}
+     */
     this.connection = RED.nodes.getNode(config.connection);
 
     //When input is toggled, try to read data
@@ -38,7 +50,9 @@ module.exports = function (RED) {
         }
       }
 
-      const variable = this.variableName === "" ? msg.topic : this.variableName;
+      const variable = this.variableName === ""
+        ? msg.topic
+        : this.variableName;
 
       //Finally, getting the symbol
       try {

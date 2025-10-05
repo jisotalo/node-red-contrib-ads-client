@@ -6,7 +6,9 @@
     color: "#3FADB5",
     inputs: 1,
     inputLabels: function () {
-      return this.variableName === "" ? "Topic as variable name" : "Trigger";
+      return this.variableName === "" 
+      ? "Topic as variable name" 
+      : "Trigger";
     },
     outputs: 1,
     outputLabels: "Symbol",
@@ -23,10 +25,7 @@
       }
 
       return `ADS - Get Symbol (${this.variableName === "" ? `msg.topic` : `${this.variableName}`})`;
-    },
-    oneditprepare: function () {
-      //Stuff that is done when properties panel is opened
-    },
+    }
   });
 </script>
 
@@ -46,7 +45,10 @@
     <label for="node-input-variableName"><i class="fa fa-tag"></i> Variable path</label>
     <input type="text" id="node-input-variableName" placeholder="Variable path" />
   </div>
-  <div class="form-tips"><b>Tip:</b> Leave variable path empty to use <code>msg.topic</code> input instead.</div>
+
+  <div class="form-tips">
+    <b>Tip:</b> Leave variable path empty to use <code>msg.topic</code> input instead.
+  </div>
 
   <div class="form-row">
     <!-- Some margin after tip -->
@@ -69,56 +71,63 @@
   </p>
 
   <h3>Properties (settings)</h3>
-    <dl class="message-properties">
-      <dt>Name
-        <span class="property-type">string</span>
-      </dt>
-      <dd> Optional node name</dd>
-    </dl>
+  <dl class="message-properties">
+    <dt>
+      Name
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Optional node name</dd>
+  </dl>
 
-    <dl class="message-properties">
-      <dt>ADS connection
-        <span class="property-type">ads-client-connection</span>
-      </dt>
-      <dd> ADS client connection (target system) to use</dd>
-    </dl>
+  <dl class="message-properties">
+    <dt>
+      ADS connection
+      <span class="property-type">ads-client-connection</span>
+    </dt>
+    <dd>ADS client connection (target system) to use</dd>
+  </dl>
 
-    <dl class="message-properties">
-      <dt>Variable path
-        <span class="property-type">string</span>
-      </dt>
-      <dd> Symbol variable path at the target (such as <code>GVL_Test.ExampleStruct</code>)</dd>
-    </dl>
-
+  <dl class="message-properties">
+    <dt>
+      Variable path
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Symbol variable path at the target (such as <code>GVL_Test.ExampleStruct</code>)</dd>
+  </dl>
 
   <h3>Inputs</h3>
-    <dl class="message-properties">
-      <dt>topic
-        <span class="property-type">undefined | string</span>
-      </dt>
-      <dd> If provided and no variable path set in properties, this topic is used as variable path.</code></dd>
-    </dl>
+  <dl class="message-properties">
+    <dt>
+      topic
+      <span class="property-type">undefined | string</span>
+    </dt>
+    <dd>If provided and no variable path set in properties, this topic is used as variable path.</code></dd>
+  </dl>
 
   <h3>Outputs</h3>
-    <dl class="message-properties">
-      <dt>payload <span class="property-type">object</span></dt>
-      <dd>The symbol object</dd>
-      <dt>... <span class="property-type">any</span></dt>
-      <dd>All input <code>msg</code> properties are forwarded</dd>
-    </dl>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">object</span></dt>
+    <dd>The symbol object</dd>
+    <dt>... <span class="property-type">any</span></dt>
+    <dd>All input <code>msg</code> properties are forwarded</dd>
+  </dl>
 
   <h3>Details</h3>
-    <p>
+  <p>
     If the variable path is not set in properties, the input <code>msg.topic</code> is used as variable path instead.
-    </p>
+  </p>
 
   <h3>References</h3>
-    <ul>
-      <li><a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
+  <ul>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
         ads-client readme
-      </a></li>
-      <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#getSymbol" target="_blank" style="text-decoration: underline">
+      </a>
+    </li>
+    <li>
+      <a href="https://jisotalo.fi/ads-client/classes/Client.html#getSymbol" target="_blank" style="text-decoration: underline">
         ads-client - getSymbol()
-      </a></li>
-    </ul>
+      </a>
+    </li>
+  </ul>
 </script>
