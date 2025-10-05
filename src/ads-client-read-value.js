@@ -4,7 +4,7 @@ module.exports = function (RED) {
 
     //Properties
     this.name = config.name;
-    this.variableName = config.variableName;
+    this.path = config.path;
 
     //Getting the ads-client instance
     this.connection = RED.nodes.getNode(config.connection);
@@ -22,9 +22,9 @@ module.exports = function (RED) {
         return;
       }
 
-      //We need to have string in msg.topic if variableName is empty
+      //We need to have string in msg.topic if path is empty
       if (
-        this.variableName === "" &&
+        this.path === "" &&
         (!msg.topic || typeof msg.topic !== "string")
       ) {
         this.status({
@@ -56,7 +56,7 @@ module.exports = function (RED) {
       }
 
       const variableToRead =
-        this.variableName === "" ? msg.topic : this.variableName;
+        this.path === "" ? msg.topic : this.path;
 
       //Finally, reading the data
       try {

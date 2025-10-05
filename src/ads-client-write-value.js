@@ -4,7 +4,7 @@ module.exports = function (RED) {
 
     //Properties
     this.name = config.name;
-    this.variableName = config.variableName;
+    this.path = config.path;
     this.autoFill = config.autoFill;
 
     //Getting the ads-client instance
@@ -23,9 +23,9 @@ module.exports = function (RED) {
         return;
       }
 
-      //We need to have string in msg.topic if variableName is empty
+      //We need to have string in msg.topic if path is empty
       if (
-        this.variableName === "" &&
+        this.path === "" &&
         (!msg.topic || typeof msg.topic !== "string")
       ) {
         this.status({
@@ -57,7 +57,7 @@ module.exports = function (RED) {
       }
 
       const variableToWrite =
-        this.variableName === "" ? msg.topic : this.variableName;
+        this.path === "" ? msg.topic : this.path;
 
       //Finally, writing the data
       try {

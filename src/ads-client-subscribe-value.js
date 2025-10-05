@@ -4,7 +4,7 @@ module.exports = function (RED) {
 
     //Properties
     this.name = config.name;
-    this.variableName = config.variableName;
+    this.path = config.path;
     this.cycleTime = config.cycleTime;
     this.mode = config.mode;
     this.maxDelay = config.maxDelay;
@@ -97,7 +97,7 @@ module.exports = function (RED) {
         return;
       }
 
-      if (this.variableName === "" && !target) {
+      if (this.path === "" && !target) {
         this.status({
           fill: "red",
           shape: "dot",
@@ -139,7 +139,7 @@ module.exports = function (RED) {
       if (!this.subscription) {
         try {
           clearTimeout(this.subcribeRetryTimer);
-          this.subscription = await this.connection.getClient().subscribe({ target: target ? target : this.variableName, callback: onNotificationReceived, cycleTime: this.cycleTime, sendOnChange: this.mode === "onchange", maxDelay: this.maxDelay });
+          this.subscription = await this.connection.getClient().subscribe({ target: target ? target : this.path, callback: onNotificationReceived, cycleTime: this.cycleTime, sendOnChange: this.mode === "onchange", maxDelay: this.maxDelay });
 
           //Successful
           this.status({ fill: "green", shape: "dot", text: "Subscribed" });
@@ -153,7 +153,7 @@ module.exports = function (RED) {
             shape: "dot",
             text: `Error: Subscribe failed, retrying...`,
           });
-          this.error(`Error: Subscribing to ${target ? target : this.variableName} failed: ${errInfo.message} - retrying every ${this.retryInterval} ms`, errInfo);
+          this.error(`Error: Subscribing to ${target ? target : this.path} failed: ${errInfo.message} - retrying every ${this.retryInterval} ms`, errInfo);
           this.subscriptionOK = false;
 
           //Try again soon
@@ -205,8 +205,8 @@ module.exports = function (RED) {
         return;
       }
 
-      //Check if given topic is valid (if no variableName given)
-      if (this.variableName === "" && (!msg.topic || typeof msg.topic !== "string")) {
+      //Check if given topic is valid (if no path given)
+      if (this.path === "" && (!msg.topic || typeof msg.topic !== "string")) {
         this.status({
           fill: "red",
           shape: "dot",
@@ -224,12 +224,12 @@ module.exports = function (RED) {
       if (this.controlSubscription && msg.subscribe) {
         //Subscribe request received from msg.subscribe
         await unsubscribe();
-        await subscribe(this.variableName === "" ? msg.topic : this.variableName);
+        await subscribe(this.path === "" ? msg.topic : this.path);
 
         if (done) {
           done();
         }
-      } else if (this.variableName === "" && msg.topic) {
+      } else if (this.path === "" && msg.topic) {
         //Input msg.topic was given -> subscribe to it
         await unsubscribe();
         await subscribe(msg.topic);
@@ -255,7 +255,7 @@ module.exports = function (RED) {
     });
 
     //Start subscribing immediately after startup (unless controlled node or no variable name)
-    if (!this.controlSubscription && this.variableName) {
+    if (!this.controlSubscription && this.path) {
       subscribe();
     } else if (this.controlSubscription) {
       this.status({

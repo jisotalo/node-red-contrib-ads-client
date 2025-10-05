@@ -1,11 +1,10 @@
 module.exports = function (RED) {
 
-  function AdsClientReadRuntimeState(config) {
+  function AdsClientReadPlcRuntimeState(config) {
     RED.nodes.createNode(this, config)
 
     //Properties
-    this.name = config.name
-    this.adsPort = config.adsPort
+    this.name = config.name;
 
     //Getting the ads-client instance
     this.connection = RED.nodes.getNode(config.connection)
@@ -16,14 +15,6 @@ module.exports = function (RED) {
       if (!this.connection) {
         this.status({ fill: 'red', shape: 'dot', text: `Error: No connection configured` })
         var err = new Error(`No connection configured`);
-        (done)? done(err):  this.error(err, msg);
-        return;
-      }
-
-      //We need to have a valid number in msg.topic if adsPort is empty
-      if (this.adsPort === '' && (!msg.topic || isNaN(parseInt(msg.topic)))) {
-        this.status({ fill: 'red', shape: 'dot', text: `Error: Input msg.topic not a valid number` })
-        var err = new Error(`Input msg.topic is missing or it's not a valid number`);
         (done)? done(err):  this.error(err, msg);
         return;
       }
@@ -41,11 +32,9 @@ module.exports = function (RED) {
         }
       }
 
-      const targetAdsPort = this.adsPort === '' ? parseInt(msg.topic) : this.adsPort
-
       //Finally, reading the state
       try {
-        const res = await this.connection.getClient().readPlcRuntimeState(targetAdsPort)
+        const res = await this.connection.getClient().readPlcRuntimeState();
 
         //We are here -> success
         this.status({ fill: 'green', shape: 'dot', text: 'Last read successful' })
@@ -72,5 +61,5 @@ module.exports = function (RED) {
     })
   }
 
-  RED.nodes.registerType('ads-client-read-runtime-state', AdsClientReadRuntimeState)
+  RED.nodes.registerType('ads-client-read-plc-runtime-state', AdsClientReadPlcRuntimeState)
 }

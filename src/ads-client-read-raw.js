@@ -9,8 +9,6 @@ module.exports = function (RED) {
     this.indexOffset =
       config.indexOffset === "" ? null : parseInt(config.indexOffset);
     this.size = config.size === "" ? null : parseInt(config.size);
-    this.targetAdsPort =
-      config.targetAdsPort === "" ? null : parseInt(config.targetAdsPort);
 
     //Getting the ads-client instance
     this.connection = RED.nodes.getNode(config.connection);
@@ -83,24 +81,6 @@ module.exports = function (RED) {
             this.size = msg.topic.size;
           }
         }
-
-        //targetAdsPort
-        if (msg.topic.targetAdsPort !== undefined) {
-          if (typeof msg.topic.targetAdsPort !== "number") {
-            this.status({
-              fill: "red",
-              shape: "dot",
-              text: `Error: Input msg.topic.targetAdsPort is not a valid number`,
-            });
-            var err = new Error(
-              `Error: Input msg.topic.targetAdsPort is not a valid number`
-            );
-            done ? done(err) : this.error(err, msg);
-            return;
-          } else {
-            this.targetAdsPort = msg.topic.targetAdsPort;
-          }
-        }
       }
 
       //Checking that all required parameters are provided
@@ -155,9 +135,7 @@ module.exports = function (RED) {
       try {
         const res = await this.connection
           .getClient()
-          .readRaw(this.indexGroup, this.indexOffset, this.size, {
-            adsPort: this.targetAdsPort,
-          });
+          .readRaw(this.indexGroup, this.indexOffset, this.size);
 
         //We are here -> success
         this.status({

@@ -6,9 +6,9 @@
     align: "right",
     color: "#3FADB5",
     inputLabels: function () {
-      if (this.variableName === "" && this.controlSubscription) {
+      if (this.path === "" && this.controlSubscription) {
         return "Topic as variable name, subscribe as sub/unsub command";
-      } else if (this.variableName === "") {
+      } else if (this.path === "") {
         return "Topic as variable name";
       } else {
         return "Subscribe as sub/unsub command";
@@ -19,7 +19,7 @@
     defaults: {
       name: { value: "" },
       connection: { value: null, type: "ads-client-connection" },
-      variableName: { value: "", required: false },
+      path: { value: "", required: false },
       cycleTime: { value: 200, required: true },
       mode: { value: "onchange", rquired: true },
       maxDelay: { value: 0, required: true },
@@ -35,18 +35,18 @@
         return this.name;
       }
 
-      return `ADS - Subscribe Value (${this.variableName === "" ? `msg.topic` : `${this.variableName}`})`;
+      return `ADS - Subscribe Value (${this.path === "" ? `msg.topic` : `${this.path}`})`;
     },
     oneditprepare: function () {
       //Stuff that is done when properties panel is opened
       let node = this;
 
       let checkIfInput = function () {
-        node.inputs = $("#node-input-variableName").val() === "" || $("#node-input-controlSubscription").is(":checked") ? 1 : 0;
+        node.inputs = $("#node-input-path").val() === "" || $("#node-input-controlSubscription").is(":checked") ? 1 : 0;
       };
 
       //If variable name is not given -> we need input
-      $("#node-input-variableName").change(function () {
+      $("#node-input-path").change(function () {
         checkIfInput();
       });
 
@@ -71,8 +71,8 @@
   </div>
 
   <div class="form-row">
-      <label for="node-input-variableName"><i class="fa fa-tag"></i> Variable name</label>
-      <input type="text" id="node-input-variableName" placeholder="Variable name">
+      <label for="node-input-path"><i class="fa fa-tag"></i> Variable name</label>
+      <input type="text" id="node-input-path" placeholder="Variable name">
   </div>
   <div class="form-tips"><b>Tip:</b> Leave variable name empty to use <code>msg.topic</code> input instead.</div>
 
@@ -246,7 +246,7 @@
   <h3>References</h3>
     <ul>
       <li><a href="https://github.com/jisotalo/ads-client#subscribing-to-plc-variables-device-notifications" target="_blank" style="text-decoration: underline">
-        ads-client subscribe() readme
+        ads-client readme
       </a></li>
       <li><a href="https://jisotalo.github.io/ads-client/Client.html#subscribe" target="_blank" style="text-decoration: underline">
         ads-client subscribe() documentation

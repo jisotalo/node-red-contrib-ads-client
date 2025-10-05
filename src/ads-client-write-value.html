@@ -7,14 +7,16 @@
     color: "#3FADB5",
     inputs: 1,
     inputLabels: function () {
-      return this.variableName === "" ? "Value (topic as variable name)" : "Value";
+      return this.path === "" 
+      ? "Value (topic as path)" 
+      : "Value";
     },
     outputs: 1,
     outputLabels: "Data",
     defaults: {
       name: { value: "" },
       connection: { value: null, type: "ads-client-connection" },
-      variableName: { value: "", required: false },
+      path: { value: "", required: false },
       autoFill: { value: false },
     },
     label: function () {
@@ -24,7 +26,7 @@
         return this.name;
       }
 
-      return `ADS - Write Value (${this.variableName === "" ? `msg.topic` : `${this.variableName}`})`;
+      return `ADS - Write Value (${this.path === "" ? `msg.topic` : `${this.path}`})`;
     },
     oneditprepare: function () {
       //Stuff that is done when properties panel is opened
@@ -45,11 +47,14 @@
   </div>
 
   <div class="form-row">
-    <label for="node-input-variableName"><i class="fa fa-tag"></i> Variable name</label>
-    <input type="text" id="node-input-variableName" placeholder="Variable name" />
+    <label for="node-input-path"><i class="fa fa-tag"></i> Variable path</label>
+    <input type="text" id="node-input-path" placeholder="Variable path" />
   </div>
-  <div class="form-tips"><b>Tip:</b> Leave variable name empty to use <code>msg.topic</code> input instead.</div>
 
+  <div class="form-tips">
+    <b>Tip:</b> Leave variable path empty to use <code>msg.topic</code> input instead.
+  </div>
+  
   <div class="form-row">
     <!-- Some margin after tip -->
   </div>
@@ -57,8 +62,8 @@
   <div class="form-row">
     <input type="checkbox" id="node-input-autoFill" style="display: inline-block; width: auto; vertical-align: top;" />
     <label for="node-input-autoFill" style="width: auto">
-      Automatically fill missing properties (<a href="https://github.com/jisotalo/ads-client#example-writing-struct-type-variable-with-autofill-parameter" target="_blank" style="text-decoration: underline"><code>autoFill</code></a
-      >)</label
+      Automatically fill missing properties (<code>autoFill</code>)
+    </label
     >
   </div>
 </script>
@@ -66,13 +71,12 @@
 <!-- Help -->
 <script type="text/html" data-help-name="ads-client-write-value">
   <p>
-    Writes given value to any kind of variable by given variable name.
+    Writes variable's value to the target system by a variable path (such as <code>GVL_Test.ExampleStruct</code>). 
+    Converts the value from a Javascript object to a raw value.
   </p>
   <p>
-    The input <code>msg.payload</code> is the value to be written, its type depends to PLC variable type.
-    If input <code>msg.topic</code> is given, the topic is used as variable name if no variable name is given in properties.
+    <b>NOTE:</b> This requires that the target is a PLC runtime or has equivalent ADS protocol support.
   </p>
-
 
   <h3>Properties (settings)</h3>
     <dl class="message-properties">
@@ -90,17 +94,22 @@
     </dl>
 
     <dl class="message-properties">
-      <dt>Variable name
+      <dt>Variable path
         <span class="property-type">string</span>
       </dt>
-      <dd> Variable name/path to read</dd>
+      <dd> 
+        Variable path in the PLC (such as <code>GVL_Test.ExampleStruct</code>)
+      </dd>
     </dl>
 
     <dl class="message-properties">
       <dt>Automatically fill missing properties
         <span class="property-type">bool</span>
       </dt>
-      <dd> If data type is structured (STRUCT, FB..), any missing properties are kept as they are.</dd>
+      <dd> 
+        If set and the data type is a container (<code>STRUCT</code>, <code>FUNCTION_BLOCK</code> etc.), 
+        missing properties are automatically set to active values read from target (kept as-is).  
+      </dd>
     </dl>
 
 
@@ -109,57 +118,43 @@
       <dt>payload
         <span class="property-type">any</span>
       </dt>
-      <dd> The value to write (type depends on PLC type)</dd>
+      <dd>Value to write</dd>
     </dl>
     <dl class="message-properties">
       <dt>topic
         <span class="property-type">undefined | string</span>
       </dt>
-      <dd> If given and no variable name set in properties, this topic is used as variable name.</code></dd>
+      <dd>
+        If provided and no variable path set in properties, this topic is used as path.
+      </dd>
     </dl>
 
   <h3>Outputs</h3>
     <dl class="message-properties">
       <dt>payload <span class="property-type">any</span></dt>
-      <dd>The value after writing</dd>
-      <dt>type <span class="property-type">object</span></dt>
-      <dd>Variable data type information</dd>
+      <dd>The value written</dd>
+      <dt>rawValue <span class="property-type">object</span></dt>
+      <dd>Raw value as Buffer</dd>
+      <dt>dataType <span class="property-type">object</span></dt>
+      <dd>Data type of the target symbol</dd>
       <dt>symbol <span class="property-type">object</span></dt>
-      <dd>Variable symbol information</dd>
+      <dd>Target symbol</dd>
       <dt>... <span class="property-type">any</span></dt>
       <dd>All input <code>msg</code> properties are forwarded</dd>
     </dl>
 
   <h3>Details</h3>
     <p>
-    The input <code>msg.payload</code> should match the PLC variable type. For example, if PLC type is <code>STRING</code>, the payload should be value that can be handled as string.
-    And if the data type is STRUCT, the payload should be a JavaScript object matching the PLC struct (JSON).
+    If the variable path is not set in properties, the input <code>msg.topic</code> is used as variable path instead.
     </p>
-    <p>
-    If <code>autoFill</code> is set, the given JSON doesn't need to include all structured data type properties. Please see
-    <a href="https://github.com/jisotalo/ads-client?tab=readme-ov-file#writing-values"
-      target="_blank" style="text-decoration: underline">
-      ads-client writeValue() autoFill example
-    </a>.
-    </p>
-    <p>
-    If the variable name is not set in properties, the input <code>msg.topic</code> is used as variable name instead.
-    </p>
-    <p>
-    See <code>ads-client</code> readme for help. Valid variable name for TwinCAT 3 can be something like <code>GVL.VariableName</code>
-    </p>
-
 
   <h3>References</h3>
     <ul>
-      <li><a href="https://github.com/jisotalo/ads-client?tab=readme-ov-file#writing-values" target="_blank" style="text-decoration: underline">
-        ads-client writeValue() readme
+      <li><a href="https://github.com/jisotalo/ads-client/#writing-values" target="_blank" style="text-decoration: underline">
+        ads-client readme
       </a></li>
-      <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#writeValue" target="_blank" style="text-decoration: underline">
+      <li><a href="https://jisotalo.github.io/ads-client/Client.html#writeValue" target="_blank" style="text-decoration: underline">
         ads-client writeValue() documentation
       </a></li>
-      <!-- <li><a href="https://github.com/jisotalo/ads-client#example-writing-struct-type-variable-with-autofill-parameter" target="_blank" style="text-decoration: underline">
-        ads-client writeSymbol() autoFill example
-      </a></li> -->
     </ul>
 </script>

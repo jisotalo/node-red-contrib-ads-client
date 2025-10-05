@@ -6,8 +6,8 @@
     color: "#3FADB5",
     inputs: 1,
     inputLabels: function () {
-      return this.variableName === ""
-        ? "Topic as variable name"
+      return this.path === ""
+        ? "Topic as path"
         : "Read trigger";
     },
     outputs: 1,
@@ -15,7 +15,7 @@
     defaults: {
       name: { value: "" },
       connection: { value: null, type: "ads-client-connection" },
-      variableName: { value: "", required: false },
+      path: { value: "", required: false },
     },
     label: function () {
       if (this.connection === null)
@@ -26,7 +26,7 @@
       }
 
       return `ADS - Read Value (${
-        this.variableName === "" ? `msg.topic` : `${this.variableName}`
+        this.path === "" ? `msg.topic` : `${this.path}`
       })`;
     },
     oneditprepare: function () {
@@ -54,17 +54,17 @@
   </div>
 
   <div class="form-row">
-    <label for="node-input-variableName"
-      ><i class="fa fa-tag"></i> Variable name</label
+    <label for="node-input-path"
+      ><i class="fa fa-tag"></i> Variable path</label
     >
     <input
       type="text"
-      id="node-input-variableName"
-      placeholder="Variable name"
+      id="node-input-path"
+      placeholder="Path"
     />
   </div>
   <div class="form-tips">
-    <b>Tip:</b> Leave variable name empty to use <code>msg.topic</code> input
+    <b>Tip:</b> Leave variable path empty to use <code>msg.topic</code> input
     instead.
   </div>
 
@@ -76,9 +76,11 @@
 <!-- Help -->
 <script type="text/html" data-help-name="ads-client-read-value">
   <p>
-    Reads any kind of variable by given variable name.
+    Reads variable's value from the target system by a variable path (such as <code>GVL_Test.ExampleStruct</code>) and returns the value as object.
   </p>
-
+  <p>
+    <b>NOTE:</b> This requires that the target is a PLC runtime or has equivalent ADS protocol support.
+  </p>
 
   <h3>Properties (settings)</h3>
     <dl class="message-properties">
@@ -96,48 +98,47 @@
     </dl>
 
     <dl class="message-properties">
-      <dt>Variable name
+      <dt>Path
         <span class="property-type">string</span>
       </dt>
-      <dd> Variable name/path to read</dd>
+      <dd> 
+        Variable path in the PLC (such as <code>GVL_Test.ExampleStruct</code>)
+      </dd>
     </dl>
-
 
   <h3>Inputs</h3>
     <dl class="message-properties">
       <dt>topic
         <span class="property-type">undefined | string</span>
       </dt>
-      <dd> If given and no variable name set in properties, this topic is used as variable name.</code></dd>
+      <dd> If provided and no variable path set in properties, this topic is used as path.</code></dd>
     </dl>
 
   <h3>Outputs</h3>
     <dl class="message-properties">
       <dt>payload <span class="property-type">any</span></dt>
       <dd>The value read</dd>
-      <dt>type <span class="property-type">object</span></dt>
-      <dd>Variable data type information</dd>
+      <dt>rawValue <span class="property-type">object</span></dt>
+      <dd>Raw value as Buffer</dd>
+      <dt>dataType <span class="property-type">object</span></dt>
+      <dd>Data type of the target symbol</dd>
       <dt>symbol <span class="property-type">object</span></dt>
-      <dd>Variable symbol information</dd>
+      <dd>Target symbol</dd>
       <dt>... <span class="property-type">any</span></dt>
       <dd>All input <code>msg</code> properties are forwarded</dd>
     </dl>
 
   <h3>Details</h3>
     <p>
-    If the variable name is not set in properties, the input <code>msg.topic</code> is used as variable name instead.
+    If the variable path is not set in properties, the input <code>msg.topic</code> is used as variable path instead.
     </p>
-    <p>
-    See <code>ads-client</code> readme for help. Valid variable name for TwinCAT 3 can be something like <code>GVL.VariableName</code>
-    </p>
-
 
   <h3>References</h3>
     <ul>
-      <li><a href="https://github.com/jisotalo/ads-client?tab=readme-ov-file#reading-values" target="_blank" style="text-decoration: underline">
-        ads-client readValue() readme
+      <li><a href="https://github.com/jisotalo/ads-client/#reading-values" target="_blank" style="text-decoration: underline">
+        ads-client readme
       </a></li>
-      <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#readValue" target="_blank" style="text-decoration: underline">
+      <li><a href="https://jisotalo.github.io/ads-client/Client.html#readValue" target="_blank" style="text-decoration: underline">
         ads-client readValue() documentation
       </a></li>
     </ul>

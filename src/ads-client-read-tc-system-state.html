@@ -48,8 +48,13 @@
 
 <!-- Help -->
 <script type="text/html" data-help-name="ads-client-read-tc-system-state">
-  <p>Reads TwinCAT Tc System state from target (using ADS port 10000).</p>
-  <p><b>NOTE:</b> Used <code>ads-connection</code> needs to have <code>allowHalfOpen</code> setting checked in order to connect to systems running in Config mode.</p>
+  <p>
+    Reads target TwinCAT system state from ADS port 10000 (usually <code>Run</code> or <code>Config</code>).
+  </p>
+  <p>
+    <b>NOTE:</b> You might want to use the <code>Read Extended Tc System State</code> node instead.
+  </p>
+
 
   <h3>Properties (settings)</h3>
   <dl class="message-properties">
@@ -71,22 +76,23 @@
   <h3>Outputs</h3>
   <dl class="message-properties">
     <dt>payload <span class="property-type">string</span></dt>
-    <dd>The system manager state as string (Run, Config.. - See <a href="https://github.com/jisotalo/ads-client/blob/f1a5a07bd0c847b8a92a512c8b99b78eb7838b88/src/ads-client-ads.js#L469" target="_blank">ADS_STATE</a>)</dd>
+    <dd>
+      TwinCAT system state as string 
+      (<code>Run</code>, <code>Stop</code> etc. - see <a href="https://jisotalo.fi/ads-client/variables/ADS.ADS_STATE.html" target="_blank">ADS.ADS_STATE</a>)
+    </dd>
     <dt>result <span class="property-type">object</span></dt>
-    <dd>The system manager state object</dd>
+    <dd>TwinCAT system state object </dd>
     <dt>... <span class="property-type">any</span></dt>
     <dd>All input <code>msg</code> properties are forwarded</dd>
   </dl>
 
-  <h3>Details</h3>
-  <p>Reads the target TwinCAT system state (Run, Config).</p>
-  <p><b>NOTE:</b> Used <code>ads-connection</code> needs to have <code>allowHalfOpen</code> setting checked in order to connect to systems running in Config mode.</p>
-  <p>See <code>ads-client</code> readme for help.</p>
-
   <h3>References</h3>
   <ul>
-    <li><a href="https://github.com/jisotalo/ads-client#starting-and-stopping-the-twincat-system" target="_blank" style="text-decoration: underline"> ads-client readme </a></li>
-    <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#readTcSystemState" target="_blank" style="text-decoration: underline"> ads-client readTcSystemState() documentation </a></li>
-    <li><a href="https://github.com/jisotalo/ads-client/blob/f1a5a07bd0c847b8a92a512c8b99b78eb7838b88/src/ads-client-ads.js#L469" target="_blank" style="text-decoration: underline"> Possible states (ADS_STATE) </a></li>
+    <li><a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
+      ads-client readme
+    </a></li>
+    <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#readTcSystemState" target="_blank" style="text-decoration: underline">
+      ads-client - readTcSystemState()
+    </a></li>
   </ul>
 </script>
