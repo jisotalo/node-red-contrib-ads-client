@@ -150,7 +150,7 @@ module.exports = function (RED) {
         //Try again every 2000 ms or so but only if client is not deleted
         //If node-red node is deleted but connection has been running, this prevents trying again when we shouldn't
         if (this.adsClient) {
-          const retryInterval = this.connectionSettings.reconnectInterval ? this.connectionSettings.reconnectInterval : ads.Client.defaultSettings().reconnectInterval;
+          const retryInterval = this.connectionSettings.reconnectInterval ? this.connectionSettings.reconnectInterval : this.adsClient.settings.reconnectInterval;
 
           if (!silence) {
             this.log(`Connecting to ${this.connectionSettings.targetAmsNetId}:${this.connectionSettings.targetAdsPort} failed, keeping trying..`);
