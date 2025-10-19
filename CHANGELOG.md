@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 19.10.2025
+
+**IMPORTANT:** This is a major version update. There are **breaking changes**! 
+
+This update changes to `ads-client` v2. See [ads-client CHANGELOG](https://github.com/jisotalo/ads-client/blob/master/CHANGELOG.md#202---14122024) for details.
+
+### Changes
+
+
 ## [1.4.0] - 31.10.2022
 ### Added
   - New new nodes

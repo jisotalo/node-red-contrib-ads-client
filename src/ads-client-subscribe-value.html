@@ -7,10 +7,10 @@
     color: "#3FADB5",
     inputLabels: function () {
       if (this.path === "" && this.controlSubscription) {
-        return "Topic as variable name, subscribe as sub/unsub command";
+        return "Topic as variable path, subscribe as sub/unsub command";
 
       } else if (this.path === "") {
-        return "Topic as variable name";
+        return "Topic as variable path";
 
       } else {
         return "Subscribe as sub/unsub command";
@@ -125,8 +125,7 @@
     Subscribes to value change notifications (ADS notifications) by a variable path, such as <code>GVL_Test.ExampleStruct</code>.
   </p>
   <p>
-    Provided callback is called with the latest value of the symbol when the value changes 
-    or when enough time has passed (depending on settings).
+    Node output is triggered when the value changes or when enough time has passed (depending on settings).
   </p>
   <p>
     <b>NOTE:</b> This requires that the target is a PLC runtime or has equivalent ADS protocol support.
@@ -159,14 +158,6 @@
 
   <dl class="message-properties">
     <dt>
-      Cycle time [ms]
-      <span class="property-type">number</span>
-    </dt>
-    <dd>How often the PLC should check if value has changed (or how often to send, see details)</dd>
-  </dl>
-
-  <dl class="message-properties">
-    <dt>
       Subscription mode
       <span class="property-type"></span>
     </dt>
@@ -188,6 +179,14 @@
         </li>
       </ul>
     </dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      Cycle time [ms]
+      <span class="property-type">number</span>
+    </dt>
+    <dd>How often the PLC should check if value has changed (or how often to send, see details)</dd>
   </dl>
 
   <dl class="message-properties">
@@ -282,8 +281,8 @@
   </p>
   <p>
     If the <code>Control subscription with input</code> is checked, the node doesn't subscribe automatically.
-    It will subscribe only when receiving input <code>msg.subscribe</code> that has truthy value (like <code>true</code>, <code>1</code>..).
-    The node can then be unsubscribed by giving a non-truthy value (like <code>false</code>, <code>0</code>..) to input <code>msg.subscribe</code>.
+    It will subscribe only when receiving input <code>msg.subscribe</code> that has truthy value (<code>true</code>, <code>1</code>..).
+    The node can then be unsubscribed by giving a non-truthy value (<code>false</code>, <code>0</code>..) to input <code>msg.subscribe</code>.
   </p>
 
   <h3>References</h3>
