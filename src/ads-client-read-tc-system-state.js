@@ -1,11 +1,23 @@
+/**
+ * JSDoc types so that we get type hints for Client
+ * 
+ * @typedef { import("ads-client").Client } Client
+ * 
+ * @typedef ConnectionNode
+ * @property {() => Client} getClient Returns the `Client` instance for `ads-client`
+*/
+
 module.exports = function (RED) {
   function AdsClientReadTcSystemState(config) {
     RED.nodes.createNode(this, config);
 
     //Properties
     this.name = config.name;
-
-    //Getting the ads-client instance
+    
+    /**
+     * Instance of the ADS connection node
+     * @type {ConnectionNode}
+     */
     this.connection = RED.nodes.getNode(config.connection);
 
     //When input is toggled, try to read data
@@ -21,6 +33,7 @@ module.exports = function (RED) {
         //Try to connect
         try {
           await this.connection.connect();
+
         } catch (err) {
           //Failed to connect, we can't work..
           this.status({ fill: "red", shape: "dot", text: `Error: Not connected` });
@@ -45,6 +58,7 @@ module.exports = function (RED) {
         if (done) {
           done();
         }
+        
       } catch (err) {
         this.status({ fill: "red", shape: "dot", text: `Error: Last read failed` });
         this.connection.formatError(err, msg);

@@ -13,7 +13,8 @@ module.exports = function (RED) {
 
     //Properties
     this.name = config.name;
-    this.methodName = config.methodName;
+    this.path = config.path;
+    this.method = config.method;
 
     /**
      * Instance of the ADS connection node
@@ -30,12 +31,17 @@ module.exports = function (RED) {
         return;
       }
 
-      //We need to have string in msg.topic if methodName is empty
-      if ( (this.methodName || '') === '' && (!msg.topic || typeof (msg.topic) !== 'string')) {
-        this.status({ fill: 'red', shape: 'dot', text: `Error: Input msg.topic not valid string` })
-        var err = new Error(`Input msg.topic is missing or it's not valid string`);
-        (done)? done(err):  this.error(err, msg);
-        return;
+      //Override with msg.topic properties (if any)
+      if (typeof msg.topic === "object") {
+        //path
+        if (msg.topic.path !== undefined) {
+          this.path = msg.topic.path;
+        }
+
+        //path
+        if (msg.topic.method !== undefined) {
+          this.method = msg.topic.method;
+        }
       }
 
       if (!this.connection.isConnected()) {
@@ -51,17 +57,11 @@ module.exports = function (RED) {
         }
       }
 
-
-      const fullMethodCall = this.methodName === ''
-        ? msg.topic
-        : this.methodName
-      const [functionBlock, methodToCall] = fullMethodCall.split(/\.(?=[^\.]+$)/); //Split on last dot (.)
-
       //Finally, calling the RPC method
       try {
         const res = await this.connection.getClient().invokeRpcMethod(
-          functionBlock,
-          methodToCall,
+          this.path,
+          this.method,
           msg.payload
         );
 
@@ -87,5 +87,5 @@ module.exports = function (RED) {
     });
   }
 
-  RED.nodes.registerType('ads-client-invoke-rpc-method', AdsClientInvokeRpcMethod)
+  RED.nodes.registerType('ads-client-invoke-rpc-method', AdsClientInvokeRpcMethod);
 }

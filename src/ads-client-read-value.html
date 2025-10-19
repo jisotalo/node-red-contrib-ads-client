@@ -18,20 +18,16 @@
       path: { value: "", required: false },
     },
     label: function () {
-      if (this.connection === null)
+      if (this.connection === null) {
         return `${this.name || `ADS - Read Value`} (*Not configured*)`;
+      }
 
       if (this.name) {
         return this.name;
       }
 
-      return `ADS - Read Value (${
-        this.path === "" ? `msg.topic` : `${this.path}`
-      })`;
-    },
-    oneditprepare: function () {
-      //Stuff that is done when properties panel is opened
-    },
+      return `ADS - Read Value (${this.path === "" ? `msg.topic` : `${this.path}`})`;
+    }
   });
 </script>
 
@@ -43,29 +39,17 @@
   </div>
 
   <div class="form-row">
-    <label for="node-input-connection"
-      ><i class="fa fa-bookmark"></i> ADS connection</label
-    >
-    <input
-      type="text"
-      id="node-input-connection"
-      placeholder="ADS Connection"
-    />
+    <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
+    <input type="text" id="node-input-connection" placeholder="ADS Connection">
   </div>
 
   <div class="form-row">
-    <label for="node-input-path"
-      ><i class="fa fa-tag"></i> Variable path</label
-    >
-    <input
-      type="text"
-      id="node-input-path"
-      placeholder="Path"
-    />
+    <label for="node-input-path"><i class="fa fa-tag"></i> Variable path</label>
+    <input type="text" id="node-input-path" placeholder="Variable path" />
   </div>
+
   <div class="form-tips">
-    <b>Tip:</b> Leave variable path empty to use <code>msg.topic</code> input
-    instead.
+    <b>Tip:</b> Leave variable path empty to use <code>msg.topic</code> input instead.
   </div>
 
   <div class="form-row">
@@ -83,36 +67,38 @@
   </p>
 
   <h3>Properties (settings)</h3>
-    <dl class="message-properties">
-      <dt>Name
-        <span class="property-type">string</span>
-      </dt>
-      <dd> Optional node name</dd>
-    </dl>
+  <dl class="message-properties">
+    <dt>
+      Name
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Optional node name</dd>
+  </dl>
 
-    <dl class="message-properties">
-      <dt>ADS connection
-        <span class="property-type">ads-client-connection</span>
-      </dt>
-      <dd> ADS client connection (target system) to use</dd>
-    </dl>
+  <dl class="message-properties">
+    <dt>
+      ADS connection
+      <span class="property-type">ads-client-connection</span>
+    </dt>
+    <dd>ADS client connection (target system) to use</dd>
+  </dl>
 
-    <dl class="message-properties">
-      <dt>Path
-        <span class="property-type">string</span>
-      </dt>
-      <dd> 
-        Variable path in the PLC (such as <code>GVL_Test.ExampleStruct</code>)
-      </dd>
-    </dl>
+  <dl class="message-properties">
+    <dt>
+      Variable path
+      <span class="property-type">string</span>
+    </dt>
+    <dd> Variable path in the PLC (such as <code>GVL_Test.ExampleStruct</code>)</dd>
+  </dl>
 
   <h3>Inputs</h3>
-    <dl class="message-properties">
-      <dt>topic
-        <span class="property-type">undefined | string</span>
-      </dt>
-      <dd> If provided and no variable path set in properties, this topic is used as path.</code></dd>
-    </dl>
+  <dl class="message-properties">
+    <dt>
+      topic
+      <span class="property-type">undefined | string</span>
+    </dt>
+    <dd>If provided and no variable path set in properties, this topic is used as path.</dd>
+  </dl>
 
   <h3>Outputs</h3>
     <dl class="message-properties">
@@ -129,17 +115,21 @@
     </dl>
 
   <h3>Details</h3>
-    <p>
+  <p>
     If the variable path is not set in properties, the input <code>msg.topic</code> is used as variable path instead.
-    </p>
+  </p>
 
   <h3>References</h3>
-    <ul>
-      <li><a href="https://github.com/jisotalo/ads-client/#reading-values" target="_blank" style="text-decoration: underline">
+  <ul>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client/#reading-values" target="_blank" style="text-decoration: underline">
         ads-client readme
-      </a></li>
-      <li><a href="https://jisotalo.github.io/ads-client/Client.html#readValue" target="_blank" style="text-decoration: underline">
-        ads-client readValue() documentation
-      </a></li>
-    </ul>
+      </a>
+    </li>
+    <li>
+      <a href="https://jisotalo.fi/ads-client/classes/Client.html#readValue" target="_blank" style="text-decoration: underline">
+        ads-client - readValue()
+      </a>
+    </li>
+  </ul>
 </script>

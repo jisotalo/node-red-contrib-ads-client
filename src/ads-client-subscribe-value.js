@@ -1,3 +1,12 @@
+/**
+ * JSDoc types so that we get type hints for Client
+ * 
+ * @typedef { import("ads-client").Client } Client
+ * 
+ * @typedef ConnectionNode
+ * @property {() => Client} getClient Returns the `Client` instance for `ads-client`
+*/
+
 module.exports = function (RED) {
   function AdsClientSubscribe(config) {
     RED.nodes.createNode(this, config);
@@ -20,7 +29,10 @@ module.exports = function (RED) {
     this.silenceError = false;
     this.initialSubscribeDone = false;
 
-    //Getting the ads-client instance
+    /**
+     * Instance of the ADS connection node
+     * @type {ConnectionNode}
+     */
     this.connection = RED.nodes.getNode(config.connection);
 
     /**
@@ -139,12 +151,15 @@ module.exports = function (RED) {
       if (!this.subscription) {
         try {
           clearTimeout(this.subcribeRetryTimer);
-          this.subscription = await this.connection.getClient().subscribe({ target: target ? target : this.path, callback: onNotificationReceived, cycleTime: this.cycleTime, sendOnChange: this.mode === "onchange", maxDelay: this.maxDelay });
+
+          this.subscription = await this.connection.getClient()
+            .subscribeValue(target ? target : this.path, onNotificationReceived, this.cycleTime, this.mode === "onchange", this.maxDelay);
 
           //Successful
           this.status({ fill: "green", shape: "dot", text: "Subscribed" });
           this.subscriptionOK = true;
           this.initialSubscribeDone = true;
+
         } catch (err) {
           const errInfo = this.connection.formatError(err);
 

@@ -7,7 +7,7 @@
     inputs: 1,
     inputLabels: function () {
       return this.methodName === ''
-        ? "Method inputs (topic as method path)"
+        ? "Method inputs (topic as path and method)"
         : "Method inputs"
     },
     outputs: 1,
@@ -15,19 +15,21 @@
     defaults: {
       name: { value: '' },
       connection: { value: null, type: "ads-client-connection" },
-      methodName: { value: "" },
+      path: { value: "" },
+      method: { value: "" },
     },
     label: function () {
-      if (this.connection === null)
+      if (this.connection === null) {
         return `${(this.name || `ADS - Invoke RPC Method`)} (*Not configured*)`;
-
+      }
+      
       if (this.name) {
-        return this.name
+        return this.name;
       }
 
-      return `ADS - Invoke RPC Method (${(this.methodName === '' ? `msg.topic` : `${this.methodName}`)})`;
+      return `ADS - Invoke RPC Method (${(this.path === '' || this.method === '' ? `msg.topic` : `${this.path}.${this.method}`)})`;
     }
-  })
+  });
 </script>
 
 <!-- Properties -->
@@ -43,12 +45,17 @@
   </div>
 
   <div class="form-row">
-      <label for="node-input-methodName"><i class="fa fa-tag"></i> Method path</label>
-      <input type="text" id="node-input-methodName" placeholder="Method path">
+      <label for="node-input-path"><i class="fa fa-tag"></i> Variable path</label>
+      <input type="text" id="node-input-path" placeholder="Variable path">
+  </div>
+
+  <div class="form-row">
+      <label for="node-input-method"><i class="fa fa-tag"></i> Method</label>
+      <input type="text" id="node-input-method" placeholder="Method">
   </div>
 
   <div class="form-tips">
-    <b>Tip:</b> Leave method path empty to use <code>msg.topic</code> input instead.
+    <b>Tip:</b> You can provide variable path and/or method in <code>msg.topic</code> instead (see help).
   </div>
   
   <div class="form-row">
@@ -90,10 +97,18 @@
 
   <dl class="message-properties">
     <dt>
-      Method path
+      Variable path
       <span class="property-type">string</span>
     </dt>
-    <dd>The full path of the method. Unlike in ads-client, this includes both variable path and method name (e.g. <code>GVL_Globals.Block.Method</code>).</dd>
+    <dd>Variable path in the PLC of the function block instance (such as <code>GVL_Test.ExampleBlock</code>)</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      Method
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Function block method name</dd>
   </dl>
 
   <h3>Inputs</h3>
@@ -102,7 +117,7 @@
       payload
       <span class="property-type">object</span>
     </dt>
-    <dd>Input values of the method (<code>VAR_INPUT</code>).</dd>
+    <dd>Method parameters (inputs) (if any)</dd>
   </dl>
 
   <dl class="message-properties">
@@ -110,7 +125,7 @@
       topic
       <span class="property-type">undefined | string</span>
     </dt>
-    <dd>If provided and no method path set in properties, this topic is used as method path.</code></dd>
+    <dd>If provided, can be used to override variable path and/or method set in properties.</code></dd>
   </dl>
 
   <h3>Outputs</h3>
@@ -125,7 +140,17 @@
 
   <h3>Details</h3>
   <p>
-    If the method path is not set in properties, the input <code>msg.topic</code> is used as method path instead.
+    You can override settings using the <code>msg.topic</code> input:
+<pre>
+{ 
+  "path": "GVL_Test.ExampleBlock", 
+  "method": "ExampleMethod"
+}
+</pre>
+  </p>
+  <p>
+    To override only the method:
+    <code>{ "method": "ExampleMethod" }</code>
   </p>
 
   <h3>References</h3>

@@ -1,3 +1,12 @@
+/**
+ * JSDoc types so that we get type hints for Client
+ * 
+ * @typedef { import("ads-client").Client } Client
+ * 
+ * @typedef ConnectionNode
+ * @property {() => Client} getClient Returns the `Client` instance for `ads-client`
+*/
+
 module.exports = function (RED) {
   function AdsClientReadValue(config) {
     RED.nodes.createNode(this, config);
@@ -22,27 +31,11 @@ module.exports = function (RED) {
         return;
       }
 
-      //We need to have string in msg.topic if path is empty
-      if (
-        this.path === "" &&
-        (!msg.topic || typeof msg.topic !== "string")
-      ) {
-        this.status({
-          fill: "red",
-          shape: "dot",
-          text: `Error: Input msg.topic not valid string`,
-        });
-        var err = new Error(
-          `Input msg.topic is missing or it's not valid string`
-        );
-        done ? done(err) : this.error(err, msg);
-        return;
-      }
-
       if (!this.connection.isConnected()) {
         //Try to connect
         try {
           await this.connection.connect();
+
         } catch (err) {
           //Failed to connect, we can't work..
           this.status({
@@ -55,12 +48,9 @@ module.exports = function (RED) {
         }
       }
 
-      const variableToRead =
-        this.path === "" ? msg.topic : this.path;
-
       //Finally, reading the data
       try {
-        const res = await this.connection.getClient().readValue(variableToRead);
+        const res = await this.connection.getClient().readValue(this.path === "" ? msg.topic : this.path);
 
         //We are here -> success
         this.status({
@@ -80,6 +70,7 @@ module.exports = function (RED) {
         if (done) {
           done();
         }
+
       } catch (err) {
         this.status({
           fill: "red",

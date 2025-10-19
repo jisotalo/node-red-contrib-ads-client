@@ -15,17 +15,16 @@
       connection: { value: null, type: "ads-client-connection" },
     },
     label: function () {
-      if (this.connection === null) return `${this.name || `ADS - Read Tc System State`} (*Not configured*)`;
+      if (this.connection === null)  {
+        return `${this.name || `ADS - Read Tc System State`} (*Not configured*)`;
+      }
 
       if (this.name) {
         return this.name;
       }
 
       return `ADS - Read Tc System State`;
-    },
-    oneditprepare: function () {
-      //Stuff that is done when properties panel is opened
-    },
+    }
   });
 </script>
 
@@ -54,7 +53,6 @@
   <p>
     <b>NOTE:</b> You might want to use the <code>Read Extended Tc System State</code> node instead.
   </p>
-
 
   <h3>Properties (settings)</h3>
   <dl class="message-properties">
@@ -88,11 +86,15 @@
 
   <h3>References</h3>
   <ul>
-    <li><a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
-      ads-client readme
-    </a></li>
-    <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#readTcSystemState" target="_blank" style="text-decoration: underline">
-      ads-client - readTcSystemState()
-    </a></li>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
+        ads-client readme
+      </a>
+    </li>
+    <li>
+      <a href="https://jisotalo.fi/ads-client/classes/Client.html#readTcSystemState" target="_blank" style="text-decoration: underline">
+        ads-client - readTcSystemState()
+      </a>
+    </li>
   </ul>
 </script>

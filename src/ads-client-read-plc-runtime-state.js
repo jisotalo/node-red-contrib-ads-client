@@ -1,13 +1,24 @@
-module.exports = function (RED) {
+/**
+ * JSDoc types so that we get type hints for Client
+ * 
+ * @typedef { import("ads-client").Client } Client
+ * 
+ * @typedef ConnectionNode
+ * @property {() => Client} getClient Returns the `Client` instance for `ads-client`
+*/
 
+module.exports = function (RED) {
   function AdsClientReadPlcRuntimeState(config) {
     RED.nodes.createNode(this, config)
 
     //Properties
     this.name = config.name;
 
-    //Getting the ads-client instance
-    this.connection = RED.nodes.getNode(config.connection)
+    /**
+     * Instance of the ADS connection node
+     * @type {ConnectionNode}
+     */
+    this.connection = RED.nodes.getNode(config.connection);
 
     //When input is toggled, try to read data
     this.on('input', async (msg, send, done) => {
@@ -15,19 +26,19 @@ module.exports = function (RED) {
       if (!this.connection) {
         this.status({ fill: 'red', shape: 'dot', text: `Error: No connection configured` })
         var err = new Error(`No connection configured`);
-        (done)? done(err):  this.error(err, msg);
+        (done) ? done(err) : this.error(err, msg);
         return;
       }
 
       if (!this.connection.isConnected()) {
         //Try to connect
         try {
-          await this.connection.connect()
+          await this.connection.connect();
           
         } catch (err) {
           //Failed to connect, we can't work..
           this.status({ fill: 'red', shape: 'dot', text: `Error: Not connected` });
-          (done)? done(err):  this.error(err, msg);
+          (done) ? done(err) : this.error(err, msg);
           return;
         }
       }
@@ -37,29 +48,26 @@ module.exports = function (RED) {
         const res = await this.connection.getClient().readPlcRuntimeState();
 
         //We are here -> success
-        this.status({ fill: 'green', shape: 'dot', text: 'Last read successful' })
+        this.status({ fill: 'green', shape: 'dot', text: 'Last read successful' });
 
         send({
           ...msg,
           payload: res.adsStateStr,
           result: res
-        })
+        });
 
         if (done) {
-          done()
+          done();
         }
 
       } catch (err) {
-
-        this.status({ fill: 'red', shape: 'dot', text: `Error: Last read failed` })
-        this.connection.formatError(err,msg);
-        (done)? done(err):  this.error(err, msg);
+        this.status({ fill: 'red', shape: 'dot', text: `Error: Last read failed` });
+        this.connection.formatError(err, msg);
+        (done) ? done(err) : this.error(err, msg);
         return;
-
       }
-
-    })
+    });
   }
 
-  RED.nodes.registerType('ads-client-read-plc-runtime-state', AdsClientReadPlcRuntimeState)
+  RED.nodes.registerType('ads-client-read-plc-runtime-state', AdsClientReadPlcRuntimeState);
 }

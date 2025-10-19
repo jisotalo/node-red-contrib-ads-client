@@ -1,16 +1,34 @@
+/**
+ * JSDoc types so that we get type hints for Client
+ * 
+ * @typedef { import("ads-client").Client } Client
+ * 
+ * @typedef ConnectionNode
+ * @property {() => Client} getClient Returns the `Client` instance for `ads-client`
+*/
+
 module.exports = function (RED) {
   function AdsClientReadRaw(config) {
     RED.nodes.createNode(this, config);
 
     //Properties
     this.name = config.name;
-    this.indexGroup =
-      config.indexGroup === "" ? null : parseInt(config.indexGroup);
-    this.indexOffset =
-      config.indexOffset === "" ? null : parseInt(config.indexOffset);
-    this.size = config.size === "" ? null : parseInt(config.size);
+    this.indexGroup = config.indexGroup === ""
+      ? null
+      : parseInt(config.indexGroup);
 
-    //Getting the ads-client instance
+    this.indexOffset = config.indexOffset === ""
+      ? null
+      : parseInt(config.indexOffset);
+
+    this.size = config.size === ""
+      ? null
+      : parseInt(config.size);
+
+    /**
+     * Instance of the ADS connection node
+     * @type {ConnectionNode}
+     */
     this.connection = RED.nodes.getNode(config.connection);
 
     //When input is toggled, try to read data
@@ -30,56 +48,17 @@ module.exports = function (RED) {
       if (typeof msg.topic === "object") {
         //indexGroup
         if (msg.topic.indexGroup !== undefined) {
-          if (typeof msg.topic.indexGroup !== "number") {
-            this.status({
-              fill: "red",
-              shape: "dot",
-              text: `Error: Input msg.topic.indexGroup is not a valid number`,
-            });
-            var err = new Error(
-              `Error: Input msg.topic.indexGroup is not a valid number`
-            );
-            done ? done(err) : this.error(err, msg);
-            return;
-          } else {
-            this.indexGroup = msg.topic.indexGroup;
-          }
+          this.indexGroup = msg.topic.indexGroup;
         }
 
         //indexOffset
         if (msg.topic.indexOffset !== undefined) {
-          if (typeof msg.topic.indexOffset !== "number") {
-            this.status({
-              fill: "red",
-              shape: "dot",
-              text: `Error: Input msg.topic.indexOffset is not a valid number`,
-            });
-            var err = new Error(
-              `Error: Input msg.topic.indexOffset is not a valid number`
-            );
-            done ? done(err) : this.error(err, msg);
-            return;
-          } else {
-            this.indexOffset = msg.topic.indexOffset;
-          }
+          this.indexOffset = msg.topic.indexOffset;
         }
 
         //size
         if (msg.topic.size !== undefined) {
-          if (typeof msg.topic.size !== "number") {
-            this.status({
-              fill: "red",
-              shape: "dot",
-              text: `Error: Input msg.topic.size is not a valid number`,
-            });
-            var err = new Error(
-              `Error: Input msg.topic.size is not a valid number`
-            );
-            done ? done(err) : this.error(err, msg);
-            return;
-          } else {
-            this.size = msg.topic.size;
-          }
+          this.size = msg.topic.size;
         }
       }
 
@@ -90,21 +69,23 @@ module.exports = function (RED) {
           shape: "dot",
           text: `Error: Index group is not valid`,
         });
+
         var err = new Error(`Index group is not valid`);
         done ? done(err) : this.error(err, msg);
         return;
-      }
-      if (this.indexOffset == null) {
+
+      } else if (this.indexOffset == null) {
         this.status({
           fill: "red",
           shape: "dot",
           text: `Error: Index offset is not valid`,
         });
+
         var err = new Error(`Index offset is not valid`);
         done ? done(err) : this.error(err, msg);
         return;
-      }
-      if (this.size == null) {
+
+      } else if (this.size == null) {
         this.status({
           fill: "red",
           shape: "dot",
@@ -119,6 +100,7 @@ module.exports = function (RED) {
         //Try to connect
         try {
           await this.connection.connect();
+
         } catch (err) {
           //Failed to connect, we can't work..
           this.status({
@@ -152,12 +134,14 @@ module.exports = function (RED) {
         if (done) {
           done();
         }
+
       } catch (err) {
         this.status({
           fill: "red",
           shape: "dot",
           text: `Error: Last read failed`,
         });
+        
         this.connection.formatError(err, msg);
         done ? done(err) : this.error(err, msg);
         return;
