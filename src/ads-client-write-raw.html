@@ -33,9 +33,6 @@
       }
       
       return `ADS - Write Raw`;
-    },
-    oneditprepare: function () {
-      //Stuff that is done when properties panel is opened
     }
   })
 </script>
@@ -43,28 +40,29 @@
 <!-- Properties -->
 <script type="text/html" data-template-name="ads-client-write-raw">
   <div class="form-row">
-      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-      <input type="text" id="node-input-name" placeholder="Name (optional)">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name (optional)">
   </div>
 
   <div class="form-row">
-      <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
-      <input type="text" id="node-input-connection" placeholder="ADS Connection">
+    <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
+    <input type="text" id="node-input-connection" placeholder="ADS Connection">
   </div>
 
   <div class="form-row">
-      <label for="node-input-indexGroup"><i class="fa fa-tag"></i> Index group</label>
-      <input type="text" id="node-input-indexGroup" placeholder="Index group">
+    <label for="node-input-indexGroup"><i class="fa fa-tag"></i> Index group</label>
+    <input type="text" id="node-input-indexGroup" placeholder="Index group">
   </div>
   
   <div class="form-row">
-      <label for="node-input-indexOffset"><i class="fa fa-tag"></i> Index offset</label>
-      <input type="text" id="node-input-indexOffset" placeholder="Index offset">
+    <label for="node-input-indexOffset"><i class="fa fa-tag"></i> Index offset</label>
+    <input type="text" id="node-input-indexOffset" placeholder="Index offset">
   </div>
 
   <div class="form-tips">
     <b>Tip:</b> You can provide settings in <code>msg.topic</code> instead (see help).
   </div>
+
   <div class="form-row">
     <!-- Some margin after tip -->
   </div>
@@ -79,36 +77,40 @@
     This is the ADS protocol <code>Write</code> command.
   </p>
 
-<h3>Properties (settings)</h3>
+  <h3>Properties (settings)</h3>
   <dl class="message-properties">
-    <dt>Name
+    <dt>
+      Name
       <span class="property-type">string</span>
     </dt>
-    <dd> Optional node name</dd>
+    <dd>Optional node name</dd>
   </dl>
   
   <dl class="message-properties">
-    <dt>ADS connection
+    <dt>
+      ADS connection
       <span class="property-type">ads-client-connection</span>
     </dt>
-    <dd> ADS client connection (target system) to use</dd>
+    <dd>ADS client connection (target system) to use</dd>
   </dl>
 
   <dl class="message-properties">
-    <dt>Index group 
+    <dt>
+      Index group 
       <span class="property-type">number</span>
     </dt>
     <dd>Index group (address) of the data to write to</dd>
   </dl>
 
   <dl class="message-properties">
-    <dt>Index offset
+    <dt>
+      Index offset
       <span class="property-type">number</span>
     </dt>
     <dd>Index offset (address) of the data to write to</dd>
   </dl>
 
-<h3>Inputs</h3>
+  <h3>Inputs</h3>
   <dl class="message-properties">
     <dt>
       topic
@@ -119,7 +121,7 @@
     </dd>
   </dl>
 
-<h3>Details</h3>
+  <h3>Details</h3>
   <p>
     You can override settings using the <code>msg.topic</code> input:
 <pre>
@@ -134,13 +136,17 @@
     <code>{ "indexOffset": 456 }</code>
   </p>
 
-<h3>References</h3>
+  <h3>References</h3>
   <ul>
-    <li><a href="https://github.com/jisotalo/ads-client/#writing-raw-data" target="_blank" style="text-decoration: underline">
-      ads-client readme
-    </a></li>
-    <li><a href="https://jisotalo.fi/ads-client/classes/Client.html#writeRaw" target="_blank" style="text-decoration: underline">
-      ads-client - writeRaw()
-    </a></li>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client/#writing-raw-data" target="_blank" style="text-decoration: underline">
+        ads-client readme
+      </a>
+    </li>
+    <li>
+      <a href="https://jisotalo.fi/ads-client/classes/Client.html#writeRaw" target="_blank" style="text-decoration: underline">
+        ads-client - writeRaw()
+      </a>
+    </li>
   </ul>
 </script>

@@ -1,15 +1,32 @@
 const { Buffer } = require("buffer");
 
+/**
+ * JSDoc types so that we get type hints for Client
+ * 
+ * @typedef { import("ads-client").Client } Client
+ * 
+ * @typedef ConnectionNode
+ * @property {() => Client} getClient Returns the `Client` instance for `ads-client`
+*/
+
 module.exports = function (RED) {
   function AdsClientWriteRaw(config) {
     RED.nodes.createNode(this, config);
 
     //Properties
     this.name = config.name;
-    this.indexGroup = config.indexGroup === "" ? null : parseInt(config.indexGroup);
-    this.indexOffset = config.indexOffset === "" ? null : parseInt(config.indexOffset);
+    this.indexGroup = config.indexGroup === ""
+      ? null
+      : parseInt(config.indexGroup);
+    
+    this.indexOffset = config.indexOffset === ""
+      ? null
+      : parseInt(config.indexOffset);
 
-    //Getting the ads-client instance
+    /**
+     * Instance of the ADS connection node
+     * @type {ConnectionNode}
+     */
     this.connection = RED.nodes.getNode(config.connection);
 
     //When input is toggled, try to read data
@@ -29,34 +46,12 @@ module.exports = function (RED) {
       if (typeof msg.topic === "object") {
         //indexGroup
         if (msg.topic.indexGroup !== undefined) {
-          if (typeof msg.topic.indexGroup !== "number") {
-            this.status({
-              fill: "red",
-              shape: "dot",
-              text: `Error: Input msg.topic.indexGroup is not a valid number`,
-            });
-            var err = new Error(`Error: Input msg.topic.indexGroup is not a valid number`);
-            done ? done(err) : this.error(err, msg);
-            return;
-          } else {
-            this.indexGroup = msg.topic.indexGroup;
-          }
+          this.indexGroup = msg.topic.indexGroup;
         }
 
         //indexOffset
         if (msg.topic.indexOffset !== undefined) {
-          if (typeof msg.topic.indexOffset !== "number") {
-            this.status({
-              fill: "red",
-              shape: "dot",
-              text: `Error: Input msg.topic.indexOffset is not a valid number`,
-            });
-            var err = new Error(`Error: Input msg.topic.indexOffset is not a valid number`);
-            done ? done(err) : this.error(err, msg);
-            return;
-          } else {
-            this.indexOffset = msg.topic.indexOffset;
-          }
+          this.indexOffset = msg.topic.indexOffset;
         }
       }
 
@@ -67,16 +62,18 @@ module.exports = function (RED) {
           shape: "dot",
           text: `Error: Index group is not valid`,
         });
+
         var err = new Error(`Index group is not valid`);
         done ? done(err) : this.error(err, msg);
         return;
-      }
-      if (this.indexOffset == null) {
+       
+      } else if (this.indexOffset == null) {
         this.status({
           fill: "red",
           shape: "dot",
           text: `Error: Index offset is not valid`,
         });
+
         var err = new Error(`Index offset is not valid`);
         done ? done(err) : this.error(err, msg);
         return;
@@ -89,6 +86,7 @@ module.exports = function (RED) {
           shape: "dot",
           text: `Error: Input msg.payload is not a valid Buffer object`,
         });
+
         var err = new Error(`Error: Input msg.payload is not a valid Buffer object`);
         done ? done(err) : this.error(err, msg);
         return;
@@ -98,6 +96,7 @@ module.exports = function (RED) {
         //Try to connect
         try {
           await this.connection.connect();
+
         } catch (err) {
           //Failed to connect, we can't work..
           this.status({
@@ -112,7 +111,8 @@ module.exports = function (RED) {
 
       //Finally, writing the data
       try {
-        const res = await this.connection.getClient().writeRaw(this.indexGroup, this.indexOffset, msg.payload);
+        const res = await this.connection.getClient()
+          .writeRaw(this.indexGroup, this.indexOffset, msg.payload);
 
         //We are here -> success
         this.status({
@@ -135,6 +135,7 @@ module.exports = function (RED) {
           shape: "dot",
           text: `Error: Last write failed`,
         });
+        
         this.connection.formatError(err, msg);
         done ? done(err) : this.error(err, msg);
         return;
