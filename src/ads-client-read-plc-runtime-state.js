@@ -8,13 +8,11 @@
 */
 
 module.exports = function (RED) {
-  function AdsClientInvokeRpcMethod(config) {
-    RED.nodes.createNode(this, config);
+  function AdsClientReadPlcRuntimeState(config) {
+    RED.nodes.createNode(this, config)
 
     //Properties
     this.name = config.name;
-    this.path = config.path;
-    this.method = config.method;
 
     /**
      * Instance of the ADS connection node
@@ -22,56 +20,40 @@ module.exports = function (RED) {
      */
     this.connection = RED.nodes.getNode(config.connection);
 
-    //When input is toggled, try to write data
+    //When input is toggled, try to read data
     this.on('input', async (msg, send, done) => {
+
       if (!this.connection) {
         this.status({ fill: 'red', shape: 'dot', text: `Error: No connection configured` })
         var err = new Error(`No connection configured`);
-        (done)? done(err):  this.error(err, msg);
+        (done) ? done(err) : this.error(err, msg);
         return;
-      }
-
-      //Override with msg.topic properties (if any)
-      if (typeof msg.topic === "object") {
-        //path
-        if (msg.topic.path !== undefined) {
-          this.path = msg.topic.path;
-        }
-
-        //path
-        if (msg.topic.method !== undefined) {
-          this.method = msg.topic.method;
-        }
       }
 
       if (!this.connection.isConnected()) {
         //Try to connect
         try {
           await this.connection.connect();
-
+          
         } catch (err) {
           //Failed to connect, we can't work..
           this.status({ fill: 'red', shape: 'dot', text: `Error: Not connected` });
-          (done)? done(err):  this.error(err, msg);
+          (done) ? done(err) : this.error(err, msg);
           return;
         }
       }
 
-      //Finally, calling the RPC method
+      //Finally, reading the state
       try {
-        const res = await this.connection.getClient().invokeRpcMethod(
-          this.path,
-          this.method,
-          msg.payload
-        );
+        const res = await this.connection.getClient().readPlcRuntimeState();
 
         //We are here -> success
-        this.status({ fill: 'green', shape: 'dot', text: 'Last call successful' });
+        this.status({ fill: 'green', shape: 'dot', text: 'Last read successful' });
 
         send({
           ...msg,
-          payload: res.returnValue,
-          outputs: res.outputs
+          payload: res.adsStateStr,
+          result: res
         });
 
         if (done) {
@@ -79,13 +61,13 @@ module.exports = function (RED) {
         }
 
       } catch (err) {
-        this.status({ fill: 'red', shape: 'dot', text: `Error: Last call failed` })
-        this.connection.formatError(err,msg);
-        (done)? done(err):  this.error(err, msg);
+        this.status({ fill: 'red', shape: 'dot', text: `Error: Last read failed` });
+        this.connection.formatError(err, msg);
+        (done) ? done(err) : this.error(err, msg);
         return;
       }
     });
   }
 
-  RED.nodes.registerType('ads-client-invoke-rpc-method', AdsClientInvokeRpcMethod);
+  RED.nodes.registerType('ads-client-read-plc-runtime-state', AdsClientReadPlcRuntimeState);
 }

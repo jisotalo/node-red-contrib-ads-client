@@ -7,7 +7,9 @@
     color: '#3FADB5',
     inputs: 1,
     inputLabels: function () {
-      return this.dataTypeName === '' ? "Value (topic as data type)" : "Value"
+      return this.dataTypeName === '' 
+      ? "Value (topic as data type)" 
+      : "Value"
     },
     outputs: 1,
     outputLabels: "Data",
@@ -26,32 +28,30 @@
       }
 
       return `ADS - Convert To Raw (${(this.dataTypeName === '' ? `msg.topic` : `${this.dataTypeName}`)})`;
-    },
-    oneditprepare: function () {
-      //Stuff that is done when properties panel is opened
     }
-  })
+  });
 </script>
-
-
 
 <!-- Properties -->
 <script type="text/html" data-template-name="ads-client-convert-to-raw">
   <div class="form-row">
-      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-      <input type="text" id="node-input-name" placeholder="Name (optional)">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name (optional)">
   </div>
 
   <div class="form-row">
-      <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
-      <input type="text" id="node-input-connection" placeholder="ADS Connection">
+    <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
+    <input type="text" id="node-input-connection" placeholder="ADS Connection">
   </div>
 
   <div class="form-row">
-      <label for="node-input-dataTypeName"><i class="fa fa-tag"></i> Data type</label>
-      <input type="text" id="node-input-dataTypeName" placeholder="Data type">
+    <label for="node-input-dataTypeName"><i class="fa fa-tag"></i> Data type</label>
+    <input type="text" id="node-input-dataTypeName" placeholder="Data type">
   </div>
-  <div class="form-tips"><b>Tip:</b> Leave data type empty to use <code>msg.topic</code> input instead.</div>
+
+  <div class="form-tips">
+    <b>Tip:</b> Leave data type empty to use <code>msg.topic</code> input instead.
+  </div>
   
   <div class="form-row">
     <!-- Some margin after tip -->
@@ -59,100 +59,106 @@
 
   <div class="form-row">
     <input type="checkbox" id="node-input-autoFill" style="display: inline-block; width: auto; vertical-align: top;">
-    <label for="node-input-autoFill" style="width: auto"> Automatically fill missing properties <b>with default empty values</b> (<a href="https://github.com/jisotalo/ads-client#converting-a-javascript-object-to-raw-value" target="_blank"
-      style="text-decoration: underline"><code>autoFill</code></a>)</label>
+    <label for="node-input-autoFill" style="width: auto">
+      Automatically fill missing properties 
+      (<a href="https://github.com/jisotalo/ads-client#converting-a-javascript-object-to-raw-value" target="_blank" style="text-decoration: underline">
+        <code>autoFill</code>
+      </a>)
+    </label>
   </div>
 </script>
 
-
-
-
 <!-- Help -->
 <script type="text/html" data-help-name="ads-client-convert-to-raw">
-<p>
-  Converts given Javascript object/variable to raw Buffer data by given data type (like REAL, ST_Struct).
-</p>
-<p>
-  The input <code>msg.payload</code> is the value to be converted, its type depends to PLC variable type.
-  If input <code>msg.topic</code> is given, the topic is used as data type if no name is given in properties.
-</p>
+  <p>
+    Converts a Javascript object to raw data by using the provided data type.
+  </p>
+  <p>
+    The input <code>msg.payload</code> is the value to be converted.
+  </p>
+  <p>
+    If input <code>msg.topic</code> is given, the topic is used as data type if no name is set in properties.
+  </p>
 
-
-<h3>Properties (settings)</h3>
+  <h3>Properties (settings)</h3>
   <dl class="message-properties">
-    <dt>Name
+    <dt>
+      Name
       <span class="property-type">string</span>
     </dt>
-    <dd> Optional node name</dd>
+    <dd>Optional node name</dd>
   </dl>
   
   <dl class="message-properties">
-    <dt>ADS connection
+    <dt>
+      ADS connection
       <span class="property-type">ads-client-connection</span>
     </dt>
-    <dd> ADS client connection (target system) to use</dd>
+    <dd>ADS client connection (target system) to use</dd>
   </dl>
 
   <dl class="message-properties">
-    <dt>Data type
+    <dt>
+      Data type
       <span class="property-type">string</span>
     </dt>
-    <dd> Data type in the PLC - Example: <code>ST_SomeStruct</code>, <code>REAL</code>,..</dd>
+    <dd>Data type name in the PLC as string (such as <code>ST_Struct</code>)</dd>
   </dl>
 
   <dl class="message-properties">
-    <dt>Automatically fill missing properties
+    <dt>
+      Automatically fill missing properties
       <span class="property-type">bool</span>
     </dt>
-    <dd> If data type is structured (STRUCT, FB..), any missing properties are written to default values (usually 0).</dd>
+    <dd>
+      If set and the data type is a container (<code>STRUCT</code>, <code>FUNCTION_BLOCK</code> etc.), missing properties are automatically set to default values (0 or empty string).
+    </dd>
   </dl>
 
-
-<h3>Inputs</h3>
+  <h3>Inputs</h3>
   <dl class="message-properties">
-    <dt>payload
+    <dt>
+      payload
       <span class="property-type">any</span>
     </dt>
-    <dd> The value to convert to raw Buffer object</dd>
-  </dl>
-  <dl class="message-properties">
-    <dt>topic
-      <span class="property-type">undefined | string</span>
-    </dt>
-    <dd> If given and no data type set in properties, this topic is used as data type.</code></dd>
+    <dd>Value to convert</dd>
   </dl>
 
-<h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>
+      topic
+      <span class="property-type">undefined | string</span>
+    </dt>
+    <dd>If provided and no data type is set in properties, this topic is used as data type.</dd>
+  </dl>
+
+  <h3>Outputs</h3>
   <dl class="message-properties">
     <dt>payload <span class="property-type">Buffer</span></dt>
-    <dd>The value as raw Buffer data</dd>
+    <dd>The value as raw Buffer data. Can be used for example with <code>ADS - Write Raw</code> node</dd>
     <dt>... <span class="property-type">any</span></dt>
     <dd>All input <code>msg</code> properties are forwarded</dd>
   </dl>
 
-<h3>Details</h3>
+  <h3>Details</h3>
   <p>
-  The input <code>msg.payload</code> should match the PLC variable type. For example, if PLC type is <code>STRING</code>, the payload should be value that can be handled as string.
-  And if the data type is STRUCT, the payload should be a JavaScript object matching the PLC struct (JSON).
+    The input <code>msg.payload</code> should be a type that matches the data type.
   </p>
   <p>
-  If <code>autoFill</code> is set, the given JSON doesn't need to include all structured data type properties. Please see 
-  <a href="https://github.com/jisotalo/ads-client#converting-a-javascript-object-to-raw-value"
-    target="_blank" style="text-decoration: underline">
-    ads-client README
-  </a>.
-  </p>
-  <p>
-  If the data type is not set in properties, the input <code>msg.topic</code> is used as name instead.
+    If the data type is not set in properties, the input <code>msg.topic</code> is used as name instead.
   </p>
 
-<h3>References</h3>
+  <h3>References</h3>
   <ul>
-    <li><a href="https://github.com/jisotalo/ads-client#converting-a-javascript-object-to-raw-value" target="_blank" style="text-decoration: underline">
-      ads-client convertToRaw() readme
-    </a></li>
-    <li><a href="https://jisotalo.github.io/ads-client/Client.html#convertToRaw" target="_blank" style="text-decoration: underline">
-      ads-client convertToRaw() documentation
-    </a></li>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client/?tab=readme-ov-file#converting-a-javascript-object-to-a-raw-value" target="_blank" style="text-decoration: underline">
+        ads-client readme
+      </a>
+    </li>
+    <li>
+      <a href="https://jisotalo.fi/ads-client/classes/Client.html#convertToRaw" target="_blank" style="text-decoration: underline">
+        ads-client - convertToRaw()
+      </a>
+    </li>
   </ul>
 </script>

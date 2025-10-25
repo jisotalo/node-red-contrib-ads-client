@@ -1,0 +1,100 @@
+<script type="text/javascript">
+  RED.nodes.registerType("ads-client-read-tc-system-state", {
+    paletteLabel: "ADS - Read Tc System State",
+    category: "TwinCAT ADS",
+    icon: "font-awesome/fa-refresh",
+    color: "#3FADB5",
+    inputs: 1,
+    inputLabels: function () {
+      return "Read trigger";
+    },
+    outputs: 1,
+    outputLabels: "Data",
+    defaults: {
+      name: { value: "" },
+      connection: { value: null, type: "ads-client-connection" },
+    },
+    label: function () {
+      if (this.connection === null)  {
+        return `${this.name || `ADS - Read Tc System State`} (*Not configured*)`;
+      }
+
+      if (this.name) {
+        return this.name;
+      }
+
+      return `ADS - Read Tc System State`;
+    }
+  });
+</script>
+
+<!-- Properties -->
+<script type="text/html" data-template-name="ads-client-read-tc-system-state">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name (optional)" />
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
+    <input type="text" id="node-input-connection" placeholder="ADS Connection" />
+  </div>
+
+  <div class="form-row">
+    <!-- Some margin after tip -->
+  </div>
+</script>
+
+<!-- Help -->
+<script type="text/html" data-help-name="ads-client-read-tc-system-state">
+  <p>
+    Reads target TwinCAT system state from ADS port 10000 (usually <code>Run</code> or <code>Config</code>).
+  </p>
+  <p>
+    <b>NOTE:</b> You might want to use the <code>Read Extended TC System State</code> node instead.
+  </p>
+
+  <h3>Properties (settings)</h3>
+  <dl class="message-properties">
+    <dt>
+      Name
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Optional node name</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      ADS connection
+      <span class="property-type">ads-client-connection</span>
+    </dt>
+    <dd>ADS client connection (target system) to use</dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">string</span></dt>
+    <dd>
+      TwinCAT system state as string 
+      (<code>Run</code>, <code>Stop</code> etc. - see <a href="https://jisotalo.fi/ads-client/variables/ADS.ADS_STATE.html" target="_blank">ADS.ADS_STATE</a>)
+    </dd>
+    <dt>result <span class="property-type">object</span></dt>
+    <dd>TwinCAT system state object </dd>
+    <dt>... <span class="property-type">any</span></dt>
+    <dd>All input <code>msg</code> properties are forwarded</dd>
+  </dl>
+
+  <h3>References</h3>
+  <ul>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
+        ads-client readme
+      </a>
+    </li>
+    <li>
+      <a href="https://jisotalo.fi/ads-client/classes/Client.html#readTcSystemState" target="_blank" style="text-decoration: underline">
+        ads-client - readTcSystemState()
+      </a>
+    </li>
+  </ul>
+</script>

@@ -6,32 +6,31 @@
     color: '#3FADB5',
     inputs: 1,
     inputLabels: function () {
-      return this.methodName === '' ? "Method inputs (topic as method path)" : "Method inputs"
+      return this.methodName === ''
+        ? "Method inputs (topic as path and method)"
+        : "Method inputs"
     },
     outputs: 1,
     outputLabels: "Return data",
-    defaults: { 
+    defaults: {
       name: { value: '' },
       connection: { value: null, type: "ads-client-connection" },
-      methodName: { value: ""},
+      path: { value: "" },
+      method: { value: "" },
     },
     label: function () {
-      if (this.connection === null)
+      if (this.connection === null) {
         return `${(this.name || `ADS - Invoke RPC Method`)} (*Not configured*)`;
-
+      }
+      
       if (this.name) {
-        return this.name
+        return this.name;
       }
 
-      return `ADS - Invoke RPC Method (${(this.methodName === '' ? `msg.topic` : `${this.methodName}`)})`;
-    },
-    oneditprepare: function () {
-      //Stuff that is done when properties panel is opened
+      return `ADS - Invoke RPC Method (${(this.path === '' || this.method === '' ? `msg.topic` : `${this.path}.${this.method}`)})`;
     }
-  })
+  });
 </script>
-
-
 
 <!-- Properties -->
 <script type="text/html" data-template-name="ads-client-invoke-rpc-method">
@@ -46,68 +45,90 @@
   </div>
 
   <div class="form-row">
-      <label for="node-input-methodName"><i class="fa fa-tag"></i> Method</label>
-      <input type="text" id="node-input-methodName" placeholder="Method path">
+      <label for="node-input-path"><i class="fa fa-tag"></i> Variable path</label>
+      <input type="text" id="node-input-path" placeholder="Variable path">
   </div>
-  <div class="form-tips"><b>Tip:</b> Leave method path empty to use <code>msg.topic</code> input instead.</div>
+
+  <div class="form-row">
+      <label for="node-input-method"><i class="fa fa-tag"></i> Method</label>
+      <input type="text" id="node-input-method" placeholder="Method">
+  </div>
+
+  <div class="form-tips">
+    <b>Tip:</b> You can provide variable path and/or method in <code>msg.topic</code> instead (see help).
+  </div>
   
   <div class="form-row">
     <!-- Some margin after tip -->
   </div>
-
 </script>
-
 
 <!-- Help -->
 <script type="text/html" data-help-name="ads-client-invoke-rpc-method">
-<p>
-  Calls a function block method with parameters using RPC (remote procedure call). 
-  Input and output parameters are available as well as method return value
-</p>
-<p>
-  The input <code>msg.payload</code> is the object containing all method input variables.
-  If input <code>msg.topic</code> is given, and no method set in the properties, the topic is used as method path to call.
-</p>
+  <p>
+    Invokes a function block RPC method on the target system.
+  </p>
+  <p>
+    Returns the return value of the method and outputs (if any).
+  </p>
+  <p>
+    NOTE: In the PLC, <code>{attribute 'TcRpcEnable'}</code> is required above the <code>METHOD</code> definition.
+  </p>
+  <p>
+    The input <code>msg.payload</code> should be an object containing all method inputs.
+  </p>
 
-
-<h3>Properties (settings)</h3>
+  <h3>Properties (settings)</h3>
   <dl class="message-properties">
-    <dt>Name
+    <dt>
+      Name
       <span class="property-type">string</span>
     </dt>
-    <dd> Optional node name.</dd>
+    <dd>Optional node name.</dd>
   </dl>
   
   <dl class="message-properties">
-    <dt>ADS connection
+    <dt>
+      ADS connection
       <span class="property-type">ads-client-connection</span>
     </dt>
-    <dd> ADS client connection (target system) to use.</dd>
+    <dd>ADS client connection (target system) to use.</dd>
   </dl>
 
   <dl class="message-properties">
-    <dt>Method
+    <dt>
+      Variable path
       <span class="property-type">string</span>
     </dt>
-    <dd> Full path to the method to be called.</dd>
+    <dd>Variable path in the PLC of the function block instance (such as <code>GVL_Test.ExampleBlock</code>)</dd>
   </dl>
 
-
-<h3>Inputs</h3>
   <dl class="message-properties">
-    <dt>payload
+    <dt>
+      Method
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Function block method name</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>
+      payload
       <span class="property-type">object</span>
     </dt>
-    <dd> Input values of the method (<code>VAR_INPUT</code>).</dd>
-  </dl>
-  <dl class="message-properties">
-    <dt>topic
-      <span class="property-type">undefined | string</span>
-    </dt>
-    <dd> If given and no method is set in properties, this topic is used as method path.</code></dd>
+    <dd>Method parameters (inputs) (if any)</dd>
   </dl>
 
-<h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>
+      topic
+      <span class="property-type">undefined | string</span>
+    </dt>
+    <dd>If provided, can be used to override variable path and/or method set in properties.</code></dd>
+  </dl>
+
+  <h3>Outputs</h3>
   <dl class="message-properties">
     <dt>payload <span class="property-type">any</span></dt>
     <dd>The return value of the method.</dd>
@@ -117,26 +138,32 @@
     <dd>All input <code>msg</code> properties are forwarded</dd>
   </dl>
 
-<h3>Details</h3>
+  <h3>Details</h3>
   <p>
-  The input <code>msg.payload</code> should be an object containing all the methods input variables (<code>VAR_INPUT</code>). For example <code>{"sString":"","xBool":true,"rReal":0.5}</code>.
+    You can override settings using the <code>msg.topic</code> input:
+<pre>
+{ 
+  "path": "GVL_Test.ExampleBlock", 
+  "method": "ExampleMethod"
+}
+</pre>
   </p>
   <p>
-  The method path should be defined in the properties or in input <code>msg.topic</code>. Example: <code>"Main.fbSample.mMyMethod"</code>. 
-  </p>
-  Note: A method can only be called when the <code>{attribute 'TcRpcEnable'}</code> pragma is added above the methods definition.
-  <p>
-  Note that RPC methods have some known problems with ARRAYs etc. See <code>ads-client</code> readme for more help and info.</code>
+    To override only the method:
+    <code>{ "method": "ExampleMethod" }</code>
   </p>
 
-
-<h3>References</h3>
+  <h3>References</h3>
   <ul>
-    <li><a href="https://github.com/jisotalo/ads-client#calling-a-function-block-method-with-parameters-using-rpc-remote-procedure-call" target="_blank" style="text-decoration: underline">
-      ads-client invokeRpcMethod() readme
-    </a></li>
-    <li><a href="https://jisotalo.github.io/ads-client/Client.html#invokeRpcMethod" target="_blank" style="text-decoration: underline">
-      ads-client invokeRpcMethod() documentation
-    </a></li>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client/#calling-function-block-rpc-methods" target="_blank" style="text-decoration: underline">
+        ads-client readme
+      </a>
+    </li>
+    <li>
+      <a href="https://jisotalo.fi/ads-client/classes/Client.html#invokeRpcMethod" target="_blank" style="text-decoration: underline">
+        ads-client - invokeRpcMethod()
+      </a>
+    </li>
   </ul>
 </script>

@@ -1,0 +1,133 @@
+<script type="text/javascript">
+  RED.nodes.registerType("ads-client-get-symbol", {
+    paletteLabel: "ADS - Get Symbol",
+    category: "TwinCAT ADS",
+    icon: "font-awesome/fa-info",
+    color: "#3FADB5",
+    inputs: 1,
+    inputLabels: function () {
+      return this.path === "" 
+      ? "Topic as path" 
+      : "Trigger";
+    },
+    outputs: 1,
+    outputLabels: "Symbol",
+    defaults: {
+      name: { value: "" },
+      connection: { value: null, type: "ads-client-connection" },
+      path: { value: "", required: false },
+    },
+    label: function () {
+      if (this.connection === null) return `${this.name || `ADS - Get Symbol`} (*Not configured*)`;
+
+      if (this.name) {
+        return this.name;
+      }
+
+      return `ADS - Get Symbol (${this.path === "" ? `msg.topic` : `${this.path}`})`;
+    }
+  });
+</script>
+
+<!-- Properties -->
+<script type="text/html" data-template-name="ads-client-get-symbol">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name (optional)" />
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
+    <input type="text" id="node-input-connection" placeholder="ADS Connection" />
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-path"><i class="fa fa-tag"></i> Variable path</label>
+    <input type="text" id="node-input-path" placeholder="Variable path" />
+  </div>
+
+  <div class="form-tips">
+    <b>Tip:</b> Leave variable path empty to use <code>msg.topic</code> input instead.
+  </div>
+
+  <div class="form-row">
+    <!-- Some margin after tip -->
+  </div>
+</script>
+
+<!-- Help -->
+<script type="text/html" data-help-name="ads-client-get-symbol">
+  <p>
+    Returns a symbol object for given variable path, such as <code>GVL_Test.ExampleStruct</code>.
+  </p> 
+  <p>
+    Returns previously cached value if available, otherwise reads it from the target and caches it.
+  </p>
+  <p>
+    If caching is disabled using setting <code>disableCaching</code>, data is always read from the target.
+  </p>
+  <p>
+    <b>NOTE:</b> This requires that the target is a PLC runtime or has equivalent ADS protocol support.
+  </p>
+
+  <h3>Properties (settings)</h3>
+  <dl class="message-properties">
+    <dt>
+      Name
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Optional node name</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      ADS connection
+      <span class="property-type">ads-client-connection</span>
+    </dt>
+    <dd>ADS client connection (target system) to use</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      Variable path
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Symbol variable path at the target (such as <code>GVL_Test.ExampleStruct</code>)</dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>
+      topic
+      <span class="property-type">undefined | string</span>
+    </dt>
+    <dd>If provided and no variable path set in properties, this topic is used as variable path.</code></dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">object</span></dt>
+    <dd>The symbol object</dd>
+    <dt>... <span class="property-type">any</span></dt>
+    <dd>All input <code>msg</code> properties are forwarded</dd>
+  </dl>
+
+  <h3>Details</h3>
+  <p>
+    If the variable path is not set in properties, the input <code>msg.topic</code> is used as variable path instead.
+  </p>
+
+  <h3>References</h3>
+  <ul>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
+        ads-client readme
+      </a>
+    </li>
+    <li>
+      <a href="https://jisotalo.fi/ads-client/classes/Client.html#getSymbol" target="_blank" style="text-decoration: underline">
+        ads-client - getSymbol()
+      </a>
+    </li>
+  </ul>
+</script>

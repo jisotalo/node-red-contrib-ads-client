@@ -1,72 +1,78 @@
 <script type="text/javascript">
-  RED.nodes.registerType('ads-client-read-raw', {
-    paletteLabel: 'ADS - Read Raw',
-    category: 'TwinCAT ADS',
-    icon: 'font-awesome/fa-angle-double-right',
-    color: '#3FADB5',
+  RED.nodes.registerType("ads-client-read-raw", {
+    paletteLabel: "ADS - Read Raw",
+    category: "TwinCAT ADS",
+    icon: "font-awesome/fa-angle-double-right",
+    color: "#3FADB5",
     inputs: 1,
-    inputLabels: function() {
-      return "Read trigger"
+    inputLabels: function () {
+      return "Read trigger";
     },
     outputs: 1,
-    outputLabels: 'Data',
-    defaults: { 
-      name: { value: '' },
+    outputLabels: "Data",
+    defaults: {
+      name: { value: "" },
       connection: { value: null, type: "ads-client-connection" },
-      indexGroup: { value: null, required: false, validate: (v) => (v === '' || !isNaN(parseInt(v))) },
-      indexOffset: { value: null, required: false, validate: (v) => (v === '' || !isNaN(parseInt(v))) },
-      size: { value: null, required: false, validate: (v) => (v === '' || !isNaN(parseInt(v))) },
-      targetAdsPort: { value: null, required: false, validate: (v) => (v === '' || !isNaN(parseInt(v))) }
+      indexGroup: {
+        value: null,
+        required: false,
+        validate: (v) => v === "" || !isNaN(parseInt(v)),
+      },
+      indexOffset: {
+        value: null,
+        required: false,
+        validate: (v) => v === "" || !isNaN(parseInt(v)),
+      },
+      size: {
+        value: null,
+        required: false,
+        validate: (v) => v === "" || !isNaN(parseInt(v)),
+      }
     },
     label: function () {
-      if(this.connection === null)
-        return  `${(this.name || `ADS - Read Raw`)} (*Not configured*)`;
- 
+      if (this.connection === null)
+        return `${this.name || `ADS - Read Raw`} (*Not configured*)`;
+
       if (this.name) {
         return this.name;
       }
 
-      //return `ADS - Read Raw (${this.indexGroup}:${this.indexOffset})`;
       return `ADS - Read Raw`;
-    },
-    oneditprepare: function () {
-      //Stuff that is done when properties panel is opened
     }
-  })
+  });
 </script>
 
 <!-- Properties -->
 <script type="text/html" data-template-name="ads-client-read-raw">
   <div class="form-row">
-      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-      <input type="text" id="node-input-name" placeholder="Name (optional)">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name (optional)">
   </div>
 
   <div class="form-row">
-      <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
-      <input type="text" id="node-input-connection" placeholder="ADS Connection">
+    <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
+    <input type="text" id="node-input-connection" placeholder="ADS Connection">
   </div>
 
   <div class="form-row">
-      <label for="node-input-indexGroup"><i class="fa fa-tag"></i> Index group</label>
-      <input type="text" id="node-input-indexGroup" placeholder="Index group">
-  </div>
-  
-  <div class="form-row">
-      <label for="node-input-indexOffset"><i class="fa fa-tag"></i> Index offset</label>
-      <input type="text" id="node-input-indexOffset" placeholder="Index offset">
+    <label for="node-input-indexGroup"><i class="fa fa-tag"></i> Index group</label>
+    <input type="text" id="node-input-indexGroup" placeholder="Index group">
   </div>
 
   <div class="form-row">
-      <label for="node-input-size"><i class="fa fa-tag"></i> Size (bytes)</label>
-      <input type="text" id="node-input-size" placeholder="Size">
+    <label for="node-input-indexOffset"><i class="fa fa-tag"></i> Index offset</label>
+    <input type="text" id="node-input-indexOffset" placeholder="Index offset">
   </div>
 
   <div class="form-row">
-      <label for="node-input-targetAdsPort"><i class="fa fa-tag"></i> Target ADS port (optional)</label>
-      <input type="text" id="node-input-targetAdsPort" placeholder="(default)">
+    <label for="node-input-size"><i class="fa fa-tag"></i> Size (bytes)</label>
+    <input type="text" id="node-input-size" placeholder="Size">
   </div>
-  <div class="form-tips"><b>Tip:</b> You can provide the parameters in <code>msg.topic</code> instead (see help).</div>
+
+  <div class="form-tips">
+    <b>Tip:</b> You can provide settings in <code>msg.topic</code> instead (see help).
+  </div>
+
   <div class="form-row">
     <!-- Some margin after tip -->
   </div>
@@ -74,99 +80,99 @@
 
 <!-- Help -->
 <script type="text/html" data-help-name="ads-client-read-raw">
-<p>
-  Reads (raw byte) data from PLC by given index group, index offset and size.
-</p>
-<p>
-  All required parameters can be read for example with <code>Get Symbol Info</code> node.
-</p>
+  <p>
+    Reads raw data from the target system by a raw ADS address (index group, index offset and data length).
+  </p>
+  <p>
+    This is the ADS protocol <code>Read</code> command.
+  </p>
 
-
-<h3>Properties (settings)</h3>
+  <h3>Properties (settings)</h3>
   <dl class="message-properties">
-    <dt>Name
+    <dt>
+      Name
       <span class="property-type">string</span>
     </dt>
-    <dd> Optional node name</dd>
+    <dd>Optional node name</dd>
   </dl>
-  
+
   <dl class="message-properties">
-    <dt>ADS connection
+    <dt>
+      ADS connection
       <span class="property-type">ads-client-connection</span>
     </dt>
-    <dd> ADS client connection (target system) to use</dd>
+    <dd>ADS client connection (target system) to use</dd>
   </dl>
 
   <dl class="message-properties">
-    <dt>Index group 
+    <dt>
+      Index group
       <span class="property-type">number</span>
     </dt>
-    <dd> Index group of the read target</dd>
+    <dd>Index group (address) of the data to read</dd>
   </dl>
 
   <dl class="message-properties">
-    <dt>Index offset
+    <dt>
+      Index offset
       <span class="property-type">number</span>
     </dt>
-    <dd> Index offset of the read target</dd>
+    <dd>Index offset (address) of the data to read</dd>
   </dl>
 
   <dl class="message-properties">
-    <dt>Size
+    <dt>
+      Size
       <span class="property-type">number</span>
     </dt>
-    <dd> Size in bytes</dd>
+    <dd>Data length to read (bytes)</dd>
   </dl>
 
+  <h3>Inputs</h3>
   <dl class="message-properties">
-    <dt>Target ADS port
-      <span class="property-type">number</span>
-    </dt>
-    <dd> Optional setting for target ADS port to use. Default is the same as in used ADS connection.</dd>
-  </dl>
-
-
-<h3>Inputs</h3>
-  <dl class="message-properties">
-    <dt>topic
+    <dt>
+      topic
       <span class="property-type">undefined | json</span>
     </dt>
-    <dd> If provided, the settings are overrided with provided values (only the ones found in json object)</dd>
-    <dd> Example <code>msg.topic</code> json:
-      <code>
-      {
-        "indexGroup": 123,
-        "indexOffset": 456,
-        "size": 4,
-        "targetAdsPort": 851
-      }
-    </code></dd>
+    <dd>
+      If provided, can be used to override certain or all settings.
+    </dd>
   </dl>
 
-<h3>Outputs</h3>
+  <h3>Outputs</h3>
   <dl class="message-properties">
     <dt>payload <span class="property-type">any</span></dt>
     <dd>The value read</dd>
     <dd>All input <code>msg</code> properties are forwarded</dd>
   </dl>
 
-<h3>Details</h3>
+  <h3>Details</h3>
   <p>
-    You can override just the parameters you want using the <code>msg.topic</code> input. For example to override just the indexOffset, set topic as:
-    <code>{
-      "indexOffset": 456
-    }
-    </code>
+    You can override settings using the <code>msg.topic</code> input:
+<pre>
+{ 
+  "indexGroup": 123, 
+  "indexOffset": 456, 
+  "size": 4
+}
+</pre>
+  </p>
+  <p>
+    To override only the indexOffset:
+    <code>{ "indexOffset": 456 }</code>
   </p>
 
-
-<h3>References</h3>
+  <h3>References</h3>
   <ul>
-    <li><a href="https://github.com/jisotalo/ads-client#reading-a-single-raw-value" target="_blank" style="text-decoration: underline">
-      ads-client readRaw() readme
-    </a></li>
-    <li><a href="https://jisotalo.github.io/ads-client/Client.html#readRaw" target="_blank" style="text-decoration: underline">
-      ads-client readRaw() documentation
-    </a></li>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client/#reading-raw-data" target="_blank" style="text-decoration: underline">
+        ads-client readme
+      </a>
+    </li>
+    <li>
+      <a href="https://jisotalo.fi/ads-client/classes/Client.html#readRaw" target="_blank" style="text-decoration: underline">
+        ads-client - readRaw()
+      </a>
+    </li>
   </ul>
 </script>

@@ -19,10 +19,10 @@
         return `${(this.name || `ADS - Connection Status`)} (*Not configured*)`;
 
       if (this.name) {
-        return this.name
+        return this.name;
       }
 
-      const connectionNode = RED.nodes.node(this.connection)
+      const connectionNode = RED.nodes.node(this.connection);
 
       if (connectionNode && connectionNode.name)
         return `ADS - Connection Status (${connectionNode.name})`;
@@ -33,22 +33,20 @@
     },
     oneditprepare: function () {
       //Stuff that is done when properties panel is opened
-      let node = this
+      let node = this;
 
       let checkIfInput = function () {
-        node.inputs = $('#node-input-showInput').is(':checked') ? 1 : 0
+        node.inputs = $('#node-input-showInput').is(':checked') ? 1 : 0;
       }
 
       //If checkbox is checked -> we need input
       $('#node-input-showInput').change(function () {
-        checkIfInput()
+        checkIfInput();
       })
 
     }
   });
 </script>
-
-
 
 <!-- Properties -->
 <script type="text/html" data-template-name="ads-client-connection-status">
@@ -66,10 +64,7 @@
     <input type="checkbox" id="node-input-showInput" style="display: inline-block; width: auto; vertical-align: top">
     <label for="node-input-showInput" style="width: 70%"><span>Show input for manual triggering</span></label>
   </div>
-
 </script>
-
-
 
 <!-- Help -->
 <script type="text/html" data-help-name="ads-client-connection-status">
@@ -77,42 +72,53 @@
     Reports status changes of the selected ADS connection.
   </p>
 
-
-<h3>Properties (settings)</h3>
+  <h3>Properties (settings)</h3>
   <dl class="message-properties">
-    <dt>Name
+    <dt>
+      Name
       <span class="property-type">string</span>
     </dt>
-    <dd> Optional node name</dd>
+    <dd>Optional node name</dd>
   </dl>
 
   <dl class="message-properties">
-    <dt>ADS connection
+    <dt>
+      ADS connection
       <span class="property-type">ads-client-connection</span>
     </dt>
-    <dd> ADS client connection (target system) to use</dd>
+    <dd>ADS client connection (target system) to use</dd>
   </dl>
 
   <dl class="message-properties">
-    <dt>Show input for manual triggering
+    <dt>
+      Show input for manual triggering
       <span class="property-type">boolean</span>
     </dt>
-    <dd> If checked, the status can be also read using input trigger</dd>
+    <dd>If checked, the status can be also read using input trigger</dd>
   </dl>
 
-
-
-<h3>Outputs</h3>
+  <h3>Outputs</h3>
   <dl class="message-properties">
-    <dt>payload <span class="property-type">boolean</span></dt>
-    <dd>ADS connection status as boolean (true = connection is OK) </dd>
-    <dt>connection <span class="property-type">object</span></dt>
+    <dt>
+      payload 
+      <span class="property-type">boolean</span>
+    </dt>
+    <dd>ADS connection status (<code>true</code> if connection is working)</dd>
+
+    <dt>
+      connection
+      <span class="property-type">object</span>
+    </dt>
     <dd>Connection information (ads-client object)</dd>
-    <dt>... <span class="property-type">any</span></dt>
+
+    <dt>
+      ...
+      <span class="property-type">any</span>
+    </dt>
     <dd>All input <code>msg</code> properties are forwarded (if using input)</dd>
   </dl>
 
-<h3>Details</h3>
+  <h3>Details</h3>
   <p>
     Status changes are automatically reported when detected.
   </p>
@@ -135,10 +141,12 @@ connection {
 }</pre>
   </p>
 
-<h3>References</h3>
+  <h3>References</h3>
   <ul>
-    <li><a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
-      ads-client readme
-    </a></li>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client" target="_blank" style="text-decoration: underline">
+        ads-client readme
+      </a>
+    </li>
   </ul>
 </script>

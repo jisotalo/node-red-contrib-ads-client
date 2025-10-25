@@ -1,0 +1,301 @@
+<script type="text/javascript">
+  RED.nodes.registerType("ads-client-subscribe-value", {
+    paletteLabel: "ADS - Subscribe Value",
+    category: "TwinCAT ADS",
+    icon: "font-awesome/fa-envelope-o",
+    align: "right",
+    color: "#3FADB5",
+    inputLabels: function () {
+      if (this.path === "" && this.controlSubscription) {
+        return "Topic as variable path, subscribe as sub/unsub command";
+
+      } else if (this.path === "") {
+        return "Topic as variable path";
+
+      } else {
+        return "Subscribe as sub/unsub command";
+      }
+    },
+    outputs: 1,
+    outputLabels: "Data",
+    defaults: {
+      name: { value: "" },
+      connection: { value: null, type: "ads-client-connection" },
+      path: { value: "", required: false },
+      cycleTime: { value: 200, required: true },
+      mode: { value: "onchange", rquired: true },
+      maxDelay: { value: 0, required: true },
+      retryInterval: { value: 2000, required: true },
+      controlSubscription: { value: false },
+      resubscribeTimeout: { value: 2000 },
+      inputs: { value: 0 },
+    },
+    label: function () {
+      if (this.connection === null) return `${this.name || `ADS - Subscribe Value`} (*Not configured*)`;
+
+      if (this.name) {
+        return this.name;
+      }
+
+      return `ADS - Subscribe Value (${this.path === "" ? `msg.topic` : `${this.path}`})`;
+    },
+    oneditprepare: function () {
+      //Stuff that is done when properties panel is opened
+      let node = this;
+
+      let checkIfInput = function () {
+        node.inputs = $("#node-input-path").val() === "" || $("#node-input-controlSubscription").is(":checked") ? 1 : 0;
+      };
+
+      //If variable name is not given -> we need input
+      $("#node-input-path").change(function () {
+        checkIfInput();
+      });
+
+      //If checkbox is checked -> we need input
+      $("#node-input-controlSubscription").change(function () {
+        checkIfInput();
+      });
+    },
+  });
+</script>
+
+<!-- Properties -->
+<script type="text/html" data-template-name="ads-client-subscribe-value">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name (optional)">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-connection"><i class="fa fa-bookmark"></i> ADS connection</label>
+    <input type="text" id="node-input-connection" placeholder="ADS Connection">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-path"><i class="fa fa-tag"></i> Variable path</label>
+    <input type="text" id="node-input-path" placeholder="Variable path">
+  </div>
+  
+  <div class="form-tips">
+    <b>Tip:</b> Leave variable path empty to use <code>msg.topic</code> input instead.
+  </div>
+
+  <div class="form-row">
+    <!-- Some margin after tip -->
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-mode"><i class="fa fa-dot-circle-o"></i> Subscription mode</span></label>
+    <select id="node-input-mode">
+      <option value="onchange">On-change</option>
+      <option value="cyclic">Cyclic</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-cycleTime"><i class="fa fa-tag"></i> Cycle time [ms]</label>
+    <input type="text" id="node-input-cycleTime" placeholder="Cycle time [ms]">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-maxDelay"><i class="fa fa-tag"></i> Max delay [ms]</label>
+    <input type="text" id="node-input-maxDelay" placeholder="Max delay [ms]">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-retryInterval"><i class="fa fa-tag"></i> Retry interval [ms]</label>
+    <input type="text" id="node-input-retryInterval" placeholder="Retry interval [ms]">
+  </div>
+
+  <div class="form-row">
+    <input type="checkbox" id="node-input-controlSubscription" style="display: inline-block; width: auto; vertical-align: top">
+    <label for="node-input-controlSubscription" style="width: 70%"><span>Control subscription with input (<code>msg.subscribe</code>)</span></label>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-resubscribeTimeout"><i class="fa fa-tag"></i> Resubscribe timeout [ms]</label>
+    <input type="text" id="node-input-resubscribeTimeout" placeholder="Resubscribe timeout [ms]">
+  </div>
+</script>
+
+<!-- Help -->
+<script type="text/html" data-help-name="ads-client-subscribe-value">
+  <p>
+    Subscribes to value change notifications (ADS notifications) by a variable path, such as <code>GVL_Test.ExampleStruct</code>.
+  </p>
+  <p>
+    Node output is triggered when the value changes or when enough time has passed (depending on settings).
+  </p>
+  <p>
+    <b>NOTE:</b> This requires that the target is a PLC runtime or has equivalent ADS protocol support.
+  </p>
+
+  <h3>Properties (settings)</h3>
+  <dl class="message-properties">
+    <dt>
+      Name
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Optional node name</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      ADS connection
+      <span class="property-type">ads-client-connection</span>
+    </dt>
+    <dd>ADS client connection (target system) to use</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      Variable path
+      <span class="property-type">string</span>
+    </dt>
+    <dd>Variable path in the PLC (such as <code>GVL_Test.ExampleStruct</code>)</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      Subscription mode
+      <span class="property-type"></span>
+    </dt>
+    <dd>
+      <p>
+        Should a new value be sent only when the value has changed or cyclically
+      </p>
+      <ul>
+        <li>
+          <code>On-change</code> 
+          - 
+          PLC checks if value has changed with <code>Cycle time</code> interval. 
+          If the value has changed, the PLC sends the value and the node output triggers.
+        </li>
+        <li>
+          <code>Cyclic</code> 
+          - 
+          PLC constantly sends the value with <code>Cycle time</code> interval and the node output triggers.
+        </li>
+      </ul>
+    </dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      Cycle time [ms]
+      <span class="property-type">number</span>
+    </dt>
+    <dd>How often the PLC should check if value has changed (or how often to send, see details)</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      Maximum delay [ms]
+      <span class="property-type">string</span>
+    </dt>
+    <dd>
+      <p>
+        How long the PLC waits before sending the value at maximum? (default: 0 ms -> <code>Maximum delay</code> is off)
+      </p>
+      <p>
+        If the value is not changing, the first notification with the active value after subscribing is sent after <code>Maximum delay</code>.
+      </p>
+      <p>
+        If the value is changing, the PLC sends one or more notifications every <code>Maximum delay</code>.
+      </p>
+      <p>
+        So if <code>Cycle time</code> is 100 ms, <code>Maximum delay</code> is 1000 ms and value changes every 100 ms, 
+        the PLC sends 10 notifications every 1000 ms. This can be useful for throttling.
+      </p>
+    </dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      Retry interval [ms]
+      <span class="property-type">number</span>
+    </dt>
+    <dd>If connecting or subscribing fails, how often to try again until success</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      Control subscription with input
+      <span class="property-type">boolean</span>
+    </dt>
+    <dd>If checked, node subscription is controlled with input (see details)</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      Resubscribe timeout [ms]
+      <span class="property-type">number</span>
+    </dt>
+    <dd>
+      How long to wait for new notifications after connection loss.
+      If no data received in given time, node will try to subscribe again.
+    </dd>
+  </dl>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>
+      topic
+      <span class="property-type">undefined | string</span>
+    </dt>
+    <dd>If provided and no variable path set in properties, this topic is used as variable path.</dd>
+  </dl>
+
+  <dl class="message-properties">
+    <dt>
+      subscribe
+      <span class="property-type">undefined | boolean</span>
+    </dt>
+    <dd>
+      If <code>Control subscription with input</code> is checked, 
+      this input is used to subscribe/unsubscribe (see details).
+    </dd>
+  </dl>
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">any</span></dt>
+    <dd>The value read</dd>
+    <dt>type <span class="property-type">object</span></dt>
+    <dd>Variable data type information</dd>
+    <dt>symbol <span class="property-type">object</span></dt>
+    <dd>Variable symbol information</dd>
+    <dt>timestamp <span class="property-type">object</span></dt>
+    <dd>Variable timestamp</dd>
+    <dt>... <span class="property-type">any</span></dt>
+    <dd>All input <code>msg</code> properties are forwarded</dd>
+  </dl>
+
+  <h3>Details</h3>
+  <p>
+    With default settings the node has no input as it's not needed.
+  </p>
+  <p>
+    If the variable path is not set in properties, the input <code>msg.topic</code> is used as variable path instead.
+  </p>
+  <p>
+    If the <code>Control subscription with input</code> is checked, the node doesn't subscribe automatically.
+    It will subscribe only when receiving input <code>msg.subscribe</code> that has truthy value (<code>true</code>, <code>1</code>..).
+    The node can then be unsubscribed by giving a non-truthy value (<code>false</code>, <code>0</code>..) to input <code>msg.subscribe</code>.
+  </p>
+
+  <h3>References</h3>
+  <ul>
+    <li>
+      <a href="https://github.com/jisotalo/ads-client/#subscribing-to-plc-variables-device-notifications" target="_blank" style="text-decoration: underline">
+        ads-client readme
+      </a>
+    </li>
+    <li>
+      <a href="https://jisotalo.fi/ads-client/classes/Client.html#invokeRpcMethod" target="_blank" style="text-decoration: underline">
+        ads-client - subscribeValue()
+      </a>
+    </li>
+  </ul>
+</script>
