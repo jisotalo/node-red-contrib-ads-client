@@ -29,6 +29,8 @@
     "url": "https://github.com/jisotalo/node-red-contrib-ads-client.git"
   },
   "files": [
+    "examples/",
+    "img/",
     "src/",
     "CHANGELOG.md",
     "README.md"

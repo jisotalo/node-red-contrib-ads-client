@@ -15,7 +15,7 @@ This is a wrapper over the battle-tested [ads-client](https://github.com/jisotal
 
 - Based on ads-client v.2
 - See [CHANGELOG](https://github.com/jisotalo/node-red-contrib-ads-client/blob/master/CHANGELOG.md) for details and migration.
-- See also [ads-client CHANGELOG](https://github.com/jisotalo/node-red-contrib-ads-client/blob/master/CHANGELOG.md) for more details
+- See also [ads-client CHANGELOG](https://github.com/jisotalo/ads-client/blob/master/CHANGELOG.md) for more details
   
 # Features
 - Supports TwinCAT 2 and 3
