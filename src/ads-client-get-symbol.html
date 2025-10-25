@@ -6,8 +6,8 @@
     color: "#3FADB5",
     inputs: 1,
     inputLabels: function () {
-      return this.variableName === "" 
-      ? "Topic as variable name" 
+      return this.path === "" 
+      ? "Topic as path" 
       : "Trigger";
     },
     outputs: 1,
@@ -15,7 +15,7 @@
     defaults: {
       name: { value: "" },
       connection: { value: null, type: "ads-client-connection" },
-      variableName: { value: "", required: false },
+      path: { value: "", required: false },
     },
     label: function () {
       if (this.connection === null) return `${this.name || `ADS - Get Symbol`} (*Not configured*)`;
@@ -24,7 +24,7 @@
         return this.name;
       }
 
-      return `ADS - Get Symbol (${this.variableName === "" ? `msg.topic` : `${this.variableName}`})`;
+      return `ADS - Get Symbol (${this.path === "" ? `msg.topic` : `${this.path}`})`;
     }
   });
 </script>
@@ -42,8 +42,8 @@
   </div>
 
   <div class="form-row">
-    <label for="node-input-variableName"><i class="fa fa-tag"></i> Variable path</label>
-    <input type="text" id="node-input-variableName" placeholder="Variable path" />
+    <label for="node-input-path"><i class="fa fa-tag"></i> Variable path</label>
+    <input type="text" id="node-input-path" placeholder="Variable path" />
   </div>
 
   <div class="form-tips">

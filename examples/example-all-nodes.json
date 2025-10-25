@@ -15,7 +15,7 @@
         "connection": "4bf895418c29201f",
         "showInput": false,
         "inputs": 0,
-        "x": 720,
+        "x": 820,
         "y": 120,
         "wires": [
             [
@@ -36,7 +36,7 @@
         "targetType": "jsonata",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1370,
+        "x": 1470,
         "y": 120,
         "wires": []
     },
@@ -46,8 +46,8 @@
         "z": "70d7630e97bb7b16",
         "name": "",
         "connection": "4bf895418c29201f",
-        "variableName": "GVL_Read.ComplexTypes.STRUCT_",
-        "x": 790,
+        "path": "GVL_Read.ComplexTypes.STRUCT_",
+        "x": 890,
         "y": 200,
         "wires": [
             [
@@ -97,7 +97,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1350,
+        "x": 1450,
         "y": 200,
         "wires": []
     },
@@ -107,9 +107,9 @@
         "z": "70d7630e97bb7b16",
         "name": "",
         "connection": "4bf895418c29201f",
-        "variableName": "GVL_Write.ComplexTypes.STRUCT_",
+        "path": "GVL_Write.ComplexTypes.STRUCT_",
         "autoFill": false,
-        "x": 790,
+        "x": 890,
         "y": 280,
         "wires": [
             [
@@ -159,7 +159,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1350,
+        "x": 1450,
         "y": 280,
         "wires": []
     },
@@ -179,15 +179,15 @@
         "z": "70d7630e97bb7b16",
         "name": "",
         "connection": "4bf895418c29201f",
-        "variableName": "GVL_Subscription.NumericValue_1000ms",
-        "cycleTime": 200,
+        "path": "GVL_Subscription.NumericValue_100ms",
+        "cycleTime": "500",
         "mode": "onchange",
         "maxDelay": 0,
         "retryInterval": 2000,
         "controlSubscription": true,
         "resubscribeTimeout": 2000,
         "inputs": 1,
-        "x": 820,
+        "x": 910,
         "y": 440,
         "wires": [
             [
@@ -208,7 +208,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1380,
+        "x": 1480,
         "y": 440,
         "wires": []
     },
@@ -234,7 +234,7 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 420,
-        "y": 440,
+        "y": 420,
         "wires": [
             [
                 "e52901bda28bb4de"
@@ -263,7 +263,7 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 430,
-        "y": 480,
+        "y": 460,
         "wires": [
             [
                 "e52901bda28bb4de"
@@ -276,7 +276,7 @@
         "z": "70d7630e97bb7b16",
         "name": "",
         "connection": "4bf895418c29201f",
-        "variableName": "GVL_Subscription.NumericValue_1000ms",
+        "path": "GVL_Subscription.NumericValue_1000ms",
         "cycleTime": "5000",
         "mode": "cyclic",
         "maxDelay": 0,
@@ -284,7 +284,7 @@
         "controlSubscription": false,
         "resubscribeTimeout": 2000,
         "inputs": 0,
-        "x": 820,
+        "x": 920,
         "y": 360,
         "wires": [
             [
@@ -305,7 +305,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1410,
+        "x": 1510,
         "y": 360,
         "wires": []
     },
@@ -315,8 +315,9 @@
         "z": "70d7630e97bb7b16",
         "name": "",
         "connection": "4bf895418c29201f",
-        "methodName": "GVL_RPC.RpcBlock.Calculator",
-        "x": 800,
+        "path": "GVL_RPC.RpcBlock",
+        "method": "Calculator",
+        "x": 900,
         "y": 540,
         "wires": [
             [
@@ -366,24 +367,9 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1350,
+        "x": 1450,
         "y": 540,
         "wires": []
-    },
-    {
-        "id": "4fa5922ced952b98",
-        "type": "ads-client-read-runtime-state",
-        "z": "70d7630e97bb7b16",
-        "name": "",
-        "connection": "4bf895418c29201f",
-        "adsPort": 851,
-        "x": 720,
-        "y": 620,
-        "wires": [
-            [
-                "76327008e8338c7e"
-            ]
-        ]
     },
     {
         "id": "e67b0ac2b006cc2f",
@@ -410,7 +396,7 @@
         "y": 620,
         "wires": [
             [
-                "4fa5922ced952b98"
+                "fa509cac631b3186"
             ]
         ]
     },
@@ -427,7 +413,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1390,
+        "x": 1490,
         "y": 620,
         "wires": []
     },
@@ -437,8 +423,8 @@
         "z": "70d7630e97bb7b16",
         "name": "",
         "connection": "4bf895418c29201f",
-        "x": 670,
-        "y": 780,
+        "x": 770,
+        "y": 860,
         "wires": [
             [
                 "95a4df8ffe63fd16"
@@ -480,7 +466,7 @@
         "z": "70d7630e97bb7b16",
         "name": "",
         "connection": "4bf895418c29201f",
-        "x": 700,
+        "x": 800,
         "y": 700,
         "wires": [
             [
@@ -501,7 +487,7 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1380,
+        "x": 1480,
         "y": 700,
         "wires": []
     },
@@ -527,7 +513,7 @@
         "payload": "",
         "payloadType": "date",
         "x": 440,
-        "y": 780,
+        "y": 860,
         "wires": [
             [
                 "6b74bbda20d97d6a"
@@ -547,8 +533,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1360,
-        "y": 780,
+        "x": 1460,
+        "y": 860,
         "wires": []
     },
     {
@@ -557,9 +543,9 @@
         "z": "70d7630e97bb7b16",
         "name": "",
         "connection": "4bf895418c29201f",
-        "variableName": "GVL_Read.StandardTypes",
-        "x": 760,
-        "y": 860,
+        "path": "GVL_Read.ComplexTypes",
+        "x": 860,
+        "y": 940,
         "wires": [
             [
                 "ddf579090afe6a75"
@@ -588,7 +574,7 @@
         "payload": "",
         "payloadType": "date",
         "x": 430,
-        "y": 860,
+        "y": 940,
         "wires": [
             [
                 "72dcf981de72a51a"
@@ -608,8 +594,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1350,
-        "y": 860,
+        "x": 1450,
+        "y": 940,
         "wires": []
     },
     {
@@ -621,9 +607,8 @@
         "indexGroup": "",
         "indexOffset": "",
         "size": "",
-        "targetAdsPort": "",
-        "x": 850,
-        "y": 1020,
+        "x": 950,
+        "y": 1100,
         "wires": [
             [
                 "4a539ec25a28731e",
@@ -653,7 +638,7 @@
         "payload": "",
         "payloadType": "date",
         "x": 420,
-        "y": 940,
+        "y": 1020,
         "wires": [
             [
                 "24debebc5ac104c9"
@@ -666,9 +651,9 @@
         "z": "70d7630e97bb7b16",
         "name": "",
         "connection": "4bf895418c29201f",
-        "variableName": "GVL_Read.ComplexTypes.STRUCT_",
-        "x": 790,
-        "y": 940,
+        "path": "GVL_Read.ComplexTypes.STRUCT_",
+        "x": 890,
+        "y": 1020,
         "wires": [
             [
                 "d6c1f68ab2853147"
@@ -688,8 +673,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1340,
-        "y": 1020,
+        "x": 1440,
+        "y": 1100,
         "wires": []
     },
     {
@@ -711,8 +696,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 650,
-        "y": 1020,
+        "x": 750,
+        "y": 1100,
         "wires": [
             [
                 "256f67769ed2796a"
@@ -741,7 +726,7 @@
         "onceDelay": 0.1,
         "topic": "",
         "x": 420,
-        "y": 1200,
+        "y": 1280,
         "wires": [
             [
                 "b2593dff652fd200"
@@ -756,8 +741,8 @@
         "connection": "4bf895418c29201f",
         "dataTypeName": "ST_StandardTypes",
         "autoFill": false,
-        "x": 950,
-        "y": 1280,
+        "x": 1050,
+        "y": 1360,
         "wires": [
             [
                 "dc4df9567bdaebd9",
@@ -772,8 +757,8 @@
         "name": "",
         "connection": "4bf895418c29201f",
         "dataTypeName": "ST_StandardTypes",
-        "x": 760,
-        "y": 1100,
+        "x": 860,
+        "y": 1180,
         "wires": [
             [
                 "6c13da76dc92725f"
@@ -793,8 +778,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1370,
-        "y": 1100,
+        "x": 1470,
+        "y": 1180,
         "wires": []
     },
     {
@@ -810,8 +795,8 @@
         "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1360,
-        "y": 1280,
+        "x": 1460,
+        "y": 1360,
         "wires": []
     },
     {
@@ -820,9 +805,9 @@
         "z": "70d7630e97bb7b16",
         "name": "",
         "connection": "4bf895418c29201f",
-        "variableName": "GVL_Read.ComplexTypes.STRUCT_",
-        "x": 790,
-        "y": 1200,
+        "path": "GVL_Read.ComplexTypes.STRUCT_",
+        "x": 890,
+        "y": 1280,
         "wires": [
             [
                 "07165f4d1ebb3677"
@@ -855,8 +840,8 @@
         "from": "",
         "to": "",
         "reg": false,
-        "x": 660,
-        "y": 1280,
+        "x": 760,
+        "y": 1360,
         "wires": [
             [
                 "5d09f80a24e68123"
@@ -871,40 +856,132 @@
         "connection": "4bf895418c29201f",
         "indexGroup": "",
         "indexOffset": "",
-        "targetAdsPort": "",
-        "x": 670,
-        "y": 1360,
+        "x": 770,
+        "y": 1440,
+        "wires": []
+    },
+    {
+        "id": "fa509cac631b3186",
+        "type": "ads-client-read-plc-runtime-state",
+        "z": "70d7630e97bb7b16",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "x": 810,
+        "y": 620,
+        "wires": [
+            [
+                "76327008e8338c7e"
+            ]
+        ]
+    },
+    {
+        "id": "c8ef5b103a091c2b",
+        "type": "comment",
+        "z": "70d7630e97bb7b16",
+        "name": "",
+        "info": "1. Get symbol for variable\n2. Read value for the variable using symbol address\n3. Convert to Javascript object",
+        "x": 420,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "4fbefe934bd04538",
+        "type": "comment",
+        "z": "70d7630e97bb7b16",
+        "name": "",
+        "info": "1. Get symbol for variable\n2. Conver Javascript object to a raw value\n3. Write the raw value using symbol address",
+        "x": 420,
+        "y": 1320,
+        "wires": []
+    },
+    {
+        "id": "8e4da152943c7319",
+        "type": "ads-client-read-tc-system-extended-state",
+        "z": "70d7630e97bb7b16",
+        "name": "",
+        "connection": "4bf895418c29201f",
+        "x": 830,
+        "y": 780,
+        "wires": [
+            [
+                "99b32d54002cb572"
+            ]
+        ]
+    },
+    {
+        "id": "afb1c46a7be519d2",
+        "type": "inject",
+        "z": "70d7630e97bb7b16",
+        "name": "Read TC system extended state",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 490,
+        "y": 780,
+        "wires": [
+            [
+                "8e4da152943c7319"
+            ]
+        ]
+    },
+    {
+        "id": "99b32d54002cb572",
+        "type": "debug",
+        "z": "70d7630e97bb7b16",
+        "name": "Read TC system state extended result",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "result",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1510,
+        "y": 780,
         "wires": []
     },
     {
         "id": "4bf895418c29201f",
         "type": "ads-client-connection",
         "name": "TwinCAT",
-        "targetAmsNetId": "192.168.4.1.1.1",
-        "targetAdsPort": 851,
-        "objectifyEnumerations": true,
-        "convertDatesToJavascript": true,
-        "readAndCacheSymbols": false,
-        "readAndCacheDataTypes": false,
-        "monitorPlcSymbolVersion": true,
-        "routerTcpPort": "",
-        "routerAddress": "",
-        "localAddress": "",
-        "localTcpPort": "",
-        "localAmsNetId": "",
-        "localAdsPort": "",
-        "timeoutDelay": "",
-        "hideConsoleWarnings": false,
+        "allowHalfOpen": false,
         "autoReconnect": true,
-        "reconnectInterval": "",
         "connectionCheckInterval": "",
         "connectionDownDelay": "",
-        "allowHalfOpen": false,
-        "debuggingLevel": "",
-        "rawClient": false
+        "convertDatesToJavascript": true,
+        "hideConsoleWarnings": false,
+        "localAddress": "",
+        "localAdsPort": "",
+        "localAmsNetId": "",
+        "localTcpPort": "",
+        "monitorPlcSymbolVersion": true,
+        "objectifyEnumerations": true,
+        "rawClient": false,
+        "readAndCacheDataTypes": false,
+        "readAndCacheSymbols": false,
+        "reconnectInterval": "",
+        "routerAddress": "",
+        "routerTcpPort": "",
+        "targetAdsPort": 851,
+        "targetAmsNetId": "192.168.4.1.1.1",
+        "timeoutDelay": ""
     },
     {
-        "id": "4504d50d68eabf28",
+        "id": "63ac10cb36d49608",
         "type": "global-config",
         "env": [],
         "modules": {

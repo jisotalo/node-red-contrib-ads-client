@@ -4,14 +4,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 19.10.2025
+## [2.0.0] - 25.10.2025
 
 **IMPORTANT:** This is a major version update. There are **breaking changes**! 
 
-This update changes to `ads-client` v2. See [ads-client CHANGELOG](https://github.com/jisotalo/ads-client/blob/master/CHANGELOG.md#202---14122024) for details.
+This update changes to `ads-client` v2. See [ads-client CHANGELOG](https://github.com/jisotalo/ads-client/blob/master/CHANGELOG.md#202---14122024) for more details about the update.
+
+### Breaking changes
+- `Get Symbol Info` node renamed to `Get Symbol`
+- `Read System Manager State` node renamed to `Read Tc System State`
+- `Read Runtime State` node renamed to `Read PLC Runtime State` 
+- `Read Symbol` node renamed to `Read Value`
+- `Write Symbol` node renamed to `Write Value`
+- `Subscribe` node renamed to `Subscribe Value`
+- `Invoke RPC Method` setting properties changed
+- `Subscribe` setting properties changed
+- Target ADS port setting removed from all nodes - now always uses the one specified in client settings
+  - In future, the usage of `targetOpts` will be available on all nodes as in ads-client
 
 ### Changes
-
+- Added `Get Symbols` node
+- Added `Read TC System Extended State` node
+- Client settings updated to match ads-client v2
+- Some sanity checks removed and left to end-user instead (e.g. checking data types of provided `topic` properties)
+- Documentation updated
+- README updated
+- Minor cleanup here and there
 
 ## [1.4.0] - 31.10.2022
 ### Added

@@ -13,7 +13,7 @@ module.exports = function (RED) {
 
     //Properties
     this.name = config.name;
-    this.variableName = config.variableName;
+    this.path = config.path;
 
     /**
      * Instance of the ADS connection node
@@ -30,8 +30,8 @@ module.exports = function (RED) {
         return;
       }
 
-      //We need to have string in msg.topic if variableName is empty
-      if (this.variableName === "" && (!msg.topic || typeof msg.topic !== "string")) {
+      //We need to have string in msg.topic if path is empty
+      if (this.path === "" && (!msg.topic || typeof msg.topic !== "string")) {
         this.status({ fill: "red", shape: "dot", text: `Error: Input msg.topic not valid string` });
         var err = new Error(`Input msg.topic is missing or it's not valid string`);
         done ? done(err) : this.error(err, msg);
@@ -50,9 +50,9 @@ module.exports = function (RED) {
         }
       }
 
-      const variable = this.variableName === ""
+      const variable = this.path === ""
         ? msg.topic
-        : this.variableName;
+        : this.path;
 
       //Finally, getting the symbol
       try {
