@@ -24,7 +24,7 @@ module.exports = function (RED) {
     //State
     this.subscriptionOK = false;
     this.subscription = null;
-    this.subcribeRetryTimer = null;
+    this.subscribeRetryTimer = null;
     this.resubscribeTimer = null;
     this.silenceError = false;
     this.initialSubscribeDone = false;
@@ -40,7 +40,7 @@ module.exports = function (RED) {
      * @param {*} state
      */
     const onConnectedChange = (connected) => {
-      //Note: We will do this only if subscribed at least one
+      //Note: We will do this only if subscribed at least once
       //If not yet subscribed, no need to do this as there is timer running.
       if (connected && this.initialSubscribeDone) {
         //Reconnected to the target
@@ -132,7 +132,7 @@ module.exports = function (RED) {
             shape: "dot",
             text: `Error: Not connected, retrying...`,
           });
-          //Only log error ones to prevent console spam
+          //Only log errors once to prevent console spam
           if (!this.silenceError) {
             this.error(`Error: Not connected to the target, retrying in the background.`);
           }
@@ -140,7 +140,7 @@ module.exports = function (RED) {
           this.subscriptionOK = false;
 
           //Try again soon
-          this.subcribeRetryTimer = setTimeout(() => subscribe(target), this.retryInterval);
+          this.subscribeRetryTimer = setTimeout(() => subscribe(target), this.retryInterval);
           this.silenceError = true;
 
           return;
@@ -150,7 +150,7 @@ module.exports = function (RED) {
       //Subscribe if not yet subscribed
       if (!this.subscription) {
         try {
-          clearTimeout(this.subcribeRetryTimer);
+          clearTimeout(this.subscribeRetryTimer);
 
           this.subscription = await this.connection.getClient()
             .subscribeValue(target ? target : this.path, onNotificationReceived, this.cycleTime, this.mode === "onchange", this.maxDelay);
@@ -172,7 +172,7 @@ module.exports = function (RED) {
           this.subscriptionOK = false;
 
           //Try again soon
-          this.subcribeRetryTimer = setTimeout(() => subscribe(target), this.retryInterval);
+          this.subscribeRetryTimer = setTimeout(() => subscribe(target), this.retryInterval);
         }
       }
     };
@@ -182,7 +182,7 @@ module.exports = function (RED) {
      * @returns
      */
     const unsubscribe = async () => {
-      clearTimeout(this.subcribeRetryTimer);
+      clearTimeout(this.subscribeRetryTimer);
 
       if (!this.subscription) return;
 
@@ -259,7 +259,7 @@ module.exports = function (RED) {
 
     //When node is closed, clear timer and subscribe reference
     this.on("close", async (removed, done) => {
-      clearTimeout(this.subcribeRetryTimer);
+      clearTimeout(this.subscribeRetryTimer);
 
       //Note that we could unsubscribe here but the ads-client-connection will do that
       //as the connection is also closed when this happens (as far as I know..)
